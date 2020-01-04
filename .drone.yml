@@ -10,11 +10,11 @@ platform:
 steps:
 - name: build
   commands:
-  - docker build --pull --squash -t pdr.nephatrine.net/nephatrine/nxbuilder:latest .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:latest
-  - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:latest nephatrine/nxbuilder:latest
-  - HOME=/mnt/config/home docker push nephatrine/nxbuilder:latest
-  - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:latest
+  - docker build --pull --squash -t pdr.nephatrine.net/nephatrine/nxbuilder:linux .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:linux
+  - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:linux nephatrine/nxbuilder:linux
+  - HOME=/mnt/config/home docker push nephatrine/nxbuilder:linux
+  - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:linux
 
 ---
 kind: pipeline
