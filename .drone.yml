@@ -1,0 +1,36 @@
+---
+kind: pipeline
+type: exec
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  commands:
+  - docker build --pull --squash -t pdr.nephatrine.net/nephatrine/nxbuilder:latest .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:latest
+  - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:latest nephatrine/nxbuilder:latest
+  - HOME=/mnt/config/home docker push nephatrine/nxbuilder:latest
+  - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:latest
+
+---
+kind: pipeline
+name: after
+
+steps:
+- name: notify
+  image: appleboy/drone-discord
+  settings:
+    avatar_url: https://files.nephatrine.net/Images/Buttons/Drone.png
+    message: "Automated build of **{{repo.name}}:{{commit.branch}}** has returned [{{build.status}}]({{build.link}})."
+    username: DroneCI
+    webhook_id:
+      from_secret: webhook-id
+    webhook_token:
+      from_secret: webhook-token
+
+depends_on:
+- default
