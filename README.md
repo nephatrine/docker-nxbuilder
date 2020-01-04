@@ -1,0 +1,33 @@
+[Git](https://code.nephatrine.net/nephatrine/docker-nxbuilder) |
+[Docker](https://hub.docker.com/r/nephatrine/nxbuilder/)
+
+[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-nxbuilder/status.svg)](https://ci.nephatrine.net/nephatrine/docker-nxbuilder)
+
+# NXBuilder
+
+This docker image contains the C++ build environment I use for projects. It is
+intended to be used by a CI/CD service to perform builds and not kept running
+beyond that. It can also be used as a quick "cleanroom" to test builds in.
+
+- [Ubuntu Linux](https://ubuntu.com/)
+- [GNU Compiler Collection](https://gcc.gnu.org/)
+- [LLVM Clang](https://clang.llvm.org/)
+- [CMake](https://cmake.org/)
+- [Doxygen](http://www.doxygen.nl/)
+- [M.CSS](https://mcss.mosra.cz/documentation/doxygen/)
+- [Moxygen](https://github.com/sourcey/moxygen)
+- [TeX Live](https://www.tug.org/texlive/)
+
+You can spin up a quick temporary test container like this:
+
+~~~
+docker run --rm -ti nephatrine/nxbuilder:latest /bin/bash
+~~~
+
+## Docker Tags
+
+- **nephatrine/nxbuilder:latest**: Base Configuration
+- **nephatrine/nxbuilder:linux**: Linux-Specific Configuration
+  * Includes various cross-compilers, mock, and pbuilder for creating packages for a variety of architectures and distributions.
+- **nephatrine/nxbuilder:mingw**: Windows-Specific Configuration
+  * Includes GCC- & Clang-based MinGW cross-compilers, nsis, wixl, wine, and various tools for creating Windows-specific packages.
