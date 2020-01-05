@@ -10,7 +10,7 @@ platform:
 steps:
 - name: build
   commands:
-  - docker build --pull --squash -t pdr.nephatrine.net/nephatrine/nxbuilder:latest .
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:latest .
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:latest
   - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:latest nephatrine/nxbuilder:latest
   - HOME=/mnt/config/home docker push nephatrine/nxbuilder:latest

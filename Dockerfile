@@ -6,26 +6,17 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get update -q \
  && apt-get -y -qq install apt-utils \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
-   build-essential gdb global \
-   ca-certificates \
+   build-essential cmake gdb global ninja-build valgrind \
+   ca-certificates curl wget \
    clang clang-format clang-tidy clang-tools libc++-dev libc++abi-dev libclang-dev lld lldb \
-   curl wget \
-   cmake ninja-build \
    doxygen-latex dia graphviz mscgen \
-   git git-lfs git-remote-hg git-svn \
-   liblzma-dev \
-   libomp-dev \
-   libxml2-dev \
-   lsb-release \
-   mercurial mercurial-git \
+   git git-lfs git-remote-hg git-svn mercurial mercurial-git subversion \
+   liblzma-dev libomp-dev libxml2-dev zlib1g-dev \
+   lsb-release sudo \
    mingw-w64 mingw-w64-tools \
    nodejs npm \
    python-jinja2 python-pygments python-simplejson python-six python-yaml \
    python3-jinja2 python3-pygments python3-simplejson python3-six python3-yaml \
-   subversion \
-   sudo \
-   valgrind \
-   zlib1g-dev \
  && apt-get clean \
  && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
