@@ -1,58 +1,41 @@
-FROM ubuntu:rolling
+FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "====== INSTALL PACKAGES ======" \
+ && dpkg --add-architecture i386 \
  && apt-get update -q \
- && apt-get -y -qq install apt-utils \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
-   build-essential gdb global \
-   ca-certificates \
-   clang clang-format clang-tidy clang-tools libc++-dev libc++abi-dev libclang-dev lld lldb \
-   curl wget \
-   cmake ninja-build \
-   doxygen-latex dia graphviz mscgen \
-   git git-lfs git-remote-hg git-svn \
-   liblzma-dev \
-   libomp-dev \
-   libxml2-dev \
-   lsb-release \
-   mercurial mercurial-git \
-   mingw-w64 mingw-w64-tools \
-   nodejs npm \
-   python-jinja2 python-pygments python-simplejson python-six python-yaml \
-   python3-jinja2 python3-pygments python3-simplejson python3-six python3-yaml \
-   subversion \
-   valgrind \
-   zlib1g-dev \
+   cabextract gcab \
+   msitools nsis wixl \
+   osslsigncode pesign \
+   unzip \
+   winbind \
+   wine-development wine-binfmt winetricks \
+   xvfb \
  && apt-get clean \
  && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-RUN echo "====== CONFIGURE USER ======" \
- && adduser \
-   --home /home/guardian \
-   --shell /bin/bash \
-   --uid 1000 \
-   --ingroup users \
-   --disabled-password \
-   --gecos "docker end-user" \
-   guardian
+ARG TOOLCHAIN_PREFIX=/opt/llvm-mingw
+ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
+RUN echo "====== COMPILE LLVM-MINGW ======" \
+ && cd /usr/src \
+ && git clone https://github.com/mstorsjo/llvm-mingw.git && cd llvm-mingw \
+ && ./build-llvm.sh $TOOLCHAIN_PREFIX \
+ && ./strip-llvm.sh $TOOLCHAIN_PREFIX \
+ && ./install-wrappers.sh $TOOLCHAIN_PREFIX \
+ && ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=ucrt \
+ && ./build-compiler-rt.sh $TOOLCHAIN_PREFIX \
+ && ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX \
+ && ./build-libcxx.sh $TOOLCHAIN_PREFIX \
+ && ./build-compiler-rt.sh $TOOLCHAIN_PREFIX --build-sanitizers \
+ && ./build-libssp.sh $TOOLCHAIN_PREFIX --build-sanitizers \
+ && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
-RUN echo "====== INSTALL M.CSS ======" \
- && mkdir /opt/m.css && cd /opt/m.css \
- && git clone https://github.com/mosra/m.css && cd m.css \
- && mv documentation ../bin \
- && mv css ../css \
- && mv plugins ../plugins \
- && mv COPYING ../ \
- && cd .. && rm -rf m.css bin/test*
-ENV PATH=/opt/m.css/bin:$PATH
+RUN echo "====== COMPILE MSIX-PACKAGING ======" \
+ && cd /usr/src \
+ && git clone https://github.com/microsoft/msix-packaging.git && cd msix-packaging \
+ && ./makelinux.sh --pack \
+ && cp .vs/bin/makemsix /usr/local/bin/ \
+ && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
-RUN echo "====== UPDATE NPM ======" \
- && npm -g config set user root \
- && npm -g install npm \
- && rm -rf /tmp/* /var/tmp/*
-
-RUN echo "====== INSTALL MOXYGEN ======" \
- && npm -g install moxygen \
- && rm -rf /tmp/* /var/tmp/*
+ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH

@@ -1,0 +1,30 @@
+FROM nephatrine/nxbuilder:mingw
+LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
+
+USER guardian
+ENV WINEARCH=win64 WINEPREFIX=/home/guardian/.wine64
+ARG WINEDLLOVERRIDES="mscoree,mshtml="
+RUN echo "====== CONFIGURE WINE (USER) ======" \
+ && xvfb-run wine64 wineboot --init \
+ && while pgrep wineserver >/dev/null; do sleep 5; done \
+ && xvfb-run winetricks -q dotnet40 dotnet_verifier hhw \
+ && while pgrep wineserver >/dev/null; do sleep 5; done \
+ && rm -rf /tmp/* /var/tmp/*
+USER root
+
+RUN echo "====== DOWNLOAD WiX ======" \
+ && mkdir /opt/wix && cd /opt/wix \
+ && curl -SL "https://wixtoolset.org/downloads/v3.9.1006.0/wix39-binaries.zip" -o wix39-binaries.zip \
+ && unzip wix39-binaries.zip \
+ && chmod +x *.exe \
+ && rm -f wix39-binaries.zip
+
+RUN echo "====== DOWNLOAD MSVC ======" \
+ && mkdir /opt/msvc \
+ && cd /usr/src \
+ && git clone https://github.com/mstorsjo/msvc-wine.git && cd msvc-wine \
+ && ./vsdownload.py --accept-license --dest /opt/msvc \
+ && ./install.sh /opt/msvc \
+ && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
+
+ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
