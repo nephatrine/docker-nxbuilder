@@ -16,6 +16,7 @@ steps:
   - HOME=/mnt/config/home docker push nephatrine/nxbuilder:mingw
   - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:mingw
 - name: nodist
+  failure: ignore
   commands:
   - docker build --pull --squash -t pdr.nephatrine.net/nephatrine/nxbuilder:nodist . -f Dockerfile-nodist
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:nodist
