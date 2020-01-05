@@ -5,6 +5,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && dpkg --add-architecture i386 \
  && apt-get update -q \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
+   automake autopoint gettext libtool vim yasm \
    cabextract gcab unzip \
    msitools nsis wixl \
    osslsigncode pesign \
@@ -26,7 +27,7 @@ RUN echo "====== COMPILE LLVM-MINGW ======" \
  && ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX \
  && ./build-libcxx.sh $TOOLCHAIN_PREFIX \
  && ./build-compiler-rt.sh $TOOLCHAIN_PREFIX --build-sanitizers \
- && ./build-libssp.sh $TOOLCHAIN_PREFIX --build-sanitizers \
+ && ./build-libssp.sh $TOOLCHAIN_PREFIX \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
 RUN echo "====== COMPILE MSIX-PACKAGING ======" \
