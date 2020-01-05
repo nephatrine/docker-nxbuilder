@@ -23,6 +23,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
    python-jinja2 python-pygments python-simplejson python-six python-yaml \
    python3-jinja2 python3-pygments python3-simplejson python3-six python3-yaml \
    subversion \
+   sudo \
    valgrind \
    zlib1g-dev \
  && apt-get clean \
