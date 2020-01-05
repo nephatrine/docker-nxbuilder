@@ -5,13 +5,11 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && dpkg --add-architecture i386 \
  && apt-get update -q \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
-   cabextract gcab \
+   cabextract gcab unzip \
    msitools nsis wixl \
    osslsigncode pesign \
-   unzip \
-   winbind \
+   winbind xvfb \
    wine-development wine-binfmt winetricks \
-   xvfb \
  && apt-get clean \
  && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 

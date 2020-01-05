@@ -6,9 +6,9 @@ ENV WINEARCH=win64 WINEPREFIX=/home/guardian/.wine64
 ARG WINEDLLOVERRIDES="mscoree,mshtml="
 RUN echo "====== CONFIGURE WINE (USER) ======" \
  && xvfb-run wine64 wineboot --init \
- && while pgrep wineserver >/dev/null; do sleep 5; done \
+ && while pgrep wineserver >/dev/null; do sleep 1; done \
  && xvfb-run winetricks -q dotnet40 dotnet_verifier hhw \
- && while pgrep wineserver >/dev/null; do sleep 5; done \
+ && while pgrep wineserver >/dev/null; do sleep 1; done \
  && rm -rf /tmp/* /var/tmp/*
 USER root
 

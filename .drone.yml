@@ -10,7 +10,7 @@ platform:
 steps:
 - name: build
   commands:
-  - docker build --pull --squash -t pdr.nephatrine.net/nephatrine/nxbuilder:mingw .
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:mingw .
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:mingw
   - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:mingw nephatrine/nxbuilder:mingw
   - HOME=/mnt/config/home docker push nephatrine/nxbuilder:mingw
