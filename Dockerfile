@@ -7,6 +7,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
    automake autopoint gettext libtool vim yasm \
    cabextract gcab unzip \
+   mingw-w64 mingw-w64-tools \
    msitools nsis wixl \
    osslsigncode pesign \
    winbind xvfb \
