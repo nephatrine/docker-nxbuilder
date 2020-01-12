@@ -8,12 +8,11 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
    build-essential cmake gdb global ninja-build valgrind \
    ca-certificates curl wget \
-   clang clang-format clang-tidy clang-tools libc++-dev libc++abi-dev libclang-dev lld lldb \
+   clang clang-format clang-tidy clang-tools libc++-dev libc++abi-dev libclang-dev lld lldb llvm \
    doxygen-latex dia graphviz mscgen \
    git git-lfs git-remote-hg git-svn mercurial mercurial-git subversion \
    liblzma-dev libomp-dev libxml2-dev zlib1g-dev \
    lsb-release sudo \
-   mingw-w64 mingw-w64-tools \
    nodejs npm \
    python-jinja2 python-pygments python-simplejson python-six python-yaml \
    python3-jinja2 python3-pygments python3-simplejson python3-six python3-yaml \
