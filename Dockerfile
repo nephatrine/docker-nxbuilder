@@ -33,13 +33,6 @@ RUN echo "====== PREPARE FREEBSD 11 ======" \
  && bsdtar -xf /usr/src/base.txz ./lib/ ./usr/lib/ ./usr/include/ \
  && find . -xtype l | xargs ls -l | grep ' /lib/' | awk '{print "ln -sf /usr/i386-freebsd-previous" $11 " " $9}' | /bin/sh \
  && sed "s~__ARCHITECTURE__~i386~g" /opt/nxb/FreeBSD_PREVIOUS.cmake > /usr/i386-freebsd-previous/toolchain.cmake \
- && rm -f /usr/src/base.txz \
- && cd /usr/src \
- && wget https://download.freebsd.org/ftp/releases/powerpc/powerpc64/${FREEBSD_VERSION}-RELEASE/base.txz \
- && mkdir /usr/powerpc64-freebsd-previous && cd /usr/powerpc64-freebsd-previous \
- && bsdtar -xf /usr/src/base.txz ./lib/ ./usr/lib/ ./usr/include/ \
- && find . -xtype l | xargs ls -l | grep ' /lib/' | awk '{print "ln -sf /usr/powerpc64-freebsd-previous" $11 " " $9}' | /bin/sh \
- && sed "s~__ARCHITECTURE__~powerpc64~g" /opt/nxb/FreeBSD_PREVIOUS.cmake > /usr/powerpc64-freebsd-previous/toolchain.cmake \
  && rm -f /usr/src/base.txz
 
 ARG FREEBSD_VERSION=12.1
@@ -65,11 +58,4 @@ RUN echo "====== PREPARE FREEBSD 12 ======" \
  && bsdtar -xf /usr/src/base.txz ./lib/ ./usr/lib/ ./usr/include/ \
  && find . -xtype l | xargs ls -l | grep ' /lib/' | awk '{print "ln -sf /usr/i386-freebsd-current" $11 " " $9}' | /bin/sh \
  && sed "s~__ARCHITECTURE__~i386~g" /opt/nxb/FreeBSD_CURRENT.cmake > /usr/i386-freebsd-current/toolchain.cmake \
- && rm -f /usr/src/base.txz \
- && cd /usr/src \
- && wget https://download.freebsd.org/ftp/releases/powerpc/powerpc64/${FREEBSD_VERSION}-RELEASE/base.txz \
- && mkdir /usr/powerpc64-freebsd-current && cd /usr/powerpc64-freebsd-current \
- && bsdtar -xf /usr/src/base.txz ./lib/ ./usr/lib/ ./usr/include/ \
- && find . -xtype l | xargs ls -l | grep ' /lib/' | awk '{print "ln -sf /usr/powerpc64-freebsd-current" $11 " " $9}' | /bin/sh \
- && sed "s~__ARCHITECTURE__~powerpc64~g" /opt/nxb/FreeBSD_CURRENT.cmake > /usr/powerpc64-freebsd-current/toolchain.cmake \
  && rm -f /usr/src/base.txz
