@@ -15,12 +15,12 @@ RUN echo "====== DOWNLOAD FREEBSD ======" \
  && bsdtar -xf base.txz ./lib/ ./usr/lib/ ./usr/include/ \
  && find . -xtype l | xargs ls -l | grep ' /lib/' | awk '{print "ln -sf /x86_64-freebsd" $11 " " $9}' | /bin/sh \
  && rm -f base.txz \
- && mkdir /aarch64-freebsd && cd /x86_64-freebsd \
+ && mkdir /aarch64-freebsd && cd /aarch64-freebsd \
  && wget https://download.freebsd.org/ftp/releases/arm64/aarch64/${FREEBSD_VERSION}-RELEASE/base.txz \
  && bsdtar -xf base.txz ./lib/ ./usr/lib/ ./usr/include/ \
  && find . -xtype l | xargs ls -l | grep ' /lib/' | awk '{print "ln -sf /aarch64-freebsd" $11 " " $9}' | /bin/sh \
  && rm -f base.txz \
- && mkdir /i386-freebsd && cd /x86_64-freebsd \
+ && mkdir /i386-freebsd && cd /i386-freebsd \
  && wget https://download.freebsd.org/ftp/releases/i386/i386/${FREEBSD_VERSION}-RELEASE/base.txz \
  && bsdtar -xf base.txz ./lib/ ./usr/lib/ ./usr/include/ \
  && find . -xtype l | xargs ls -l | grep ' /lib/' | awk '{print "ln -sf /i386-freebsd" $11 " " $9}' | /bin/sh \
