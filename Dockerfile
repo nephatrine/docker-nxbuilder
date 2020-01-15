@@ -15,7 +15,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get clean \
  && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
-ARG TOOLCHAIN_PREFIX=/opt/llvm-mingw
+ARG TOOLCHAIN_PREFIX=/llvm-mingw
 ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
 RUN echo "====== COMPILE LLVM-MINGW ======" \
  && cd /usr/src \
@@ -38,4 +38,4 @@ RUN echo "====== COMPILE MSIX-PACKAGING ======" \
  && cp .vs/bin/makemsix /usr/local/bin/ \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
-ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
+COPY override /
