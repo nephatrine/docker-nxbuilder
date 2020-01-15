@@ -1,12 +1,12 @@
 set(CMAKE_SYSTEM_NAME FreeBSD)
-set(CMAKE_SYSTEM_PROCESSOR __ARCHITECTURE__)
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
 
-set(CMAKE_SYSROOT "/${CMAKE_SYSTEM_PROCESSOR}-freebsd-previous")
+set(CMAKE_SYSROOT "/aarch64-freebsd")
 
 set(CMAKE_C_COMPILER clang)
-set(CMAKE_C_COMPILER_TARGET ${CMAKE_SYSTEM_PROCESSOR}-unknown-freebsdVERSION)
+set(CMAKE_C_COMPILER_TARGET aarch64-unknown-freebsdVERSION)
 set(CMAKE_CXX_COMPILER clang++)
-set(CMAKE_CXX_COMPILER_TARGET ${CMAKE_SYSTEM_PROCESSOR}-unknown-freebsdVERSION)
+set(CMAKE_CXX_COMPILER_TARGET aarch64-unknown-freebsdVERSION)
 
 find_program(CMAKE_AR llvm-ar)
 find_program(CMAKE_RANLIB llvm-ranlib)
