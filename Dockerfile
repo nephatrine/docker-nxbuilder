@@ -31,26 +31,26 @@ RUN echo "====== DOWNLOAD MSVC ======" \
  && cp -nrs /msvc/kits/10/include/${SDKVER}/shared/* /msvc/include/ \
  && cp -nrs /msvc/kits/10/include/${SDKVER}/um/* /msvc/include/ \
  && cp -nrs /msvc/kits/10/include/${SDKVER}/cppwinrt/* /msvc/include/ \
- && mv /msvc/bin/x64 /msvc/x64/bin \
- && mkdir /msvc/x64/lib \
+ && mkdir -p /msvc/x64/lib \
  && cp -nrs /msvc/vc/tools/msvc/${MSVCVER}/lib/x64/* /msvc/x64/lib/ \
  && cp -nrs /msvc/kits/10/lib/${SDKVER}/ucrt/x64/* /msvc/x64/lib/ \
  && cp -nrs /msvc/kits/10/lib/${SDKVER}/um/x64/* /msvc/x64/lib/ \
- && mv /msvc/bin/x86 /msvc/x86/bin \
- && mkdir /msvc/x86/lib \
+ && mv /msvc/bin/x64 /msvc/x64/bin \
+ && mkdir -p /msvc/x86/lib \
  && cp -nrs /msvc/vc/tools/msvc/${MSVCVER}/lib/x86/* /msvc/x86/lib/ \
  && cp -nrs /msvc/kits/10/lib/${SDKVER}/ucrt/x86/* /msvc/x86/lib/ \
  && cp -nrs /msvc/kits/10/lib/${SDKVER}/um/x86/* /msvc/x86/lib/ \
- && mv /msvc/bin/arm /msvc/arm/bin \
- && mkdir /msvc/arm/lib \
+ && mv /msvc/bin/x86 /msvc/x86/bin \
+ && mkdir -p /msvc/arm/lib \
  && cp -nrs /msvc/vc/tools/msvc/${MSVCVER}/lib/arm/* /msvc/arm/lib/ \
  && cp -nrs /msvc/kits/10/lib/${SDKVER}/ucrt/arm/* /msvc/arm/lib/ \
  && cp -nrs /msvc/kits/10/lib/${SDKVER}/um/arm/* /msvc/arm/lib/ \
- && mv /msvc/bin/arm64 /msvc/arm64/bin \
- && mkdir /msvc/arm64/lib \
+ && mv /msvc/bin/arm /msvc/arm/bin \
+ && mkdir -p /msvc/arm64/lib \
  && cp -nrs /msvc/vc/tools/msvc/${MSVCVER}/lib/arm64/* /msvc/arm64/lib/ \
  && cp -nrs /msvc/kits/10/lib/${SDKVER}/ucrt/arm64/* /msvc/arm64/lib/ \
  && cp -nrs /msvc/kits/10/lib/${SDKVER}/um/arm64/* /msvc/arm64/lib/ \
+ && mv /msvc/bin/arm64 /msvc/arm64/bin \
  && cd /usr/src && rm -rf /msvc/bin /tmp/* /usr/src/* /var/tmp/*
 
  COPY override /
