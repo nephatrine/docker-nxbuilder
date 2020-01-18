@@ -10,15 +10,7 @@ platform:
 steps:
 - name: build
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:mingw .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:mingw
-  - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:mingw nephatrine/nxbuilder:mingw
-  - HOME=/mnt/config/home docker push nephatrine/nxbuilder:mingw
-  - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:mingw
-- name: nodist
-  failure: ignore
-  commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:nodist . -f Dockerfile-nodist
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:nodist .
   - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:nodist
 
 ---
