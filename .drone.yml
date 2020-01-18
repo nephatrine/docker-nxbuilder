@@ -41,6 +41,7 @@ steps:
     repositories:
       - nephatrine/docker-nxbuilder@linux
       - nephatrine/docker-nxbuilder@mingw
+      - nephatrine/docker-nxbuilder@unix
 
 depends_on:
 - default
