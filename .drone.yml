@@ -15,11 +15,6 @@ steps:
   - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:mingw nephatrine/nxbuilder:mingw
   - HOME=/mnt/config/home docker push nephatrine/nxbuilder:mingw
   - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:mingw
-- name: nodist
-  failure: ignore
-  commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:nodist . -f Dockerfile-nodist
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:nodist
 
 ---
 kind: pipeline
@@ -36,6 +31,15 @@ steps:
       from_secret: webhook-id
     webhook_token:
       from_secret: webhook-token
+- name: trigger
+  image: plugins/downstream
+  settings:
+    server: https://ci.nephatrine.net
+    token:
+      from_secret: drone-auth
+    fork: false
+    repositories:
+      - nephatrine/docker-nxbuilder@msvc
 
 depends_on:
 - default
