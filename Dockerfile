@@ -15,19 +15,23 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get clean \
  && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
+COPY clang-target-wrapper.patch /usr/src/clang-target-wrapper.patch
 ARG TOOLCHAIN_PREFIX=/llvm-mingw
-ARG TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64"
 RUN echo "====== COMPILE LLVM-MINGW ======" \
  && cd /usr/src \
  && git clone https://github.com/mstorsjo/llvm-mingw.git && cd llvm-mingw \
- && ./build-llvm.sh $TOOLCHAIN_PREFIX \
- && ./strip-llvm.sh $TOOLCHAIN_PREFIX \
+ && git checkout llvm-9.0 \
+ && patch -u wrappers/clang-target-wrapper.sh /usr/src/clang-target-wrapper.patch \
+ && mkdir -p $TOOLCHAIN_PREFIX/bin && cp -nrs /usr/lib/llvm-9/bin/* $TOOLCHAIN_PREFIX/bin/ \
+ && CHECKOUT_ONLY=1 ./build-llvm.sh $TOOLCHAIN_PREFIX \
  && ./install-wrappers.sh $TOOLCHAIN_PREFIX \
  && ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=ucrt \
  && ./build-compiler-rt.sh $TOOLCHAIN_PREFIX \
+ && cp -nrs $TOOLCHAIN_PREFIX/lib/clang/* /usr/lib/llvm-9/lib/clang/ \
  && ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX \
  && ./build-libcxx.sh $TOOLCHAIN_PREFIX \
  && ./build-compiler-rt.sh $TOOLCHAIN_PREFIX --build-sanitizers \
+ && cp -nrs $TOOLCHAIN_PREFIX/lib/clang/* /usr/lib/llvm-9/lib/clang/ \
  && ./build-libssp.sh $TOOLCHAIN_PREFIX \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
