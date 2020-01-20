@@ -32,6 +32,7 @@ endif()
 
 set(CMAKE_C_LIBRARY_ARCHITECTURE ${winarch})
 set(CMAKE_CXX_LIBRARY_ARCHITECTURE ${winarch})
+set(CMAKE_VS_PLATFORM_NAME ${winarch})
 
 list(APPEND CMAKE_FIND_ROOT_PATH "/msvc" "/msvc/${winarch}" "/msvc/vc/tools/msvc/$ENV{MSVCVER}" "/msvc/kits/10")
 include_directories(SYSTEM "/msvc/vc/tools/msvc/$ENV{MSVCVER}/include" "/msvc/kits/10/include/$ENV{SDKVER}/ucrt" "/msvc/kits/10/include/$ENV{SDKVER}/shared" "/msvc/kits/10/include/$ENV{SDKVER}/um" "/msvc/kits/10/include/$ENV{SDKVER}/cppwinrt")
