@@ -37,11 +37,11 @@ list(APPEND CMAKE_FIND_ROOT_PATH "/msvc" "/msvc/${winarch}" "/msvc/vc/tools/msvc
 include_directories(SYSTEM "/msvc/vc/tools/msvc/$ENV{MSVCVER}/include" "/msvc/kits/10/include/$ENV{SDKVER}/ucrt" "/msvc/kits/10/include/$ENV{SDKVER}/shared" "/msvc/kits/10/include/$ENV{SDKVER}/um" "/msvc/kits/10/include/$ENV{SDKVER}/cppwinrt")
 link_directories("/msvc/vc/tools/msvc/$ENV{MSVCVER}/lib/${winarch}" "/msvc/kits/10/lib/$ENV{SDKVER}/ucrt/${winarch}" "/msvc/kits/10/lib/$ENV{SDKVER}/um/${winarch}")
 
-set(CMAKE_EXE_LINKER_FLAGS_INIT "/manifest:no")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "/manifest:no")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "/manifest:no")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "/manifest:no /machine:arm")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "/manifest:no /machine:arm")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "/manifest:no /machine:arm")
 
-set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH)
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
