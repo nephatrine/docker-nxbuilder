@@ -47,3 +47,10 @@ RUN echo "====== UPDATE NPM ======" \
 RUN echo "====== INSTALL MOXYGEN ======" \
  && npm -g install moxygen \
  && rm -rf /tmp/* /var/tmp/*
+
+COPY override /
+RUN echo "====== TEST BUILD ======" \
+ && cd /usr/src \
+ && cmake -G "Ninja" /opt/nxb/src/hello \
+ && ninja && ./hello \
+ && rm -rf /usr/src/*
