@@ -33,15 +33,15 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && git clone --single-branch --branch release_90 https://git.llvm.org/git/compiler-rt.git \
  && mkdir compiler-rt/build && cd compiler-rt/build \
  && cp -nrv ../include/sanitizer /usr/lib/clang/9.0.0/include/ \
- && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/foreign/FreeBSD-AMD64/toolchain.cmake -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON .. \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/foreign/FreeBSD-AMD64/toolchain.cmake .. \
  && ninja \
  && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so /usr/lib/clang/9.0.0/lib/freebsd/ \
  && rm -rf * \
- && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/foreign/FreeBSD-ARM64/toolchain.cmake -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF .. \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/foreign/FreeBSD-ARM64/toolchain.cmake -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF .. \
  && ninja \
  && cp -nv ./lib/freebsd/*.a /usr/lib/clang/9.0.0/lib/freebsd/ \
  && rm -rf * \
- && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/foreign/FreeBSD-IA32/toolchain.cmake -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON .. \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/foreign/FreeBSD-IA32/toolchain.cmake .. \
  && ninja \
  && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so /usr/lib/clang/9.0.0/lib/freebsd/ \
  && cd /usr/src && rm -rf /usr/src/*
