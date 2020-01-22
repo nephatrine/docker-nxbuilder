@@ -3,7 +3,6 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ARG SDK_VERSION=10.11
 ARG TARGET_DIR=/usr/local
-ARG TARGET_DIR_SDK=/foreign
 RUN echo "====== DOWNLOAD OSX SDK ======" \
  && cd /usr/src \
  && git clone https://github.com/tpoechtrager/osxcross.git && cd osxcross \
@@ -13,8 +12,22 @@ RUN echo "====== DOWNLOAD OSX SDK ======" \
  && cp -nrv /usr/src/osxcross/build/compiler-rt/include/sanitizer /usr/lib/llvm-9/lib/clang/9.0.0/include \
  && cp -v /usr/src/osxcross/build/compiler-rt/build/lib/darwin/*.a /usr/lib/llvm-9/lib/clang/9.0.0/lib/darwin \
  && cp -v /usr/src/osxcross/build/compiler-rt/build/lib/darwin/*.dylib /usr/lib/llvm-9/lib/clang/9.0.0/lib/darwin \
+ && mv ${TARGET_DIR}/SDK /foreign && mkdir ${TARGET_DIR}/SDK \
+ && ln -s /foreign/MacOSX${SDK_VERSION}.sdk ${TARGET_DIR}/SDK/MacOSX${SDK_VERSION}.sdk \
  && cd /usr/src && rm -rf /usr/src/*
 
-ENV OSXCROSS_SDK=/foreign/MacOSX10.11.sdk
-ENV OSXCROSS_TARGET_DIR=/usr/local
 COPY override /
+RUN echo "====== TEST BUILD ======" \
+ && cd /usr/src \
+ && mkdir build-x86_64 && cd build-x86_64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/foreign/MacOSX${SDK_VERSION}.sdk/x86_64-toolchain.cmake /opt/nxb/src/hello \
+ && ninja && file ./hello \
+ && cd /usr/src \
+ && mkdir build-x86_64h && cd build-x86_64h \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/foreign/MacOSX${SDK_VERSION}.sdk/x86_64h-toolchain.cmake /opt/nxb/src/hello \
+ && ninja && file ./hello \
+ && cd /usr/src \
+ && mkdir build-i386 && cd build-i386 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/foreign/MacOSX${SDK_VERSION}.sdk/i386-toolchain.cmake /opt/nxb/src/hello \
+ && ninja && file ./hello \
+ && cd /usr/src && rm -rf /usr/src/*
