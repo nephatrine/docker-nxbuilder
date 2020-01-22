@@ -39,7 +39,7 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && rm -rf * \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/foreign/FreeBSD-ARM64/toolchain.cmake -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF .. \
  && ninja \
- && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so /usr/lib/clang/9.0.0/lib/freebsd/ \
+ && cp -nv ./lib/freebsd/*.a /usr/lib/clang/9.0.0/lib/freebsd/ \
  && rm -rf * \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/foreign/FreeBSD-IA32/toolchain.cmake -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON .. \
  && ninja \
