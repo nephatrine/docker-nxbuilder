@@ -18,6 +18,10 @@ RUN echo "====== TEST BUILD ======" \
  && CC=gcc CXX=g++ cmake -G "Ninja" /opt/nxb/src/hello \
  && ninja && ./hello \
  && cd /usr/src \
+ && mkdir build-x86_64 && cd build-x86_64 \
+ && CC=clang CXX=clang++ cmake -G "Ninja" /opt/nxb/src/hello \
+ && ninja && ./hello \
+ && cd /usr/src \
  && mkdir build-aarch64 && cd build-aarch64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/aarch64-linux-gnu/toolchain.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
