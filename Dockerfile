@@ -18,7 +18,7 @@ RUN echo "====== TEST BUILD ======" \
  && CC=gcc CXX=g++ cmake -G "Ninja" /opt/nxb/src/hello \
  && ninja && ./hello \
  && cd /usr/src \
- && mkdir build-x86_64 && cd build-x86_64 \
+ && mkdir build-clang && cd build-clang \
  && CC=clang CXX=clang++ cmake -G "Ninja" /opt/nxb/src/hello \
  && ninja && ./hello \
  && cd /usr/src \
