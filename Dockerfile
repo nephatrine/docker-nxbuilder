@@ -35,6 +35,6 @@ RUN echo "====== TEST BUILD ======" \
  && ninja && file ./hello \
  && cd /usr/src \
  && mkdir build-arm && cd build-arm \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/arm-linux-gnuabihf/toolchain.cmake /opt/nxb/src/hello \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/arm-linux-gnueabihf/toolchain.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
  && cd /usr/src && rm -rf /usr/src/*
