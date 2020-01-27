@@ -56,3 +56,29 @@ RUN echo "====== COMPILE LLVM-MINGW ======" \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
 COPY override /
+RUN echo "====== TEST BUILD ======" \
+ && cd /usr/src \
+ && mkdir build-x86_64 && cd build-x86_64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/x86_64-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && WINEPATH=/usr/lib/gcc/x86_64-w64-mingw32/9.2-win32 wine ./hello.exe \
+ && cd /usr/src \
+ && mkdir build-i686 && cd build-i686 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/i686-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && WINEPATH=/usr/lib/gcc/i686-w64-mingw32/9.2-win32 wine ./hello.exe \
+ && cd /usr/src \
+ && mkdir build-x86_64_llvm && cd build-x86_64_llvm \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/llvm-mingw/x86_64-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && WINEPATH=/opt/llvm-mingw/x86_64-w64-mingw32/bin wine ./hello.exe \
+ && cd /usr/src \
+ && mkdir build-i686_llvm && cd build-i686_llvm \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/llvm-mingw/i686-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && WINEPATH=/opt/llvm-mingw/i686-w64-mingw32/bin wine ./hello.exe \
+ && cd /usr/src \
+ && mkdir build-aarch64 && cd build-aarch64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/llvm-mingw/aarch64-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && file ./hello.exe \
+ && cd /usr/src \
+ && mkdir build-armv7 && cd build-armv7 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/llvm-mingw/armv7-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && file ./hello.exe \
+ && cd /usr/src && rm -rf /usr/src/*
