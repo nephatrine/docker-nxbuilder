@@ -31,6 +31,15 @@ steps:
       from_secret: webhook-id
     webhook_token:
       from_secret: webhook-token
+- name: trigger
+  image: plugins/downstream
+  settings:
+    server: https://ci.nephatrine.net
+    token:
+      from_secret: drone-auth
+    fork: false
+    repositories:
+      - nephatrine/docker-nxbuilder@msvc
 
 depends_on:
 - default
