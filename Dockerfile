@@ -38,8 +38,8 @@ RUN echo "====== TEST BUILD ======" \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/s390x-linux-gnu/toolchain.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
  && cd /usr/src \
- && mkdir build-i386 && cd build-i386 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/i386-linux-gnu/toolchain.cmake /opt/nxb/src/hello \
+ && mkdir build-i686 && cd build-i686 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/i686-linux-gnu/toolchain.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
  && cd /usr/src \
  && mkdir build-arm && cd build-arm \
