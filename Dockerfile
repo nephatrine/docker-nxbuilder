@@ -64,3 +64,17 @@ RUN echo "====== CREATE SYMLINKS ======" \
  && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/bin/${SDKVER}/arm/ucrt/*.dll ${TOOLCHAIN_PREFIX}/armv7-windows-msvc/bin/
 
 COPY override /
+RUN echo "====== TEST BUILD ======" \
+ && cd /usr/src \
+ && mkdir build-x86_64 && cd build-x86_64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/x86_64-windows-msvc/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && WINEPATH=/opt/msvc-wine/x86_64-windows-msvc/bin wine ./hello.exe \
+ && cd /usr/src \
+ && mkdir build-i686 && cd build-i686 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/i686-windows-msvc/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && WINEPATH=/opt/msvc-wine/i686-windows-msvc/bin wine ./hello.exe \
+ && cd /usr/src \
+ && mkdir build-aarch64 && cd build-aarch64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/aarch64-windows-msvc/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && file ./hello.exe \
+ && cd /usr/src && rm -rf /usr/src/*
