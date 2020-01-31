@@ -1,7 +1,7 @@
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
-set(triplet "${CMAKE_SYSTEM_PROCESSOR}-linux-gnuabihf")
+set(triplet "${CMAKE_SYSTEM_PROCESSOR}-linux-gnueabihf")
 
 list(APPEND CMAKE_PREFIX_PATH "/usr/${triplet}")
 
