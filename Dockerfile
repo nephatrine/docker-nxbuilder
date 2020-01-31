@@ -1,7 +1,7 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ARG SDK_VERSION=10.11
+ENV SDK_VERSION=10.11
 ARG TARGET_DIR=/usr/local
 RUN echo "====== DOWNLOAD OSX SDK ======" \
  && mkdir /usr/lib/clang/9.0.0/lib/darwin \
