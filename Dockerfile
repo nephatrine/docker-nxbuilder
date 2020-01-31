@@ -64,6 +64,24 @@ RUN echo "====== CREATE SYMLINKS ======" \
  && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/bin/${SDKVER}/arm/ucrt/*.dll ${TOOLCHAIN_PREFIX}/armv7-windows-msvc/bin/
 
 COPY override /
+RUN echo "====== BUILD COMPILER-RT ======" \
+ && cd /usr/src \
+ && git clone --single-branch --branch release_90 https://git.llvm.org/git/compiler-rt.git \
+ && mkdir compiler-rt/build && cd compiler-rt/build \
+ && cp -nrv ../include/sanitizer /usr/lib/clang/9.0.0/include/ \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/x86_64-windows-msvc/toolchain.cmake .. \
+ && ninja \
+ && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/9.0.0/lib/windows/ \
+ && rm -rf * \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/aarch64-windows-msvc/toolchain.cmake -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF .. \
+ && ninja \
+ && cp -nv ./lib/windows/*.lib /usr/lib/clang/9.0.0/lib/windows/ \
+ && rm -rf * \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/i686-windows-msvc/toolchain.cmake .. \
+ && ninja \
+ && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/9.0.0/lib/windows/ \
+ && cd /usr/src && rm -rf /usr/src/*
+
 RUN echo "====== TEST BUILD ======" \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
