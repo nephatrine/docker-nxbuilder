@@ -5,7 +5,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get update -q \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
    alien debhelper \
-   crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-ppc64el crossbuild-essential-s390x \
+   crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-i386 crossbuild-essential-ppc64el crossbuild-essential-s390x \
    git-buildpackage git-buildpackage-rpm mercurial-buildpackage svn-buildpackage \
    gcc-riscv64-linux-gnu g++-riscv64-linux-gnu \
  && apt-get clean \
@@ -36,6 +36,10 @@ RUN echo "====== TEST BUILD ======" \
  && cd /usr/src \
  && mkdir build-s390x && cd build-s390x \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/s390x-linux-gnu/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && file ./hello \
+ && cd /usr/src \
+ && mkdir build-i386 && cd build-i386 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/i386-linux-gnu/toolchain.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
  && cd /usr/src \
  && mkdir build-arm && cd build-arm \
