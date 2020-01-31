@@ -28,7 +28,8 @@ RUN echo "====== DOWNLOAD MSVC ======" \
  && mv ${TOOLCHAIN_PREFIX}/bin/arm64 ${TOOLCHAIN_PREFIX}/aarch64-windows-msvc/bin \
  && mkdir ${TOOLCHAIN_PREFIX}/armv7-windows-msvc \
  && mv ${TOOLCHAIN_PREFIX}/bin/arm ${TOOLCHAIN_PREFIX}/armv7-windows-msvc/bin \
- && cd /usr/src && rm -rf ${TOOLCHAIN_PREFIX}/bin /tmp/* /usr/src/* /var/tmp/*
+ && rm -rf ${TOOLCHAIN_PREFIX}/DIA\ SDK ${TOOLCHAIN_PREFIX}/bin \
+ && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
 ENV SDKVER="10.0.18362.0" MSVCVER="14.24.28314"
 RUN echo "====== CREATE SYMLINKS ======" \
