@@ -22,6 +22,7 @@ find_program(CMAKE_ADDR2LINE NAMES llvm-addr2line)
 
 set(CMAKE_C_COMPILER_TARGET ${triplet})
 set(CMAKE_CXX_COMPILER_TARGET ${triplet})
+set(CMAKE_CXX_FLAGS_INIT "-stdlib=libc++")
 
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld")
 set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld")
