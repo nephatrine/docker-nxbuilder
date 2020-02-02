@@ -34,10 +34,10 @@ RUN echo "====== BUILD COMPILER-RT ======" \
 RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-x86_64/toolchain.cmake /opt/nxb/src/hello \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-x86_64.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
  && cd /usr/src \
  && mkdir build-aarch64 && cd build-aarch64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-aarch64/toolchain.cmake /opt/nxb/src/hello \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-aarch64.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
  && cd /usr/src && rm -rf /usr/src/*
