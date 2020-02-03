@@ -71,7 +71,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/x86_64-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
- && ninja && WINEPATH=${WINEPREFIX}/drive_c/mingw/bin wine64 ./hello.exe \
+ && ninja && WINEPATH=${WINEPREFIX}/drive_c/x86_64-w64-mingw32/bin/gcc wine64 ./hello.exe \
  && cd /usr/src \
  && mkdir build-x86_64_llvm && cd build-x86_64_llvm \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-x86_64.cmake /opt/nxb/src/hello \
