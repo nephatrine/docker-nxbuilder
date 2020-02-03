@@ -3,96 +3,78 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ARG WINEDLLOVERRIDES="mscoree,mshtml="
 RUN echo "====== CONFIGURE WINE (USER) ======" \
- && xvfb-run winetricks -q dotnet40 dotnet_verifier hhw vcrun2015 \
+ && xvfb-run winetricks -q hhw vcrun2015 \
  && while pgrep wineserver >/dev/null; do sleep 1; done \
  && rm -rf /tmp/* /var/tmp/*
 
+ENV WIX_DIR="${WINEPREFIX}/drive_c/Program Files (x86)/WiX Toolset v3.9/"
 RUN echo "====== DOWNLOAD WiX ======" \
- && mkdir /opt/wix && cd /opt/wix \
+ && mkdir -p "${WIX_DIR}/bin" && cd "${WIX_DIR}/bin" \
  && curl -SL "https://wixtoolset.org/downloads/v3.9.1006.0/wix39-binaries.zip" -o wix39-binaries.zip \
- && unzip wix39-binaries.zip \
- && chmod +x *.exe \
+ && unzip wix39-binaries.zip && chmod +x *.exe \
+ && mv doc ../doc && mv sdk ../SDK \
  && rm -f wix39-binaries.zip
 
-ARG TOOLCHAIN_PREFIX="/opt/msvc-wine"
+ENV VSINSTALLDIR="${WINEPREFIX}/drive_c/Program Files (x86)/Microsoft Visual Studio/2019/Community/"
+
+ENV VCINSTALLDIR="${VSINSTALLDIR}VC/" VCToolsVersion="14.24.28314" VCRedistVersion="14.24.28127"
+ENV VCToolsInstallDir="${VCINSTALLDIR}Tools/MSVC/${VCToolsVersion}/" VCToolsRedistDir="${VCINSTALLDIR}Redist/MSVC/${VCRedistVersion}/"
+
+ENV UniversalCRTSdkDir="${WINEPREFIX}/drive_c/Program Files (x86)/Windows Kits/10/" UCRTVersion="10.0.18362.0"
+ENV WindowsSdkDir="${UniversalCRTSdkDir}" WindowsSDKVersion="${UCRTVersion}/" WindowsSDKLibVersion="${UCRTVersion}/"
+ENV WindowsSdkBinPath="${WindowsSdkDir}bin/" WindowsSdkVerBinPath="${WindowsSdkDir}bin/${WindowsSDKVersion}"
+
+ARG TOOLCHAIN_PREFIX="/usr/src/staging"
 RUN echo "====== DOWNLOAD MSVC ======" \
  && mkdir ${TOOLCHAIN_PREFIX} && cd /usr/src \
  && git clone https://github.com/mstorsjo/msvc-wine.git && cd msvc-wine \
  && ./vsdownload.py --accept-license --dest ${TOOLCHAIN_PREFIX} \
- && ./install.sh ${TOOLCHAIN_PREFIX} \
- && mkdir ${TOOLCHAIN_PREFIX}/x86_64-windows-msvc \
- && mv ${TOOLCHAIN_PREFIX}/bin/x64 ${TOOLCHAIN_PREFIX}/x86_64-windows-msvc/bin \
- && mkdir ${TOOLCHAIN_PREFIX}/i686-windows-msvc \
- && mv ${TOOLCHAIN_PREFIX}/bin/x86 ${TOOLCHAIN_PREFIX}/i686-windows-msvc/bin \
- && mkdir ${TOOLCHAIN_PREFIX}/aarch64-windows-msvc \
- && mv ${TOOLCHAIN_PREFIX}/bin/arm64 ${TOOLCHAIN_PREFIX}/aarch64-windows-msvc/bin \
- && mkdir ${TOOLCHAIN_PREFIX}/armv7-windows-msvc \
- && mv ${TOOLCHAIN_PREFIX}/bin/arm ${TOOLCHAIN_PREFIX}/armv7-windows-msvc/bin \
- && rm -rf ${TOOLCHAIN_PREFIX}/DIA\ SDK ${TOOLCHAIN_PREFIX}/bin \
+ && mkdir -p "${VSINSTALLDIR}" "${UniversalCRTSdkDir}" \
+ && mv "${TOOLCHAIN_PREFIX}/DIA SDK" "${VSINSTALLDIR}" \
+ && mv "${TOOLCHAIN_PREFIX}/VC" "${VSINSTALLDIR}" \
+ && find "${VSINSTALLDIR}" -name arm -type d -exec rm -rf {} + \
+ && find "${VSINSTALLDIR}" -name *.exe -type f -delete \
+ && rm -rf "${UniversalCRTSdkDir}" && mv "${TOOLCHAIN_PREFIX}/kits/10/" "${UniversalCRTSdkDir}" \
+ && find "${UniversalCRTSdkDir}" -name arm -type d -exec rm -rf {} + \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
-ENV SDKVER="10.0.18362.0" MSVCVER="14.24.28314"
-RUN echo "====== CREATE SYMLINKS ======" \
- && mkdir -p ${TOOLCHAIN_PREFIX}/generic-windows-msvc/include \
- && cp -nrs ${TOOLCHAIN_PREFIX}/vc/tools/msvc/${MSVCVER}/include/* ${TOOLCHAIN_PREFIX}/generic-windows-msvc/include/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/include/${SDKVER}/ucrt/* ${TOOLCHAIN_PREFIX}/generic-windows-msvc/include/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/include/${SDKVER}/shared/* ${TOOLCHAIN_PREFIX}/generic-windows-msvc/include/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/include/${SDKVER}/um/* ${TOOLCHAIN_PREFIX}/generic-windows-msvc/include/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/include/${SDKVER}/cppwinrt/* ${TOOLCHAIN_PREFIX}/generic-windows-msvc/include/ \
- && mkdir ${TOOLCHAIN_PREFIX}/x86_64-windows-msvc/lib \
- && cp -nrs ${TOOLCHAIN_PREFIX}/vc/tools/msvc/${MSVCVER}/lib/x64/* ${TOOLCHAIN_PREFIX}/x86_64-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/lib/${SDKVER}/ucrt/x64/* ${TOOLCHAIN_PREFIX}/x86_64-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/lib/${SDKVER}/um/x64/* ${TOOLCHAIN_PREFIX}/x86_64-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/bin/${SDKVER}/x64/ucrt/*.dll ${TOOLCHAIN_PREFIX}/x86_64-windows-msvc/bin/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/vc/Redist/MSVC/14.24.28127/debug_nonredist/x64/Microsoft.VC142.DebugCRT/*.dll ${TOOLCHAIN_PREFIX}/x86_64-windows-msvc/bin/ \
- && mkdir ${TOOLCHAIN_PREFIX}/i686-windows-msvc/lib \
- && cp -nrs ${TOOLCHAIN_PREFIX}/vc/tools/msvc/${MSVCVER}/lib/x86/* ${TOOLCHAIN_PREFIX}/i686-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/lib/${SDKVER}/ucrt/x86/* ${TOOLCHAIN_PREFIX}/i686-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/lib/${SDKVER}/um/x86/* ${TOOLCHAIN_PREFIX}/i686-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/bin/${SDKVER}/x86/ucrt/*.dll ${TOOLCHAIN_PREFIX}/i686-windows-msvc/bin/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/vc/Redist/MSVC/14.24.28127/debug_nonredist/x86/Microsoft.VC142.DebugCRT/*.dll ${TOOLCHAIN_PREFIX}/i686-windows-msvc/bin/ \
- && mkdir ${TOOLCHAIN_PREFIX}/aarch64-windows-msvc/lib \
- && cp -nrs ${TOOLCHAIN_PREFIX}/vc/tools/msvc/${MSVCVER}/lib/arm64/* ${TOOLCHAIN_PREFIX}/aarch64-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/lib/${SDKVER}/ucrt/arm64/* ${TOOLCHAIN_PREFIX}/aarch64-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/lib/${SDKVER}/um/arm64/* ${TOOLCHAIN_PREFIX}/aarch64-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/bin/${SDKVER}/arm64/ucrt/*.dll ${TOOLCHAIN_PREFIX}/aarch64-windows-msvc/bin/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/vc/Redist/MSVC/14.24.28127/debug_nonredist/arm64/Microsoft.VC142.DebugCRT/*.dll ${TOOLCHAIN_PREFIX}/aarch64-windows-msvc/bin/ \
- && mkdir ${TOOLCHAIN_PREFIX}/armv7-windows-msvc/lib \
- && cp -nrs ${TOOLCHAIN_PREFIX}/vc/tools/msvc/${MSVCVER}/lib/arm/* ${TOOLCHAIN_PREFIX}/armv7-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/lib/${SDKVER}/ucrt/arm/* ${TOOLCHAIN_PREFIX}/armv7-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/lib/${SDKVER}/um/arm/* ${TOOLCHAIN_PREFIX}/armv7-windows-msvc/lib/ \
- && cp -nrs ${TOOLCHAIN_PREFIX}/kits/10/bin/${SDKVER}/arm/ucrt/*.dll ${TOOLCHAIN_PREFIX}/armv7-windows-msvc/bin/
-
 COPY override /
+
 RUN echo "====== BUILD COMPILER-RT ======" \
+ && cd "${WindowsSdkVerBinPath}x64/ucrt" && cp -nv *.dll ${WINEPREFIX}/drive_c/windows/system32/ \
+ && cd "${WindowsSdkVerBinPath}x86/ucrt" && cp -nv *.dll ${WINEPREFIX}/drive_c/windows/syswow64/ \
+ && cd "${VCToolsRedistDir}x64/Microsoft.VC142.CRT" && cp -nv *.dll ${WINEPREFIX}/drive_c/windows/system32/ \
+ && cd "${VCToolsRedistDir}x86/Microsoft.VC142.CRT" && cp -nv *.dll ${WINEPREFIX}/drive_c/windows/syswow64/ \
+ && cd "${VCToolsRedistDir}debug_nonredist/x64/Microsoft.VC142.DebugCRT" && cp -nv *.dll ${WINEPREFIX}/drive_c/windows/system32/ \
+ && cd "${VCToolsRedistDir}debug_nonredist/x86/Microsoft.VC142.DebugCRT" && cp -nv *.dll ${WINEPREFIX}/drive_c/windows/syswow64/ \
  && cd /usr/src \
  && git clone --single-branch --branch release_90 https://git.llvm.org/git/compiler-rt.git \
  && mkdir compiler-rt/build && cd compiler-rt/build \
  && cp -nrv ../include/sanitizer /usr/lib/clang/9.0.0/include/ \
- && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/x86_64-windows-msvc/toolchain.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-x86_64-msvc.cmake .. \
  && ninja \
  && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/9.0.0/lib/windows/ \
  && rm -rf * \
- && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/aarch64-windows-msvc/toolchain.cmake -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF .. \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-i686-msvc.cmake .. \
+ && ninja \
+ && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/9.0.0/lib/windows/ \
+ && rm -rf * \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-aarch64-msvc.cmake -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF .. \
  && ninja \
  && cp -nv ./lib/windows/*.lib /usr/lib/clang/9.0.0/lib/windows/ \
- && rm -rf * \
- && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/i686-windows-msvc/toolchain.cmake .. \
- && ninja \
- && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/9.0.0/lib/windows/ \
  && cd /usr/src && rm -rf /usr/src/*
 
-RUN echo "====== TEST BUILD ======" \
+RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/x86_64-windows-msvc/toolchain.cmake /opt/nxb/src/hello \
- && ninja && WINEPATH=/opt/msvc-wine/x86_64-windows-msvc/bin wine ./hello.exe \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-x86_64-msvc.cmake /opt/nxb/src/hello \
+ && ninja && wine64 ./hello.exe \
  && cd /usr/src \
  && mkdir build-i686 && cd build-i686 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/i686-windows-msvc/toolchain.cmake /opt/nxb/src/hello \
- && ninja && WINEPATH=/opt/msvc-wine/i686-windows-msvc/bin wine ./hello.exe \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-i686-msvc.cmake /opt/nxb/src/hello \
+ && ninja && wine ./hello.exe \
  && cd /usr/src \
  && mkdir build-aarch64 && cd build-aarch64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/msvc-wine/aarch64-windows-msvc/toolchain.cmake /opt/nxb/src/hello \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-aarch64-msvc.cmake /opt/nxb/src/hello \
  && ninja && file ./hello.exe \
  && cd /usr/src && rm -rf /usr/src/*
