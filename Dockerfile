@@ -15,16 +15,12 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get clean \
  && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
+ENV WINEARCH=win64 WINEPREFIX=/opt/windows/sysroot-wine
 ARG WINEDLLOVERRIDES="mscoree,mshtml="
 RUN echo "====== CONFIGURE WINE ======" \
- && mkdir -p /opt/windows/sysroot-x86_64 /opt/windows/sysroot-i686 \
- && WINEARCH=win64 WINEPREFIX=/opt/windows/sysroot-x86_64 xvfb-run wine64 wineboot --init \
+ && mkdir /opt/windows \
+ && xvfb-run wine64 wineboot --init \
  && while pgrep wineserver >/dev/null; do sleep 1; done \
- && WINEARCH=win32 WINEPREFIX=/opt/windows/sysroot-i686 xvfb-run wine wineboot --init \
- && while pgrep wineserver >/dev/null; do sleep 1; done \
- && mkdir -p /opt/windows/sysroot-x86_64/drive_c/mingw/bin /opt/windows/sysroot-i686/drive_c/mingw/bin /opt/windows/sysroot-aarch64/drive_c \
- && cp -nv /usr/lib/gcc/x86_64-w64-mingw32/9.2-win32/*.dll /opt/windows/sysroot-x86_64/drive_c/mingw/bin/ \
- && cp -nv /usr/lib/gcc/i686-w64-mingw32/9.2-win32/*.dll /opt/windows/sysroot-i686/drive_c/mingw/bin/ \
  && rm -rf /tmp/* /var/tmp/*
 
 RUN echo "====== BUILD MSIX-PACKAGING ======" \
@@ -58,22 +54,21 @@ RUN echo "====== BUILD LLVM-MINGW ======" \
  && ./build-compiler-rt.sh $TOOLCHAIN_PREFIX --build-sanitizers \
  && cp -nrs $TOOLCHAIN_PREFIX/lib/clang/* /usr/lib/llvm-9/lib/clang/ \
  && ./build-libssp.sh $TOOLCHAIN_PREFIX \
- && cp -nrv $TOOLCHAIN_PREFIX/generic-w64-mingw32 /opt/windows/sysroot-x86_64/drive_c/ \
- && mv $TOOLCHAIN_PREFIX/x86_64-w64-mingw32 /opt/windows/sysroot-x86_64/drive_c \
- && cp -nrv $TOOLCHAIN_PREFIX/generic-w64-mingw32 /opt/windows/sysroot-i686/drive_c/ \
- && mv $TOOLCHAIN_PREFIX/i686-w64-mingw32 /opt/windows/sysroot-i686/drive_c \
- && cp -nrv $TOOLCHAIN_PREFIX/generic-w64-mingw32 /opt/windows/sysroot-aarch64/drive_c/ \
- && mv $TOOLCHAIN_PREFIX/aarch64-w64-mingw32 /opt/windows/sysroot-aarch64/drive_c \
+ && cp -nrv $TOOLCHAIN_PREFIX/generic-w64-mingw32 ${WINEPREFIX}/drive_c/ \
+ && mv $TOOLCHAIN_PREFIX/x86_64-w64-mingw32 ${WINEPREFIX}/drive_c/ \
+ && mv $TOOLCHAIN_PREFIX/i686-w64-mingw32 ${WINEPREFIX}/drive_c/ \
+ && mv $TOOLCHAIN_PREFIX/aarch64-w64-mingw32 ${WINEPREFIX}/drive_c/ \
+ && mkdir ${WINEPREFIX}/drive_c/i686-w64-mingw32/bin/gcc ${WINEPREFIX}/drive_c/x86_64-w64-mingw32/bin/gcc \
+ && cp -nv /usr/lib/gcc/x86_64-w64-mingw32/9.2-win32/*.dll ${WINEPREFIX}/drive_c/x86_64-w64-mingw32/bin/gcc/ \
+ && cp -nv /usr/lib/gcc/i686-w64-mingw32/9.2-win32/*.dll ${WINEPREFIX}/drive_c/i686-w64-mingw32/bin/gcc/ \
  && rm -rf $TOOLCHAIN_PREFIX/bin/*-gcc $TOOLCHAIN_PREFIX/bin/*-g++ $TOOLCHAIN_PREFIX/generic-w64-mingw32 \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
 ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
-ENV WINEPREFIX=/opt/windows/sysroot-x86_64
 COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src \
- && export WINEPREFIX=/opt/windows/sysroot-x86_64 \
  && mkdir build-x86_64 && cd build-x86_64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/x86_64-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
  && ninja && WINEPATH=${WINEPREFIX}/drive_c/mingw/bin wine64 ./hello.exe \
@@ -82,10 +77,9 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-x86_64.cmake /opt/nxb/src/hello \
  && ninja && WINEPATH=${WINEPREFIX}/drive_c/x86_64-w64-mingw32/bin wine64 ./hello.exe \
  && cd /usr/src \
- && export WINEPREFIX=/opt/windows/sysroot-i686 \
  && mkdir build-i686 && cd build-i686 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/i686-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
- && ninja && WINEPATH=${WINEPREFIX}/drive_c/mingw/bin wine ./hello.exe \
+ && ninja && WINEPATH=${WINEPREFIX}/drive_c/i686-w64-mingw32/bin/gcc wine ./hello.exe \
  && cd /usr/src \
  && mkdir build-i686_llvm && cd build-i686_llvm \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-i686.cmake /opt/nxb/src/hello \

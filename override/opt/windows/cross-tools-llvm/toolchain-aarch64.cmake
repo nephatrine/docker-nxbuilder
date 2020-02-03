@@ -4,7 +4,7 @@ set(CMAKE_SYSTEM_VERSION 10)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-w64-mingw32")
 
-set(CMAKE_SYSROOT "/opt/windows/sysroot-${CMAKE_SYSTEM_PROCESSOR}/drive_c")
+set(CMAKE_SYSROOT "$ENV{WINEPREFIX}/drive_c")
 list(APPEND CMAKE_PREFIX_PATH "/opt/windows/cross-tools-llvm")
 
 find_program(CMAKE_C_COMPILER NAMES ${triplet}-clang)
