@@ -16,7 +16,7 @@ RUN echo "====== DOWNLOAD SDK ======" \
  && rm -f sdk-tools-linux-${ANDROID_SDK_VERSION}.zip
 ENV PATH=${ANDROID_SDK_ROOT}/tools/bin:$PATH
 
-NV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk-bundle ANDROID_NDK_VERSION=r21
+ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk-bundle ANDROID_NDK_VERSION=r21
 RUN echo "====== DOWNLOAD SDK ADD-ONS ======" \
  && mkdir /root/.android && touch /root/.android/repositories.cfg \
  && sdkmanager --update \
