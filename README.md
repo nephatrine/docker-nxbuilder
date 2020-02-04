@@ -1,7 +1,7 @@
 [Git](https://code.nephatrine.net/nephatrine/docker-nxbuilder) |
 [Docker](https://hub.docker.com/r/nephatrine/nxbuilder/)
 
-[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-nxbuilder/status.svg)](https://ci.nephatrine.net/nephatrine/docker-nxbuilder)
+[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-nxbuilder/status.svg?ref=refs/heads/mingw)](https://ci.nephatrine.net/nephatrine/docker-nxbuilder)
 
 # NXBuilder
 
@@ -27,7 +27,9 @@ docker run --rm -ti nephatrine/nxbuilder:latest /bin/bash
 ## Docker Tags
 
 - **nephatrine/nxbuilder:latest**: Base Configuration
-- **nephatrine/nxbuilder:linux**: Linux-Specific Configuration
-  * Includes various cross-compilers, mock, and pbuilder for creating packages for a variety of architectures and distributions.
-- **nephatrine/nxbuilder:mingw**: Windows-Specific Configuration
-  * Includes GCC- & Clang-based MinGW cross-compilers, nsis, wixl, wine, and various tools for creating Windows-specific packages.
+- **nephatrine/nxbuilder:android**: Build Android Packages
+- **nephatrine/nxbuilder:beos**: Build Haiku Packages
+- **nephatrine/nxbuilder:linux**: Build Ubuntu Packages
+- **nephatrine/nxbuilder:mingw**: Build Windows/MinGW Packages
+- **nephatrine/nxbuilder:osx**: Build macOS/Darwin Packages
+- **nephatrine/nxbuilder:unix**: Build FreeBSD Packages
