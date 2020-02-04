@@ -39,11 +39,12 @@ steps:
       from_secret: drone-auth
     fork: false
     repositories:
-      - nephatrine/docker-nxbuilder@beos
       - nephatrine/docker-nxbuilder@linux
       - nephatrine/docker-nxbuilder@mingw
       - nephatrine/docker-nxbuilder@osx
       - nephatrine/docker-nxbuilder@unix
+      - nephatrine/docker-nxbuilder@android
+      - nephatrine/docker-nxbuilder@beos
 
 depends_on:
 - default
