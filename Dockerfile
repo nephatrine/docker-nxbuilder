@@ -8,6 +8,11 @@ RUN echo "====== DOWNLOAD FREEBSD ======" \
  && bsdtar -xf base.txz ./lib/ ./usr/lib/ ./usr/include/ \
  && find . -xtype l | xargs ls -l | grep ' /lib/' | awk '{print "ln -sf /opt/freebsd/sysroot-x86_64" $11 " " $9}' | /bin/sh \
  && rm -f base.txz \
+ && mkdir /opt/freebsd/sysroot-i386 && cd /opt/freebsd/sysroot-i386 \
+ && wget https://download.freebsd.org/ftp/releases/i386/i386/${FREEBSD_VERSION}-RELEASE/base.txz \
+ && bsdtar -xf base.txz ./lib/ ./usr/lib/ ./usr/include/ \
+ && find . -xtype l | xargs ls -l | grep ' /lib/' | awk '{print "ln -sf /opt/freebsd/sysroot-i386" $11 " " $9}' | /bin/sh \
+ && rm -f base.txz \
  && mkdir /opt/freebsd/sysroot-aarch64 && cd /opt/freebsd/sysroot-aarch64 \
  && wget https://download.freebsd.org/ftp/releases/arm64/aarch64/${FREEBSD_VERSION}-RELEASE/base.txz \
  && bsdtar -xf base.txz ./lib/ ./usr/lib/ ./usr/include/ \
@@ -26,6 +31,10 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && ninja \
  && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so /usr/lib/clang/9.0.0/lib/freebsd/ \
  && rm -rf * \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-i386.cmake .. \
+ && ninja \
+ && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so  /usr/lib/clang/9.0.0/lib/freebsd/ \
+ && rm -rf * \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-aarch64.cmake -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF .. \
  && ninja \
  && cp -nv ./lib/freebsd/*.a /usr/lib/clang/9.0.0/lib/freebsd/ \
@@ -35,6 +44,10 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-x86_64.cmake /opt/nxb/src/hello \
+ && ninja && file ./hello \
+ && cd /usr/src \
+ && mkdir build-i386 && cd build-i386 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-i386.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
  && cd /usr/src \
  && mkdir build-aarch64 && cd build-aarch64 \
