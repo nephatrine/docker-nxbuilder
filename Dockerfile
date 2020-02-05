@@ -1,15 +1,10 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-RUN echo "====== INSTALL PACKAGES ======" \
- && apt-get update -q \
- && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
-   bison flex gawk mtools nasm \
- && apt-get clean \
- && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
 RUN echo "====== BUILD HAIKU ======" \
- && mkdir /usr/local/lib/x86_64-linux-gnu && cd /usr/src \
+ && cd /usr/src \
+ && apt-get update -q \
+ && apt-get -y -q -o Dpkg::Options::="--force-confnew" install zlib1g-dev \
  && git clone https://review.haiku-os.org/buildtools.git \
  && cd buildtools/jam \
  && make && ./jam0 install \
@@ -38,7 +33,9 @@ RUN echo "====== BUILD HAIKU ======" \
  && rm -rf /opt/haiku/sysroot-x86_64/boot/system/packages/* \
  && rm -rf /opt/haiku/sysroot-x86_64/boot/system/preferences/* \
  && rm -rf /opt/haiku/sysroot-x86_64/boot/system/servers/* \
- && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
+ && apt-get -y -q purge zlib1g-dev \
+ && apt-get -y -q autoremove \
+ && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/lib/apt/lists/* /var/tmp/*
 ENV PATH=/opt/haiku/cross-tools-x86_64/bin:$PATH
 
 COPY override /
