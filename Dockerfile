@@ -57,6 +57,7 @@ RUN echo "====== BUILD LLVM-MINGW ======" \
  && cp -nrv $TOOLCHAIN_PREFIX/generic-w64-mingw32 ${WINEPREFIX}/drive_c/ \
  && mv $TOOLCHAIN_PREFIX/x86_64-w64-mingw32 ${WINEPREFIX}/drive_c/ \
  && mv $TOOLCHAIN_PREFIX/i686-w64-mingw32 ${WINEPREFIX}/drive_c/ \
+ && mv $TOOLCHAIN_PREFIX/i386-w64-mingw32 ${WINEPREFIX}/drive_c/ \
  && mv $TOOLCHAIN_PREFIX/aarch64-w64-mingw32 ${WINEPREFIX}/drive_c/ \
  && mkdir ${WINEPREFIX}/drive_c/i686-w64-mingw32/bin/gcc ${WINEPREFIX}/drive_c/x86_64-w64-mingw32/bin/gcc \
  && cp -nv /usr/lib/gcc/x86_64-w64-mingw32/9.2-win32/*.dll ${WINEPREFIX}/drive_c/x86_64-w64-mingw32/bin/gcc/ \
