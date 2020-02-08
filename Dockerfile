@@ -5,7 +5,7 @@ ENV SDK_VERSION=10.11
 ARG TARGET_DIR=/opt/darwin/cross-tools-llvm
 ARG SDK_DIR=/opt/darwin/sysroot-osx
 RUN echo "====== DOWNLOAD OSX SDK ======" \
- && mkdir /usr/lib/clang/9.0.0/lib/darwin /opt/dawrin && cd /usr/src \
+ && mkdir /usr/lib/clang/9.0.0/lib/darwin && cd /usr/src \
  && apt-get update -q \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install libxml2-dev zlib1g-dev \
  && git clone https://github.com/tpoechtrager/osxcross.git && cd osxcross \
