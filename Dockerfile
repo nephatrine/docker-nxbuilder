@@ -12,7 +12,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
    doxygen-latex dia \
    flex \
    gawk gettext git git-lfs git-remote-hg git-svn global graphviz \
-   libarchive-tools libc++-dev libc++abi-dev libclang-dev libtool lld llvm lsb-release \
+   libarchive-tools libc++-dev libc++abi-dev libclang-dev libtool libunwind-dev lld llvm lsb-release \
    mercurial mercurial-git mscgen \
    nasm ninja-build nodejs npm \
    python-jinja2 python-pygments python-simplejson python-six python-yaml \
