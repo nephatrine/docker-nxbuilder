@@ -19,7 +19,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && ninja && ./hello \
  && cd /usr/src \
  && mkdir build-clang && cd build-clang \
- && CC=clang CXX=clang++ cmake -G "Ninja" /opt/nxb/src/hello \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/lib/clang/toolchain.cmake /opt/nxb/src/hello \
  && ninja && ./hello \
  && cd /usr/src \
  && mkdir build-aarch64 && cd build-aarch64 \
