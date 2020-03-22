@@ -43,3 +43,8 @@ steps:
 
 depends_on:
 - default
+
+trigger:
+  status:
+  - success
+  - failure
