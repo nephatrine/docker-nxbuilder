@@ -11,9 +11,9 @@ RUN echo "====== DOWNLOAD OSX SDK ======" \
  && git clone https://github.com/tpoechtrager/osxcross.git && cd osxcross \
  && wget https://files.nephatrine.net/Local/MacOSX${SDK_VERSION}.sdk.tar.xz -O tarballs/MacOSX${SDK_VERSION}.sdk.tar.xz \
  && yes | ./build.sh && PATH=${TARGET_DIR}/bin:$PATH ./build_compiler_rt.sh \
- && cp -nrv ./build/compiler-rt/include/sanitizer /usr/lib/clang/9.0.0/include/ \
- && cp -nv ./build/compiler-rt/build/lib/darwin/*.a /usr/lib/clang/9.0.0/lib/darwin/ \
- && cp -nv ./build/compiler-rt/build/lib/darwin/*.dylib /usr/lib/clang/9.0.0/lib/darwin/ \
+ && cp -nrv ./build/compiler-rt/compiler-rt/include/sanitizer /usr/lib/clang/9.0.0/include/ \
+ && cp -nv ./build/compiler-rt/compiler-rt/build/lib/darwin/*.a /usr/lib/clang/9.0.0/lib/darwin/ \
+ && cp -nv ./build/compiler-rt/compiler-rt/build/lib/darwin/*.dylib /usr/lib/clang/9.0.0/lib/darwin/ \
  && mv ${TARGET_DIR}/SDK/MacOSX${SDK_VERSION}.sdk ${SDK_DIR} \
  && ln -s ${SDK_DIR} ${TARGET_DIR}/SDK/MacOSX${SDK_VERSION}.sdk \
  && apt-get -y -q purge libxml2-dev zlib1g-dev \
