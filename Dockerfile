@@ -17,7 +17,7 @@ RUN echo "====== DOWNLOAD WiX ======" \
 
 ENV VSINSTALLDIR="${WINEPREFIX}/drive_c/Program Files (x86)/Microsoft Visual Studio/2019/Community/"
 
-ENV VCINSTALLDIR="${VSINSTALLDIR}VC/" VCToolsVersion="14.24.28610" VCRedistVersion="14.24.28508"
+ENV VCINSTALLDIR="${VSINSTALLDIR}VC/" VCToolsVersion="14.25.28610" VCRedistVersion="14.25.28508"
 ENV VCToolsInstallDir="${VCINSTALLDIR}Tools/MSVC/${VCToolsVersion}/" VCToolsRedistDir="${VCINSTALLDIR}Redist/MSVC/${VCRedistVersion}/"
 
 ENV UniversalCRTSdkDir="${WINEPREFIX}/drive_c/Program Files (x86)/Windows Kits/10/" UCRTVersion="10.0.18362.0"
