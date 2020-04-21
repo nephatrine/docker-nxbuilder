@@ -22,7 +22,11 @@ RUN echo "====== DOWNLOAD SDK ADD-ONS ======" \
  && sdkmanager --update \
  && yes | sdkmanager --licenses \
  && sdkmanager "build-tools;${ANDROID_SDK_BTOOLS}" \
- && sdkmanager "ndk-bundle"
+ && sdkmanager "ndk-bundle" \
+ && sdkmanager "platforms;android-19" \
+ && sdkmanager "platforms;android-22" \
+ && sdkmanager "platforms;android-25" \
+ && sdkmanager "platforms;android-28"
 ENV PATH=${ANDROID_SDK_ROOT}/build-tools/${ANDROID_SDK_BTOOLS}:$PATH
 
 COPY override /
