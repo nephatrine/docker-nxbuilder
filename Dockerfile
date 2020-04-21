@@ -16,16 +16,14 @@ RUN echo "====== DOWNLOAD SDK ======" \
  && rm -f sdk-tools-linux-${ANDROID_SDK_VERSION}.zip
 ENV PATH=${ANDROID_SDK_ROOT}/tools/bin:$PATH
 
-ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk-bundle ANDROID_NDK_VERSION=r21
+ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk-bundle ANDROID_SDK_BTOOLS=29.0.3
 RUN echo "====== DOWNLOAD SDK ADD-ONS ======" \
  && mkdir /root/.android && touch /root/.android/repositories.cfg \
  && sdkmanager --update \
  && yes | sdkmanager --licenses \
- && cd ${ANDROID_SDK_ROOT} \
- && wget https://dl.google.com/android/repository/android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip \
- && unzip android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip \
- && rm -f android-ndk-${ANDROID_NDK_VERSION}-linux-x86_64.zip \
- && mv ./android-ndk-${ANDROID_NDK_VERSION} ${ANDROID_NDK_ROOT}
+ && sdkmanager "build-tools;${ANDROID_SDK_BTOOLS}" \
+ && sdkmanager "ndk-bundle"
+ENV PATH=${ANDROID_SDK_ROOT}/build-tools/${ANDROID_SDK_BTOOLS}:$PATH
 
 COPY override /
 
