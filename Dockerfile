@@ -72,4 +72,6 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src && rm -rf /usr/src/*
 
 RUN echo "====== DEBUG KEYSTORE ======" \
+ && cd "${ANDROID_SDK_ROOT}" \
  && keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
+ENV DEBUG_KEYSTORE=${ANDROID_SDK_ROOT}/debug.keystore
