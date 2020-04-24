@@ -70,3 +70,6 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=x86_64 /opt/nxb/src/hello \
  && ninja && file ./libhello.so \
  && cd /usr/src && rm -rf /usr/src/*
+
+RUN echo "====== DEBUG KEYSTORE ======" \
+ && keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
