@@ -1,12 +1,14 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
+ENV DJGPP_PREFIX=/opt/djgpp
+ARG DJGPP_MIRROR=http://mirrors.meowr.net/djgpp
+
 ARG ENABLE_LANGUAGES=c,c++
-ARG DJGPP_MIRROR=http://mirrors.meowrnet.net/djgpp
+
 ARG BINTUILS_MAJOR=2
 ARG BINTUILS_MINOR=34
 
-ENV DJGPP_PREFIX=/opt/djgpp
 RUN echo "====== BUILD DJGPP ======" \
  && cd /usr/src \
  && curl -f "${DJGPP_MIRROR}/v2gnu/bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s.zip" -L -o bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s.zip \
