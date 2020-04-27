@@ -2,7 +2,7 @@ FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ARG ENABLE_LANGUAGES=c,c++
-ARG DJGPP_MIRROR=http://mirrors/meowrnet/djgpp
+ARG DJGPP_MIRROR=http://mirrors.meowrnet.net/djgpp
 ARG BINTUILS_MAJOR=2
 ARG BINTUILS_MINOR=34
 
