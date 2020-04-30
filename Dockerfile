@@ -102,3 +102,14 @@ RUN echo "====== BUILD GCC ======" \
  && cd /usr/src \
  && apt-get -y -q purge automake-1.15 texinfo zlib1g-dev && apt-get -y -q autoremove \
  && rm -rf /tmp/* /usr/src/* /var/lib/apt/lists/* /var/tmp/*
+
+ENV DJDIR=$DJGPP_PREFIX/$TRIPLET
+COPY override /
+
+RUN echo "====== TEST TOOLCHAINS ======" \
+ && mv /opt/djgpp/MSDOS.cmake /usr/share/cmake-*/Modules/Platform/ \
+ && cd /usr/src \
+ && mkdir build-i586 && cd build-i586 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/djgpp/toolchain.cmake /opt/nxb/src/hello \
+ && ninja && file ./hello.exe \
+ && cd /usr/src && rm -rf /usr/src/*
