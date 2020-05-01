@@ -34,6 +34,7 @@ RUN echo "====== DOWNLOAD MSVC ======" \
 
 COPY override /
 
+ARG LLVM_MAJOR=10
 RUN echo "====== BUILD COMPILER-RT ======" \
  && cd "${WindowsSdkVerBinPath}x64/ucrt" && cp -nv *.dll ${WINEPREFIX}/drive_c/windows/system32/ \
  && cd "${WindowsSdkVerBinPath}x86/ucrt" && cp -nv *.dll ${WINEPREFIX}/drive_c/windows/syswow64/ \
@@ -42,20 +43,20 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && cd "${VCToolsRedistDir}debug_nonredist/x64/Microsoft.VC142.DebugCRT" && cp -nv *.dll ${WINEPREFIX}/drive_c/windows/system32/ \
  && cd "${VCToolsRedistDir}debug_nonredist/x86/Microsoft.VC142.DebugCRT" && cp -nv *.dll ${WINEPREFIX}/drive_c/windows/syswow64/ \
  && cd /usr/src \
- && git clone --single-branch --branch release_90 https://git.llvm.org/git/compiler-rt.git \
- && mkdir compiler-rt/build && cd compiler-rt/build \
- && cp -nrv ../include/sanitizer /usr/lib/clang/9.0.0/include/ \
+ && git clone --single-branch --branch "release/${LLVM_MAJOR}.x" https://github.com/llvm/llvm-project.git \
+ && mkdir llvm-project/compiler-rt/build && cd llvm-project/compiler-rt/build \
+ && cp -nrv ../include/sanitizer /usr/lib/clang/${LLVM_MAJOR}/include/ \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-x86_64-msvc.cmake .. \
  && ninja \
- && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/9.0.0/lib/windows/ \
+ && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/${LLVM_MAJOR}/lib/windows/ \
  && rm -rf * \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-i686-msvc.cmake .. \
  && ninja \
- && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/9.0.0/lib/windows/ \
+ && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/${LLVM_MAJOR}/lib/windows/ \
  && rm -rf * \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-aarch64-msvc.cmake -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF .. \
  && ninja \
- && cp -nv ./lib/windows/*.lib /usr/lib/clang/9.0.0/lib/windows/ \
+ && cp -nv ./lib/windows/*.lib /usr/lib/clang/${LLVM_MAJOR}/lib/windows/ \
  && cd /usr/src && rm -rf /usr/src/*
 
 RUN echo "====== TEST TOOLCHAINS ======" \
