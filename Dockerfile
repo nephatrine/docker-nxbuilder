@@ -15,7 +15,7 @@ RUN echo "====== DOWNLOAD OSX SDK ======" \
  && cp -nv ./build/compiler-rt/compiler-rt/build/lib/darwin/*.dylib /usr/lib/clang/${LLVM_MAJOR}/lib/darwin/ \
  && mv ${TARGET_DIR}/SDK/MacOSX${SDK_VERSION}.sdk ${SDK_DIR} \
  && ln -s ${SDK_DIR} ${TARGET_DIR}/SDK/MacOSX${SDK_VERSION}.sdk \
- && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/lib/apt/lists/* /var/tmp/*
+ && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
 ENV PATH=${TARGET_DIR}/bin:$PATH
 COPY override /
