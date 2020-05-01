@@ -10,7 +10,6 @@ RUN echo "====== INSTALL PACKAGES ======" \
    mingw-w64 mingw-w64-tools \
    msitools nsis \
    osslsigncode pesign \
-   python3-distutils \
    wine-binfmt winetricks \
    wixl xvfb \
  && apt-get clean \
@@ -26,14 +25,10 @@ RUN echo "====== CONFIGURE WINE ======" \
 
 RUN echo "====== BUILD MSIX-PACKAGING ======" \
  && cd /usr/src \
- && apt-get update -q \
- && apt-get -y -q -o Dpkg::Options::="--force-confnew" install libicu-dev \
  && git clone https://github.com/microsoft/msix-packaging.git && cd msix-packaging \
  && ./makelinux.sh --pack \
  && cp -nv .vs/lib/*.so /usr/local/lib/x86_64-linux-gnu/ && ldconfig \
  && cp -nv .vs/bin/makemsix /usr/local/bin/ \
- && apt-get -y -q purge libicu-dev \
- && apt-get -y -q autoremove \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/lib/apt/lists/* /var/tmp/*
 
 COPY clang-target-wrapper.patch /usr/src/clang-target-wrapper.patch
