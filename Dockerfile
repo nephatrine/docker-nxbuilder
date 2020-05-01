@@ -21,24 +21,24 @@ RUN echo "====== DOWNLOAD FREEBSD ======" \
 
 COPY override /
 
-ARG LLVM_MASTER=10
+ARG LLVM_MAJOR=10
 RUN echo "====== BUILD COMPILER-RT ======" \
- && mkdir /usr/lib/clang/${LLVM_MASTER}/lib/freebsd \
+ && mkdir /usr/lib/clang/${LLVM_MAJOR}/lib/freebsd \
  && cd /usr/src \
- && git clone --single-branch --branch "release/${LLVM_MASTER}.x" https://github.com/llvm/llvm-project.git \
+ && git clone --single-branch --branch "release/${LLVM_MAJOR}.x" https://github.com/llvm/llvm-project.git \
  && mkdir llvm-project/compiler-rt/build && cd llvm-project/compiler-rt/build \
- && cp -nrv ../include/sanitizer /usr/lib/clang/${LLVM_MASTER}/include/ \
+ && cp -nrv ../include/sanitizer /usr/lib/clang/${LLVM_MAJOR}/include/ \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-x86_64.cmake .. \
  && ninja \
- && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so /usr/lib/clang/${LLVM_MASTER}/lib/freebsd/ \
+ && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so /usr/lib/clang/${LLVM_MAJOR}/lib/freebsd/ \
  && rm -rf * \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-i386.cmake .. \
  && ninja \
- && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so  /usr/lib/clang/${LLVM_MASTER}/lib/freebsd/ \
+ && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so  /usr/lib/clang/${LLVM_MAJOR}/lib/freebsd/ \
  && rm -rf * \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-aarch64.cmake -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF .. \
  && ninja \
- && cp -nv ./lib/freebsd/*.a /usr/lib/clang/${LLVM_MASTER}/lib/freebsd/ \
+ && cp -nv ./lib/freebsd/*.a /usr/lib/clang/${LLVM_MAJOR}/lib/freebsd/ \
  && cd /usr/src && rm -rf /usr/src/*
 
 RUN echo "====== TEST TOOLCHAINS ======" \
