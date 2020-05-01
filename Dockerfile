@@ -29,7 +29,7 @@ RUN echo "====== BUILD MSIX-PACKAGING ======" \
  && ./makelinux.sh --pack \
  && cp -nv .vs/lib/*.so /usr/local/lib/x86_64-linux-gnu/ && ldconfig \
  && cp -nv .vs/bin/makemsix /usr/local/bin/ \
- && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/lib/apt/lists/* /var/tmp/*
+ && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
 COPY clang-target-wrapper.patch /usr/src/clang-target-wrapper.patch
 ARG TOOLCHAIN_ARCHS="i686 x86_64 aarch64"
