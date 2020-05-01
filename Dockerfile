@@ -9,8 +9,6 @@ ARG BINTUILS_MAJOR=2
 ARG BINTUILS_MINOR=34
 
 RUN echo "====== BUILD BINUTILS ======" \
- && apt-get update -q \
- && apt-get -y -q -o DPkg::Options::="--force-confnew" install texinfo \
  && cd /usr/src \
  && mkdir "bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s" && cd "bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s" \
  && curl -f "${DJGPP_MIRROR}/current/v2gnu/bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s.zip" -L -o "bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s.zip" \
@@ -22,8 +20,7 @@ RUN echo "====== BUILD BINUTILS ======" \
  && make -j4 configure-bfd && make -j4 -C bfd stmp-lcoff-h \
  && make -j4 && make -j4 -s check && make install \
  && cd /usr/src \
- && apt-get -y -q purge texinfo && apt-get -y -q autoremove \
- && rm -rf /tmp/* /usr/src/* /var/lib/apt/lists/* /var/tmp/*
+ && rm -rf /tmp/* /usr/src/* /var/tmp/*
 ENV PATH="$DJGPP_PREFIX/bin:$PATH"
 
 ARG GNU_MIRROR=http://ftpmirror.gnu.org
@@ -36,8 +33,6 @@ ARG MPFR_VERSION=4.0.2
 ARG ISL_VERSION=0.22.1
 
 RUN echo "====== BUILD GCC ======" \
- && apt-get update -q \
- && apt-get -y -q -o DPkg::Options::="--force-confnew" install automake-1.15 texinfo zlib1g-dev \
  && update-alternatives --set automake /usr/bin/automake-1.15 \
  && cd /usr/src \
  && git clone https://github.com/jwt27/djgpp-cvs.git "/usr/src/djgpp-cvs" && cd "djgpp-cvs/src" \
@@ -100,8 +95,7 @@ RUN echo "====== BUILD GCC ======" \
  && ln -s "${TRIPLET}-dxe3gen" "${DJGPP_PREFIX}/bin/dxe3gen" \
  && ln -s "${TRIPLET}-dxe3res" "${DJGPP_PREFIX}/bin/dxe3res" \
  && cd /usr/src \
- && apt-get -y -q purge automake-1.15 texinfo zlib1g-dev && apt-get -y -q autoremove \
- && rm -rf /tmp/* /usr/src/* /var/lib/apt/lists/* /var/tmp/*
+ && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
 ENV DJDIR=$DJGPP_PREFIX/$TRIPLET
 COPY override /
