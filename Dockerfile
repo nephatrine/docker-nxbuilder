@@ -3,8 +3,6 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== BUILD HAIKU ======" \
  && cd /usr/src \
- && apt-get update -q \
- && apt-get -y -q -o Dpkg::Options::="--force-confnew" install zlib1g-dev \
  && git clone https://review.haiku-os.org/buildtools.git \
  && cd buildtools/jam \
  && make && ./jam0 install \
@@ -33,8 +31,6 @@ RUN echo "====== BUILD HAIKU ======" \
  && rm -rf /opt/haiku/sysroot-x86_64/boot/system/packages/* \
  && rm -rf /opt/haiku/sysroot-x86_64/boot/system/preferences/* \
  && rm -rf /opt/haiku/sysroot-x86_64/boot/system/servers/* \
- && apt-get -y -q purge zlib1g-dev \
- && apt-get -y -q autoremove \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/lib/apt/lists/* /var/tmp/*
 ENV PATH=/opt/haiku/cross-tools-x86_64/bin:$PATH
 
