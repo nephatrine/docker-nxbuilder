@@ -10,6 +10,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
    mingw-w64 mingw-w64-tools \
    msitools nsis \
    osslsigncode pesign \
+   python3-distutils \
    wine-binfmt winetricks \
    wixl xvfb \
  && apt-get clean \
