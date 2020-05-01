@@ -12,10 +12,10 @@ RUN echo "====== INSTALL PACKAGES ======" \
    doxygen-latex dia \
    flex \
    gawk gettext git git-lfs global graphviz \
-   libarchive-tools libc++-dev libc++abi-dev libclang-dev libtool libunwind-dev libxml2-dev lld llvm lsb-release \
+   libarchive-tools libc++-dev libc++abi-dev libclang-dev libicu-dev libssl-dev libtool libunwind-dev libxml2-dev lld llvm lsb-release \
    mercurial mscgen \
    nasm ninja-build \
-   python3-jinja2 python3-pygments python3-simplejson python3-six python3-yaml \
+   python3-distutils python3-jinja2 python3-pygments python3-simplejson python3-six python3-yaml \
    subversion \
    texinfo \
    unzip \
