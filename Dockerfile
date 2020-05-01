@@ -31,7 +31,7 @@ RUN echo "====== BUILD HAIKU ======" \
  && rm -rf /opt/haiku/sysroot-x86_64/boot/system/packages/* \
  && rm -rf /opt/haiku/sysroot-x86_64/boot/system/preferences/* \
  && rm -rf /opt/haiku/sysroot-x86_64/boot/system/servers/* \
- && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/lib/apt/lists/* /var/tmp/*
+ && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 ENV PATH=/opt/haiku/cross-tools-x86_64/bin:$PATH
 
 COPY override /
