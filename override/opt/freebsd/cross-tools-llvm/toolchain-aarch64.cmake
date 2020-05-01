@@ -2,7 +2,7 @@ set(CMAKE_SYSTEM_NAME FreeBSD)
 set(CMAKE_SYSTEM_PROCESSOR aarch64)
 set(CMAKE_SYSTEM_VERSION $ENV{FREEBSD_VERSION})
 
-set(triplet "${CMAKE_SYSTEM_PROCESSOR}-unknown-freebsd${CMAKE_SYSTEM_VERSION}")
+set(TARGET_TRIPLE "${CMAKE_SYSTEM_PROCESSOR}-unknown-freebsd${CMAKE_SYSTEM_VERSION}")
 
 set(CMAKE_SYSROOT "/opt/freebsd/sysroot-${CMAKE_SYSTEM_PROCESSOR}")
 list(APPEND CMAKE_PREFIX_PATH "/usr/lib/llvm-9")
@@ -20,8 +20,8 @@ find_program(CMAKE_OBJCOPY NAMES llvm-objcopy)
 find_program(CMAKE_READELF NAMES llvm-readelf)
 find_program(CMAKE_ADDR2LINE NAMES llvm-addr2line)
 
-set(CMAKE_C_COMPILER_TARGET ${triplet})
-set(CMAKE_CXX_COMPILER_TARGET ${triplet})
+set(CMAKE_C_COMPILER_TARGET ${TARGET_TRIPLE})
+set(CMAKE_CXX_COMPILER_TARGET ${TARGET_TRIPLE})
 set(CMAKE_C_FLAGS_INIT "-march=armv8-a")
 set(CMAKE_CXX_FLAGS_INIT "-march=armv8-a -stdlib=libc++")
 
