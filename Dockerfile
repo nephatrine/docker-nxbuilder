@@ -12,7 +12,7 @@ RUN echo "====== DOWNLOAD OSX SDK ======" \
  && yes | ./build.sh && PATH=${TARGET_DIR}/bin:$PATH ./build_compiler_rt.sh \
  && cp -nrv ./build/compiler-rt/compiler-rt/include/sanitizer /usr/lib/clang/${LLVM_MAJOR}/include/ \
  && cp -nv ./build/compiler-rt/compiler-rt/build/lib/darwin/*.a /usr/lib/clang/${LLVM_MAJOR}/lib/darwin/ \
- && cp -nv ./build/compiler-rt/compiler-rt/build/lib/darwin/*.dylib /usr/lib/clang/${LLVM_MAJOR/lib/darwin/ \
+ && cp -nv ./build/compiler-rt/compiler-rt/build/lib/darwin/*.dylib /usr/lib/clang/${LLVM_MAJOR}/lib/darwin/ \
  && mv ${TARGET_DIR}/SDK/MacOSX${SDK_VERSION}.sdk ${SDK_DIR} \
  && ln -s ${SDK_DIR} ${TARGET_DIR}/SDK/MacOSX${SDK_VERSION}.sdk \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/lib/apt/lists/* /var/tmp/*
