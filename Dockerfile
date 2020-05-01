@@ -22,7 +22,7 @@ ARG TOOLCHAIN_PREFIX="/usr/src/staging"
 RUN echo "====== DOWNLOAD MSVC ======" \
  && mkdir ${TOOLCHAIN_PREFIX} && cd /usr/src \
  && git clone https://github.com/mstorsjo/msvc-wine.git && cd msvc-wine \
- && ./vsdownload.py --accept-license --dest ${TOOLCHAIN_PREFIX} \
+ && python3 ./vsdownload.py --accept-license --dest ${TOOLCHAIN_PREFIX} \
  && mkdir -p "${VSINSTALLDIR}" "${UniversalCRTSdkDir}" \
  && mv "${TOOLCHAIN_PREFIX}/DIA SDK" "${VSINSTALLDIR}" \
  && mv "${TOOLCHAIN_PREFIX}/VC" "${VSINSTALLDIR}" \
