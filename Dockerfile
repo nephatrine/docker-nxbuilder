@@ -1,12 +1,6 @@
 FROM nephatrine/nxbuilder:mingw
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ARG WINEDLLOVERRIDES="mscoree,mshtml="
-RUN echo "====== CONFIGURE WINE (USER) ======" \
- && xvfb-run winetricks -q vcrun2015 \
- && while pgrep wineserver >/dev/null; do sleep 1; done \
- && rm -rf /tmp/* /var/tmp/*
-
 ENV WIX_DIR="${WINEPREFIX}/drive_c/Program Files (x86)/WiX Toolset v3.9/"
 RUN echo "====== DOWNLOAD WiX ======" \
  && mkdir -p "${WIX_DIR}/bin" && cd "${WIX_DIR}/bin" \
