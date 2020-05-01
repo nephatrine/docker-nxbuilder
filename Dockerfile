@@ -26,7 +26,7 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && mkdir /usr/lib/clang/${LLVM_MASTER}/lib/freebsd \
  && cd /usr/src \
  && git clone --single-branch --branch "release/${LLVM_MASTER}.x" https://github.com/llvm/llvm-project.git \
- && mkdir compiler-rt/build && cd compiler-rt/build \
+ && mkdir llvm-project/compiler-rt/build && cd llvm-project/compiler-rt/build \
  && cp -nrv ../include/sanitizer /usr/lib/clang/${LLVM_MASTER}/include/ \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-x86_64.cmake .. \
  && ninja \
