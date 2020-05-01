@@ -38,21 +38,22 @@ RUN echo "====== BUILD MSIX-PACKAGING ======" \
 COPY clang-target-wrapper.patch /usr/src/clang-target-wrapper.patch
 ARG TOOLCHAIN_ARCHS="i686 x86_64 aarch64"
 ARG TOOLCHAIN_PREFIX=/opt/windows/cross-tools-llvm
-ARG LLVM_VERSION=release/9.x
+ARG LLVM_MAJOR=10
+ARG LLVM_VERSION=release/${LLVM_MAJOR}.x
 RUN echo "====== BUILD LLVM-MINGW ======" \
  && cd /usr/src \
  && git clone https://github.com/mstorsjo/llvm-mingw.git && cd llvm-mingw \
  && patch -u wrappers/clang-target-wrapper.sh /usr/src/clang-target-wrapper.patch \
- && mkdir -p $TOOLCHAIN_PREFIX/bin && cp -nrs /usr/lib/llvm-9/bin/* $TOOLCHAIN_PREFIX/bin/ \
+ && mkdir -p $TOOLCHAIN_PREFIX/bin && cp -nrs /usr/lib/llvm-${LLVM_MAJOR}/bin/* $TOOLCHAIN_PREFIX/bin/ \
  && CHECKOUT_ONLY=1 ./build-llvm.sh $TOOLCHAIN_PREFIX \
  && ./install-wrappers.sh $TOOLCHAIN_PREFIX \
  && ./build-mingw-w64.sh $TOOLCHAIN_PREFIX --with-default-msvcrt=ucrt \
  && ./build-compiler-rt.sh $TOOLCHAIN_PREFIX \
- && cp -nrs $TOOLCHAIN_PREFIX/lib/clang/* /usr/lib/llvm-9/lib/clang/ \
+ && cp -nrs $TOOLCHAIN_PREFIX/lib/clang/* /usr/lib/llvm-${LLVM_MAJOR}/lib/clang/ \
  && ./build-mingw-w64-libraries.sh $TOOLCHAIN_PREFIX \
  && ./build-libcxx.sh $TOOLCHAIN_PREFIX \
  && ./build-compiler-rt.sh $TOOLCHAIN_PREFIX --build-sanitizers \
- && cp -nrs $TOOLCHAIN_PREFIX/lib/clang/* /usr/lib/llvm-9/lib/clang/ \
+ && cp -nrs $TOOLCHAIN_PREFIX/lib/clang/* /usr/lib/llvm-${LLVM_MAJOR}/lib/clang/ \
  && ./build-libssp.sh $TOOLCHAIN_PREFIX \
  && cp -nrv $TOOLCHAIN_PREFIX/generic-w64-mingw32 ${WINEPREFIX}/drive_c/ \
  && mv $TOOLCHAIN_PREFIX/x86_64-w64-mingw32 ${WINEPREFIX}/drive_c/ \
