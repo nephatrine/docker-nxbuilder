@@ -18,7 +18,7 @@ steps:
 
 ---
 kind: pipeline
-name: after
+name: after-1
 
 steps:
 - name: notify
@@ -31,6 +31,20 @@ steps:
       from_secret: webhook-id
     webhook_token:
       from_secret: webhook-token
+
+depends_on:
+- default
+
+trigger:
+  status:
+  - success
+  - failure
+
+---
+kind: pipeline
+name: after-2
+
+steps:
 - name: trigger
   image: plugins/downstream
   settings:
@@ -43,8 +57,3 @@ steps:
 
 depends_on:
 - default
-
-trigger:
-  status:
-  - success
-  - failure
