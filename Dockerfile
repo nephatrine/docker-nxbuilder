@@ -3,7 +3,7 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ARG WINEDLLOVERRIDES="mscoree,mshtml="
 RUN echo "====== CONFIGURE WINE (USER) ======" \
- && xvfb-run winetricks -q hhw vcrun2015 \
+ && xvfb-run winetricks -q vcrun2015 \
  && while pgrep wineserver >/dev/null; do sleep 1; done \
  && rm -rf /tmp/* /var/tmp/*
 
