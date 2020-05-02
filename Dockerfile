@@ -28,15 +28,15 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && git clone --single-branch --branch "release/${LLVM_MAJOR}.x" https://github.com/llvm/llvm-project.git \
  && mkdir llvm-project/compiler-rt/build && cd llvm-project/compiler-rt/build \
  && cp -nrv ../include/sanitizer /usr/lib/clang/${LLVM_MAJOR}/include/ \
- && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-x86_64.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-x86_64.cmake -DCOMPILER_RT_DEFAULT_TARGET_TRIPLE="x86_64-unknown-freebsd${FREEBSD_VERSION}" .. \
  && ninja \
  && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so /usr/lib/clang/${LLVM_MAJOR}/lib/freebsd/ \
  && rm -rf * \
- && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-i386.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-i386.cmake -DCOMPILER_RT_DEFAULT_TARGET_TRIPLE="i386-unknown-freebsd${FREEBSD_VERSION}" .. \
  && ninja \
  && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so  /usr/lib/clang/${LLVM_MAJOR}/lib/freebsd/ \
  && rm -rf * \
- && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-aarch64.cmake -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF -DCOMPILER_RT_BUILD_LIBFUZZER=OFF .. \
+ && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/cross-tools-llvm/toolchain-aarch64.cmake -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF -DCOMPILER_RT_DEFAULT_TARGET_TRIPLE="aarch64-unknown-freebsd${FREEBSD_VERSION}" .. \
  && ninja \
  && cp -nv ./lib/freebsd/*.a /usr/lib/clang/${LLVM_MAJOR}/lib/freebsd/ \
  && cd /usr/src && rm -rf /usr/src/*
