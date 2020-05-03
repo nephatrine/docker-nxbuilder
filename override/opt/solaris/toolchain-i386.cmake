@@ -1,0 +1,37 @@
+set(CMAKE_SYSTEM_NAME SunOS)
+set(CMAKE_SYSTEM_PROCESSOR i386)
+set(CMAKE_SYSTEM_VERSION $ENV{SOLARIS_VERSION})
+
+string(REPLACE "." ";" CMAKE_SYSTEM_VERSION_LIST "${CMAKE_SYSTEM_VERSION}")
+list(GET CMAKE_SYSTEM_VERSION_LIST 0 CMAKE_SYSTEM_VERSION_MAJOR)
+list(GET CMAKE_SYSTEM_VERSION_LIST 1 CMAKE_SYSTEM_VERSION_MINOR)
+math(EXPR CMAKE_SYSTEM_VERSION_MAJOR "${CMAKE_SYSTEM_VERSION_MAJOR} - 3")
+
+set(triplet "${CMAKE_SYSTEM_PROCESSOR}-pc-solaris${CMAKE_SYSTEM_VERSION_MAJOR}.${CMAKE_SYSTEM_VERSION_MINOR}")
+
+set(CMAKE_SYSROOT "$ENV{SOLARIS_PREFIX}/sysroot")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{SOLARIS_PREFIX}")
+
+find_program(CMAKE_C_COMPILER NAMES ${triplet}-gcc)
+find_program(CMAKE_CXX_COMPILER NAMES ${triplet}-g++)
+
+find_program(CMAKE_AR NAMES ${triplet}-gcc-ar ${triplet}-ar)
+find_program(CMAKE_RANLIB NAMES ${triplet}-gcc-ranlib ${triplet}-ranlib)
+find_program(CMAKE_STRIP NAMES ${triplet}-strip)
+find_program(CMAKE_LINKER NAMES ${triplet}-ld)
+find_program(CMAKE_NM NAMES ${triplet}-gcc-nm ${triplet}-nm)
+find_program(CMAKE_OBJDUMP NAMES ${triplet}-objdump)
+find_program(CMAKE_OBJCOPY NAMES ${triplet}-objcopy)
+find_program(CMAKE_READELF NAMES ${triplet}-readelf)
+find_program(CMAKE_ADDR2LINE NAMES ${triplet}-addr2line)
+
+set(CMAKE_C_COMPILER_TARGET ${triplet})
+set(CMAKE_CXX_COMPILER_TARGET ${triplet})
+
+set(CMAKE_C_FLAGS_INIT "-m32")
+set(CMAKE_CXX_FLAGS_INIT "-m32")
+
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)

@@ -4,8 +4,8 @@ set(CMAKE_SYSTEM_VERSION $ENV{FREEBSD_VERSION})
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-unknown-freebsd${CMAKE_SYSTEM_VERSION}")
 
-set(CMAKE_SYSROOT "/opt/freebsd/sysroot-${CMAKE_SYSTEM_PROCESSOR}")
-list(APPEND CMAKE_PREFIX_PATH "/usr/lib/llvm-9")
+set(CMAKE_SYSROOT "$ENV{FREEBSD_PREFIX}/sysroot-${CMAKE_SYSTEM_PROCESSOR}")
+list(APPEND CMAKE_PREFIX_PATH "/usr/lib/llvm-$ENV{LLVM_MAJOR}")
 
 find_program(CMAKE_C_COMPILER NAMES clang)
 find_program(CMAKE_CXX_COMPILER NAMES clang++)
