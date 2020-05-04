@@ -15,7 +15,6 @@ beyond that. It can also be used as a quick "cleanroom" to test builds in.
 - [CMake](https://cmake.org/)
 - [Doxygen](http://www.doxygen.nl/)
 - [M.CSS](https://mcss.mosra.cz/documentation/doxygen/)
-- [Moxygen](https://github.com/sourcey/moxygen)
 - [TeX Live](https://www.tug.org/texlive/)
 
 You can spin up a quick temporary test container like this:
@@ -29,7 +28,8 @@ docker run --rm -ti nephatrine/nxbuilder:latest /bin/bash
 - **nephatrine/nxbuilder:latest**: Base Configuration
 - **nephatrine/nxbuilder:android**: Build Android Packages
 - **nephatrine/nxbuilder:beos**: Build Haiku Packages
+- **nephatrine/nxbuilder:djgpp**: Build MS-DOS Packages
 - **nephatrine/nxbuilder:linux**: Build Ubuntu Packages
 - **nephatrine/nxbuilder:mingw**: Build Windows/MinGW Packages
 - **nephatrine/nxbuilder:osx**: Build macOS/Darwin Packages
-- **nephatrine/nxbuilder:unix**: Build FreeBSD Packages
+- **nephatrine/nxbuilder:unix**: Build FreeBSD/OpenIndiana Packages
