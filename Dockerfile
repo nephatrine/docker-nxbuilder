@@ -63,8 +63,6 @@ ARG MPC_VERSION=1.1.0
 ARG MPFR_VERSION=4.0.2
 ARG ISL_VERSION=0.22.1
 
-# export ac_cv_objext=o
-
 RUN echo "====== BUILD GCC ======" \
  && cd /usr/src \
  && curl -f "${GNU_MIRROR}/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.xz" -L -o "gcc-${GCC_VERSION}.tar.xz" \
