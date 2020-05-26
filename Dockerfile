@@ -10,6 +10,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get clean \
  && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
+ENV LLVM_MAJOR=10
 COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
