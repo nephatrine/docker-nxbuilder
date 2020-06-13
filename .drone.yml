@@ -30,7 +30,7 @@ steps:
     webhook_id:
       from_secret: wh-nxbuild-id
     webhook_token:
-      from_secret: wh-nxbuild-token
+      from_secret: wh-nxbuild-tok
 
 depends_on:
 - default
