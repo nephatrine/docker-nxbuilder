@@ -38,7 +38,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src \
  && mkdir build-aarch64 && cd build-aarch64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/aarch64-linux-gnu/toolchain.cmake /opt/nxb/src/hello \
- && ninja && ./hello \
+ && ninja && file ./hello \
  && cd /usr/src/nxbuild \
  && mkdir build-powerpc64le && cd build-powerpc64le \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/powerpc64le-linux-gnu/toolchain.cmake .. \
@@ -46,7 +46,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src \
  && mkdir build-powerpc64le && cd build-powerpc64le \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/powerpc64le-linux-gnu/toolchain.cmake /opt/nxb/src/hello \
- && ninja && ./hello \
+ && ninja && file ./hello \
  && cd /usr/src/nxbuild \
  && mkdir build-riscv64 && cd build-riscv64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/riscv64-linux-gnu/toolchain.cmake .. \
@@ -54,7 +54,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src \
  && mkdir build-riscv64 && cd build-riscv64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/riscv64-linux-gnu/toolchain.cmake /opt/nxb/src/hello \
- && ninja && ./hello \
+ && ninja && file ./hello \
  && cd /usr/src/nxbuild \
  && mkdir build-s390x && cd build-s390x \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/s390x-linux-gnu/toolchain.cmake .. \
@@ -62,7 +62,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src \
  && mkdir build-s390x && cd build-s390x \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/s390x-linux-gnu/toolchain.cmake /opt/nxb/src/hello \
- && ninja && ./hello \
+ && ninja && file ./hello \
  && cd /usr/src/nxbuild \
  && mkdir build-i686 && cd build-i686 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/i686-linux-gnu/toolchain.cmake .. \
@@ -78,5 +78,5 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src \
  && mkdir build-armhf && cd build-armhf \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/arm-linux-gnueabihf/toolchain.cmake /opt/nxb/src/hello \
- && ninja && ./hello \
+ && ninja && file ./hello \
  && cd /usr/src && rm -rf /usr/src/*
