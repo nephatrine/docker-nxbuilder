@@ -68,22 +68,43 @@ ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
+ && cd /usr/src && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
+ && cd /usr/src/nxbuild \
+ && mkdir build-x86_64 && cd build-x86_64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/x86_64-w64-mingw32/toolchain.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/x86_64-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
  && ninja && WINEPATH=${WINEPREFIX}/drive_c/x86_64-w64-mingw32/bin/gcc wine64 ./hello.exe \
+ && cd /usr/src/nxbuild \
+ && mkdir build-x86_64_llvm && cd build-x86_64_llvm \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-x86_64.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-x86_64_llvm && cd build-x86_64_llvm \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-x86_64.cmake /opt/nxb/src/hello \
  && ninja && WINEPATH=${WINEPREFIX}/drive_c/x86_64-w64-mingw32/bin wine64 ./hello.exe \
+ && cd /usr/src/nxbuild \
+ && mkdir build-i686 && cd build-i686 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/i686-w64-mingw32/toolchain.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-i686 && cd build-i686 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/i686-w64-mingw32/toolchain.cmake /opt/nxb/src/hello \
  && ninja && WINEPATH=${WINEPREFIX}/drive_c/i686-w64-mingw32/bin/gcc wine ./hello.exe \
+ && cd /usr/src/nxbuild \
+ && mkdir build-i686_llvm && cd build-i686_llvm \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-i686.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-i686_llvm && cd build-i686_llvm \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-i686.cmake /opt/nxb/src/hello \
  && ninja && WINEPATH=${WINEPREFIX}/drive_c/i686-w64-mingw32/bin wine ./hello.exe \
+ && cd /usr/src/nxbuild \
+ && mkdir build-aarch64 && cd build-aarch64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-aarch64.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-aarch64 && cd build-aarch64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-aarch64.cmake /opt/nxb/src/hello \
