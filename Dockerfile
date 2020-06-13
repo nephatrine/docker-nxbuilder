@@ -60,14 +60,27 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && cd /usr/src && rm -rf /usr/src/*
 
 RUN echo "====== TEST TOOLCHAINS ======" \
+ && cd /usr/src && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
+ && cd /usr/src/nxbuild \
+ && mkdir build-x86_64 && cd build-x86_64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-x86_64-msvc.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-x86_64-msvc.cmake /opt/nxb/src/hello \
  && ninja && wine64 ./hello.exe \
+ && cd /usr/src/nxbuild \
+ && mkdir build-i686 && cd build-i686 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-i686-msvc.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-i686 && cd build-i686 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-i686-msvc.cmake /opt/nxb/src/hello \
  && ninja && wine ./hello.exe \
+ && cd /usr/src/nxbuild \
+ && mkdir build-aarch64 && cd build-aarch64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-aarch64-msvc.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-aarch64 && cd build-aarch64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/windows/cross-tools-llvm/toolchain-aarch64-msvc.cmake /opt/nxb/src/hello \
