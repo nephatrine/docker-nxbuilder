@@ -102,10 +102,10 @@ COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
  && mv /opt/djgpp/MSDOS.cmake /usr/share/cmake-*/Modules/Platform/ \
- && cd /usr/src && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
+ && mkdir /usr/src/nxbuild \
  && cd /usr/src/nxbuild \
  && mkdir build-i586 && cd build-i586 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/djgpp/toolchain.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/djgpp/toolchain.cmake /opt/nsb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-i586 && cd build-i586 \
