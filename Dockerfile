@@ -2,8 +2,10 @@ FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL PACKAGES ======" \
+ && mkdir /run/uuidd \
  && dpkg --add-architecture i386 \
  && apt-get update -q \
+ && apt-get -y -q -o Dpkg::Options::="--force-confnew" install libc6:i386 \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install wine-development \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
    cabextract gcab \
