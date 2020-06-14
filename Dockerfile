@@ -4,7 +4,8 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 ENV DJGPP_PREFIX=/opt/djgpp
 ARG TRIPLET=i586-pc-msdosdjgpp
 
-ARG DJGPP_MIRROR=http://www.mirrorservice.org/sites/ftp.delorie.com/pub/djgpp
+#ARG DJGPP_MIRROR=http://www.mirrorservice.org/sites/ftp.delorie.com/pub/djgpp
+ARG DJGPP_MIRROR=http://na.mirror.garr.it/mirrors/djgpp
 ARG BINTUILS_MAJOR=2
 ARG BINTUILS_MINOR=34
 
@@ -26,7 +27,7 @@ ENV PATH="$DJGPP_PREFIX/bin:$PATH"
 ARG GNU_MIRROR=http://ftpmirror.gnu.org
 ARG ISL_MIRROR=http://isl.gforge.inria.fr
 ARG GCC_MAJOR=9
-ARG GCC_MINOR=2
+ARG GCC_MINOR=3
 ARG GMP_VERSION=6.2.0
 ARG MPC_VERSION=1.1.0
 ARG MPFR_VERSION=4.0.2
