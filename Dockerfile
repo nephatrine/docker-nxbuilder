@@ -32,39 +32,53 @@ ENV PATH=${ANDROID_SDK_ROOT}/build-tools/${ANDROID_SDK_BTOOLS}:$PATH
 COPY override /
 
 ENV NDK_SYSROOT=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/sysroot
-RUN echo "====== BUILD NATIVE GLUE ======" \
- && cd /usr/src \
+RUN echo "====== TEST TOOLCHAINS ======" \
+ && cd /usr/src && mkdir nag && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
  && cp -nv ${ANDROID_NDK_ROOT}/sources/android/native_app_glue/android_native_app_glue.h ${NDK_SYSROOT}/usr/include/android/native_app_glue.h \
+ && cd /usr/src/nxbuild \
+ && mkdir build-arm && cd build-arm \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=armeabi-v7a .. \
+ && ninja && ninja install \
+ && cd /usr/src/nag \
  && mkdir build-arm && cd build-arm \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=armeabi-v7a ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
  && ninja && cp -nv ./libnative_app_glue.a ${NDK_SYSROOT}/usr/lib/arm-linux-androideabi/ \
  && cd /usr/src \
+ && mkdir build-arm && cd build-arm \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=armeabi-v7a /opt/nxb/src/hello \
+ && ninja && file ./libhello.so \
+ && cd /usr/src/nxbuild \
+ && mkdir build-aarch64 && cd build-aarch64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=arm64-v8a .. \
+ && ninja && ninja install \
+ && cd /usr/src/nag \
  && mkdir build-aarch64 && cd build-aarch64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=arm64-v8a ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
  && ninja && cp -nv ./libnative_app_glue.a ${NDK_SYSROOT}/usr/lib/aarch64-linux-android/ \
  && cd /usr/src \
+ && mkdir build-aarch64 && cd build-aarch64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=arm64-v8a /opt/nxb/src/hello \
+ && ninja && file ./libhello.so \
+ && cd /usr/src/nxbuild \
+ && mkdir build-i686 && cd build-i686 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=x86 .. \
+ && ninja && ninja install \
+ && cd /usr/src/nag \
  && mkdir build-i686 && cd build-i686 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=x86 ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
  && ninja && cp -nv ./libnative_app_glue.a ${NDK_SYSROOT}/usr/lib/i686-linux-android/ \
  && cd /usr/src \
- && mkdir build-x86_64 && cd build-x86_64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=x86_64 ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
- && ninja && cp -nv ./libnative_app_glue.a ${NDK_SYSROOT}/usr/lib/x86_64-linux-android/ \
- && cd /usr/src && rm -rf /usr/src/*
-
-RUN echo "====== TEST TOOLCHAINS ======" \
- && cd /usr/src \
- && mkdir build-arm && cd build-arm \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=armeabi-v7a /opt/nxb/src/hello \
- && ninja && file ./libhello.so \
- && cd /usr/src \
- && mkdir build-aarch64 && cd build-aarch64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=arm64-v8a /opt/nxb/src/hello \
- && ninja && file ./libhello.so \
- && cd /usr/src \
  && mkdir build-i686 && cd build-i686 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=x86 /opt/nxb/src/hello \
  && ninja && file ./libhello.so \
+ && cd /usr/src/nxbuild \
+ && mkdir build-x86_64 && cd build-x86_64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=x86_64 .. \
+ && ninja && ninja install \
+ && cd /usr/src/nag \
+ && mkdir build-x86_64 && cd build-x86_64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=x86_64 ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
+ && ninja && cp -nv ./libnative_app_glue.a ${NDK_SYSROOT}/usr/lib/x86_64-linux-android/ \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.cmake -DANDROID_ABI=x86_64 /opt/nxb/src/hello \
