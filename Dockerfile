@@ -103,22 +103,43 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && cd /usr/src && rm -rf /usr/src/*
 
 RUN echo "====== TEST TOOLCHAINS ======" \
+ && cd /usr/src && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
+ && cd /usr/src/nxbuild \
+ && mkdir build-x86_64-bsd && cd build-x86_64-bsd \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${FREEBSD_PREFIX}/toolchain-x86_64.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-x86_64-bsd && cd build-x86_64-bsd \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${FREEBSD_PREFIX}/toolchain-x86_64.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
+ && cd /usr/src/nxbuild \
+ && mkdir build-i386-bsd && cd build-i386-bsd \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${FREEBSD_PREFIX}/toolchain-i386.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-i386-bsd && cd build-i386-bsd \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${FREEBSD_PREFIX}/toolchain-i386.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
+ && cd /usr/src/nxbuild \
+ && mkdir build-aarch64-bsd && cd build-aarch64-bsd \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${FREEBSD_PREFIX}/toolchain-aarch64.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-aarch64-bsd && cd build-aarch64-bsd \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${FREEBSD_PREFIX}/toolchain-aarch64.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
+ && cd /usr/src/nxbuild \
+ && mkdir build-x86_64-oi && cd build-x86_64-oi \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${SOLARIS_PREFIX}/toolchain-x86_64.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-x86_64-oi && cd build-x86_64-oi \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${SOLARIS_PREFIX}/toolchain-x86_64.cmake /opt/nxb/src/hello \
  && ninja && file ./hello \
+ && cd /usr/src/nxbuild \
+ && mkdir build-i386-oi && cd build-i386-oi \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${SOLARIS_PREFIX}/toolchain-i386.cmake .. \
+ && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-i386-oi && cd build-i386-oi \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${SOLARIS_PREFIX}/toolchain-i386.cmake /opt/nxb/src/hello \
