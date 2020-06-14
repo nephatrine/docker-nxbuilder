@@ -21,10 +21,10 @@ ENV PATH=${TARGET_DIR}/bin:$PATH
 COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
- && cd /usr/src && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
+ && mkdir /usr/src/nxbuild \
  && cd /usr/src/nxbuild \
  && mkdir build-x86_64 && cd build-x86_64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TARGET_DIR}/toolchain-x86_64.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TARGET_DIR}/toolchain-x86_64.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
@@ -32,7 +32,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && ninja && file ./hello \
  && cd /usr/src/nxbuild \
  && mkdir build-x86_64h && cd build-x86_64h \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TARGET_DIR}/toolchain-x86_64h.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TARGET_DIR}/toolchain-x86_64h.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-x86_64h && cd build-x86_64h \
@@ -40,7 +40,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && ninja && file ./hello \
  && cd /usr/src/nxbuild \
  && mkdir build-i386 && cd build-i386 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TARGET_DIR}/toolchain-i386.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TARGET_DIR}/toolchain-i386.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-i386 && cd build-i386 \
