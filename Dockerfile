@@ -33,6 +33,14 @@ RUN echo "====== INSTALL M.CSS ======" \
  && mv plugins ../plugins \
  && mv COPYING ../ \
  && cd .. && rm -rf m.css bin/test*
-
 ENV PATH=/opt/m.css/bin:$PATH
+
 COPY override /
+
+RUN echo "====== INSTALL NXBUILD ======" \
+ && mkdir -p /opt/nxb/src && cd /opt/nxb/src \
+ && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
+ && mkdir /usr/src/build && cd /usr/src/build \
+ && cmake -GNinja /opt/nxb/src/nxbuild \
+ && ninja && ninja install \
+ && cd /usr/src && rm -rf /usr/src/*
