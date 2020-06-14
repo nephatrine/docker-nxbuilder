@@ -35,11 +35,12 @@ RUN echo "====== BUILD HAIKU ======" \
 ENV PATH=/opt/haiku/cross-tools-x86_64/bin:$PATH
 
 COPY override /
+
 RUN echo "====== TEST TOOLCHAINS ======" \
- && cd /usr/src && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
+ && mkdir /usr/src/nxbuild \
  && cd /usr/src/nxbuild \
  && mkdir build-x86_64 && cd build-x86_64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/haiku/cross-tools-x86_64/toolchain.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/haiku/cross-tools-x86_64/toolchain.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
