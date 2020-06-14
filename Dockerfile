@@ -34,7 +34,7 @@ RUN echo "====== BUILD MSIX-PACKAGING ======" \
 COPY clang-target-wrapper.patch /usr/src/clang-target-wrapper.patch
 ARG TOOLCHAIN_ARCHS="i686 x86_64 aarch64"
 ARG TOOLCHAIN_PREFIX=/opt/windows/cross-tools-llvm
-ARG LLVM_MAJOR=10
+ENV LLVM_MAJOR=10
 ARG LLVM_VERSION=release/${LLVM_MAJOR}.x
 RUN echo "====== BUILD LLVM-MINGW ======" \
  && cd /usr/src \
@@ -68,10 +68,10 @@ ENV PATH=$TOOLCHAIN_PREFIX/bin:$PATH
 COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
- && cd /usr/src && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
+ && mkdir /usr/src/nxbuild \
  && cd /usr/src/nxbuild \
  && mkdir build-x86_64 && cd build-x86_64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/x86_64-w64-mingw32/toolchain.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/x86_64-w64-mingw32/toolchain.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-x86_64 && cd build-x86_64 \
@@ -79,7 +79,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && ninja && WINEPATH=${WINEPREFIX}/drive_c/x86_64-w64-mingw32/bin/gcc wine64 ./hello.exe \
  && cd /usr/src/nxbuild \
  && mkdir build-x86_64_llvm && cd build-x86_64_llvm \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-x86_64.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-x86_64.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-x86_64_llvm && cd build-x86_64_llvm \
@@ -87,7 +87,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && ninja && WINEPATH=${WINEPREFIX}/drive_c/x86_64-w64-mingw32/bin wine64 ./hello.exe \
  && cd /usr/src/nxbuild \
  && mkdir build-i686 && cd build-i686 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/i686-w64-mingw32/toolchain.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/i686-w64-mingw32/toolchain.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-i686 && cd build-i686 \
@@ -95,7 +95,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && ninja && WINEPATH=${WINEPREFIX}/drive_c/i686-w64-mingw32/bin/gcc wine ./hello.exe \
  && cd /usr/src/nxbuild \
  && mkdir build-i686_llvm && cd build-i686_llvm \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-i686.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-i686.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-i686_llvm && cd build-i686_llvm \
@@ -103,7 +103,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && ninja && WINEPATH=${WINEPREFIX}/drive_c/i686-w64-mingw32/bin wine ./hello.exe \
  && cd /usr/src/nxbuild \
  && mkdir build-aarch64 && cd build-aarch64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-aarch64.cmake .. \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_PREFIX}/toolchain-aarch64.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-aarch64 && cd build-aarch64 \
