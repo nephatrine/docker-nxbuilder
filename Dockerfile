@@ -106,7 +106,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir /usr/src/nxbuild \
  && cd /usr/src/nxbuild \
  && mkdir build-i586 && cd build-i586 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/djgpp/toolchain.cmake /opt/nsb/src/nxbuild \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/djgpp/toolchain.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src \
  && mkdir build-i586 && cd build-i586 \
