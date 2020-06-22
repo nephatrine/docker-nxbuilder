@@ -5,14 +5,25 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get update -q \
  && apt-get -y -qq install apt-utils \
+ && apt-get -y -q -o Dpkg::Options::="--force-confnew" dist-upgrade \
+ && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
+   apt-transport-https \
+   ca-certificates \
+   gnupg \
+   software-properties-common \
+   wget \
+ && wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor - > /etc/apt/trusted.gpg.d/kitware.gpg \
+ && apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main' \
+ && apt-get update -q \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
    autoconf automake-1.15 autopoint \
    bison build-essential \
-   ca-certificates clang clang-format clang-tidy clang-tools cmake curl \
-   doxygen-latex dia \
+   clang clang-format clang-tidy clang-tools cmake curl \
+   dia doxygen-latex \
    flex \
    gawk gettext git git-lfs global graphviz \
    imagemagick \
+   kitware-archive-keyring \
    libarchive-tools libc++-dev libc++abi-dev libclang-dev libicu-dev librsvg2-bin libssl-dev libtool libunwind-dev libxml2-dev lld llvm lsb-release \
    mercurial mscgen \
    nasm ninja-build \
@@ -20,11 +31,11 @@ RUN echo "====== INSTALL PACKAGES ======" \
    subversion \
    texinfo \
    unzip \
-   wget \
    zlib1g-dev \
+ && apt-get autoremove -y -q \
  && apt-get clean \
  && mkdir /usr/local/lib/x86_64-linux-gnu \
- && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+ && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* /etc/apt/trusted.gpg.d/kitware.gpg
 
 RUN echo "====== INSTALL M.CSS ======" \
  && mkdir /opt/m.css && cd /opt/m.css \
