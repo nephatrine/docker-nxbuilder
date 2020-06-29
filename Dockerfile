@@ -28,7 +28,8 @@ RUN echo "====== CONFIGURE WINE ======" \
 RUN echo "====== BUILD MSIX-PACKAGING ======" \
  && cd /usr/src \
  && git clone https://github.com/microsoft/msix-packaging.git && cd msix-packaging \
- && ./makelinux.sh --pack \
+ && git fetch origin johnmcpms/signing:signing && git checkout signing \
+ && ./makelinux.sh --pack --validation-parser \
  && cp -nv .vs/lib/*.so /usr/local/lib/x86_64-linux-gnu/ && ldconfig \
  && cp -nv .vs/bin/makemsix /usr/local/bin/ \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
