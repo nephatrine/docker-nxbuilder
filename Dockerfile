@@ -1,16 +1,7 @@
 FROM nephatrine/nxbuilder:mingw
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV WIX_DIR="${WINEPREFIX}/drive_c/Program Files (x86)/WiX Toolset v3.9/"
-RUN echo "====== DOWNLOAD WiX ======" \
- && mkdir -p "${WIX_DIR}/bin" && cd "${WIX_DIR}/bin" \
- && curl -SL "https://wixtoolset.org/downloads/v3.9.1006.0/wix39-binaries.zip" -o wix39-binaries.zip \
- && unzip wix39-binaries.zip && chmod +x *.exe \
- && mv doc ../doc && mv sdk ../SDK \
- && rm -f wix39-binaries.zip
-
 ENV VSINSTALLDIR="${WINEPREFIX}/drive_c/Program Files (x86)/Microsoft Visual Studio/2019/Community/"
-
 ENV VCINSTALLDIR="${VSINSTALLDIR}VC/" VCToolsVersion="14.26.28801" VCRedistVersion="14.26.28720"
 ENV VCToolsInstallDir="${VCINSTALLDIR}Tools/MSVC/${VCToolsVersion}/" VCToolsRedistDir="${VCINSTALLDIR}Redist/MSVC/${VCRedistVersion}/"
 
