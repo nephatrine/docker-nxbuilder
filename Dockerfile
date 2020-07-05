@@ -11,6 +11,8 @@ ENV WindowsSdkBinPath="${WindowsSdkDir}bin/" WindowsSdkVerBinPath="${WindowsSdkD
 
 ARG TOOLCHAIN_PREFIX="/usr/src/staging"
 RUN echo "====== DOWNLOAD MSVC ======" \
+ && apt-get update -q \
+ && apt-get -y -q -o Dpkg::Options::="--force-confnew" install msitools \
  && mkdir ${TOOLCHAIN_PREFIX} && cd /usr/src \
  && git clone https://github.com/mstorsjo/msvc-wine.git && cd msvc-wine \
  && python3 ./vsdownload.py --accept-license --dest ${TOOLCHAIN_PREFIX} \
@@ -21,6 +23,9 @@ RUN echo "====== DOWNLOAD MSVC ======" \
  && find "${VSINSTALLDIR}" -name *.exe -type f -delete \
  && rm -rf "${UniversalCRTSdkDir}" && mv "${TOOLCHAIN_PREFIX}/kits/10/" "${UniversalCRTSdkDir}" \
  && find "${UniversalCRTSdkDir}" -name arm -type d -exec rm -rf {} + \
+ && apt-get -y -q purge msitools \
+ && apt-get -y -q autoremove \
+ && apt-get clean \
  && cd /usr/src && rm -rf /tmp/* /usr/src/* /var/tmp/*
 
 COPY override /
