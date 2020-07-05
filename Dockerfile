@@ -8,12 +8,11 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install libc6:i386 \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install wine-development \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
-   cabextract gcab \
    mingw-w64 mingw-w64-tools \
-   msitools nsis \
-   osslsigncode pesign \
-   wine-binfmt winetricks \
-   wixl xvfb \
+   nsis \
+   osslsigncode \
+   wine-binfmt wixl \
+   xvfb \
  && apt-get clean \
  && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
