@@ -1,5 +1,5 @@
 set(CMAKE_SYSTEM_NAME Darwin)
-set(CMAKE_SYSTEM_PROCESSOR x86_64h)
+set(CMAKE_SYSTEM_PROCESSOR x86_64)
 set(CMAKE_OSX_ARCHITECTURES ${CMAKE_SYSTEM_PROCESSOR})
 
 string(REPLACE "." ";" OSX_SDK_VERSION "$ENV{SDK_VERSION}")
@@ -8,8 +8,8 @@ math(EXPR CMAKE_SYSTEM_VERSION "${CMAKE_SYSTEM_VERSION} + 4")
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-apple-darwin${CMAKE_SYSTEM_VERSION}")
 
-set(CMAKE_OSX_SYSROOT "/opt/darwin/sysroot-osx")
-list(APPEND CMAKE_PREFIX_PATH "/opt/darwin/cross-tools-llvm")
+set(CMAKE_OSX_SYSROOT "$ENV{SDK_DIR}")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{TARGET_DIR}")
 
 find_program(CMAKE_C_COMPILER NAMES ${triplet}-clang)
 find_program(CMAKE_CXX_COMPILER NAMES ${triplet}-clang++)
