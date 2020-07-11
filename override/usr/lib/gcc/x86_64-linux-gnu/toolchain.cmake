@@ -1,5 +1,5 @@
 set(CMAKE_SYSTEM_NAME Linux)
-set(CMAKE_SYSTEM_PROCESSOR powerpc64le)
+set(CMAKE_SYSTEM_PROCESSOR x86_64)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-linux-gnu")
 
