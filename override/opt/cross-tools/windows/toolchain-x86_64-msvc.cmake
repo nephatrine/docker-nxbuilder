@@ -63,13 +63,13 @@ endfunction()
 
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_SYSTEM_PROCESSOR x86_64)
-set(CMAKE_SYSTEM_VERSION 10.0)
+set(CMAKE_SYSTEM_VERSION ${UCRTVersion})
 set(CMAKE_VS_PLATFORM_NAME x64)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-windows-msvc")
 
 set(CMAKE_SYSROOT "$ENV{WINEPREFIX}/drive_c")
-list(APPEND CMAKE_PREFIX_PATH "/opt/windows/cross-tools-llvm")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{TOOLCHAIN_PREFIX}")
 
 find_program(CMAKE_C_COMPILER NAMES clang-cl)
 find_program(CMAKE_CXX_COMPILER NAMES clang-cl)
@@ -96,7 +96,7 @@ set(CMAKE_EXE_LINKER_FLAGS_INIT "/manifest:no")
 set(CMAKE_MODULE_LINKER_FLAGS_INIT "/manifest:no")
 set(CMAKE_SHARED_LINKER_FLAGS_INIT "/manifest:no")
 
-set(CMAKE_USER_MAKE_RULES_OVERRIDE "/opt/windows/cross-tools-llvm/CMakeCompileRules.cmake")
+set(CMAKE_USER_MAKE_RULES_OVERRIDE "$ENV{TOOLCHAIN_PREFIX}/CMakeCompileRules.cmake")
 
 include_directories(
     SYSTEM "$ENV{VCToolsInstallDir}include" "$ENV{WindowsSdkDir}Include/$ENV{WindowsSDKVersion}ucrt"
