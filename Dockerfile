@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV DEBIAN_FRONTEND=noninteractive PATH=/opt/m.css/bin:$PATH
+ENV DEBIAN_FRONTEND=noninteractive LLVM_MAJOR=10 PATH=/opt/m.css/bin:$PATH
 RUN mkdir /usr/local/lib/x86_64-linux-gnu
 
 RUN echo "====== INSTALL PACKAGES ======" \
