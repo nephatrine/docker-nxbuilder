@@ -15,7 +15,7 @@ RUN echo "====== DOWNLOAD OSX SDK ======" \
  && cp -nv ./build/compiler-rt/compiler-rt/build/lib/darwin/*.dylib /usr/lib/clang/${LLVM_MAJOR}/lib/darwin/ \
  && mv ${TARGET_DIR}/SDK/MacOSX${SDK_VERSION}.sdk ${SDK_DIR} \
  && ln -s ${SDK_DIR} ${TARGET_DIR}/SDK/MacOSX${SDK_VERSION}.sdk \
- && cd /usr/src && rm -rf /usr/src/*
+ && cd /usr/src && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir /usr/src/nxbuild \
@@ -31,4 +31,4 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir build-i386 && cd build-i386 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/darwin/toolchain-i386.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
- && cd /usr/src && rm -rf /usr/src/*
+ && cd /usr/src && rm -rf /tmp/* /var/tmp/* /usr/src/*
