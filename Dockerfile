@@ -42,4 +42,4 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir build-armhf && cd build-armhf \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/lib/gcc-cross/arm-linux-gnueabihf/toolchain.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
- && cd /usr/src && rm -rf /usr/src/*
+ && cd /usr/src && rm -rf /tmp/* /var/tmp/* /usr/src/*
