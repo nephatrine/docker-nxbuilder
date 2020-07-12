@@ -1,7 +1,7 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV ANDROID_SDK_ROOT=/opt/android-sdk ANDROID_SDK_TOOLS=29.0.3 ANDROID_SDK_VERSION=4333796 JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV ANDROID_SDK_ROOT=/opt/android-sdk ANDROID_SDK_TOOLS=29.0.3 JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk-bundle DEBUG_KEYSTORE=${ANDROID_SDK_ROOT}/debug.keystore \
  PATH=${ANDROID_SDK_ROOT}/build-tools/${ANDROID_SDK_TOOLS}:${ANDROID_SDK_ROOT}/tools/bin:$PATH
 ENV ANDROID_NDK_SYSROOT=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/sysroot
@@ -14,6 +14,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && rm -rf /tmp/* /var/tmp/*
 
 RUN echo "====== INSTALL ANDROID SDK ======" \
+ && export ANDROID_SDK_VERSION=4333796 \
  && cd ${ANDROID_SDK_ROOT} \
  && wget https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_VERSION}.zip \
  && unzip sdk-tools-linux-${ANDROID_SDK_VERSION}.zip \
