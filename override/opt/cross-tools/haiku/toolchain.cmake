@@ -3,8 +3,8 @@ set(CMAKE_SYSTEM_PROCESSOR x86_64)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-unknown-haiku")
 
-set(CMAKE_SYSROOT "/opt/haiku/sysroot-${CMAKE_SYSTEM_PROCESSOR}")
-list(APPEND CMAKE_PREFIX_PATH "/opt/haiku/cross-tools-${CMAKE_SYSTEM_PROCESSOR}")
+set(CMAKE_SYSROOT "$ENV{HAIKU_INSTALL_DIR}")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{TOOLCHAIN_PREFIX}")
 
 find_program(CMAKE_C_COMPILER NAMES ${triplet}-gcc)
 find_program(CMAKE_CXX_COMPILER NAMES ${triplet}-g++)
