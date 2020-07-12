@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.13)
-project(hello-world)
-add_library(hello SHARED hello.cpp)
-target_link_libraries(hello android native_app_glue)
-target_link_options(hello PRIVATE "-u ANativeActivity_onCreate")

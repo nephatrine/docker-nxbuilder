@@ -11,7 +11,7 @@ if(NOT DEFINED ANDROID_LD)
 endif()
 
 if(NOT DEFINED ANDROID_NATIVE_API_LEVEL)
-    set(ANDROID_NATIVE_API_LEVEL 28)
+    set(ANDROID_NATIVE_API_LEVEL 24)
 endif()
 
 include(${ANDROID_NDK}/build/cmake/android.toolchain.cmake)
