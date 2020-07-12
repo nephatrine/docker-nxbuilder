@@ -56,12 +56,10 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && ninja && ninja install \
  && cd /usr/src && rm -rf /tmp* /var/tmp/* /usr/src/*
 
-RUN echo "====== DOWNLOAD OPENINDIANA ======" \
+RUN echo "====== INSTALL OPENINDIANA ======" \
  && mkdir -p "${SOLARIS_SYSROOT}" && cd "${SOLARIS_SYSROOT}" \
  && wget https://files.nephatrine.net/Local/OpenIndiana-20200330.tgz -O OpenIndiana.tgz \
- && tar -xzf OpenIndiana.tgz && rm -f OpenIndiana.tgz
-
-RUN echo "====== DOWNLOAD OPENINDIANA PATCHES ======" \
+ && tar -xzf OpenIndiana.tgz && rm -f OpenIndiana.tgz \
  && cd /usr/src \
  && git clone https://github.com/OpenIndiana/oi-userland \
  && mkdir -p "${SOLARIS_PREFIX}/patches/binutils/" \
@@ -70,7 +68,7 @@ RUN echo "====== DOWNLOAD OPENINDIANA PATCHES ======" \
  && cp oi-userland/components/developer/gcc-9/patches/*.patch "${SOLARIS_PREFIX}/patches/gcc/" \
  && rm -rf /usr/src/*
 
-RUN echo "====== BUILD BINUTILS ======" \
+RUN echo "====== INSTALL BINUTILS ======" \
  && export BINUTILS_VERSION=2.34 \
  && cd /usr/src \
  && curl -f "http://ftpmirror.gnu.org/binutils/binutils-${BINUTILS_VERSION}.tar.xz" -L -o "binutils-${BINUTILS_VERSION}.tar.xz" \
@@ -79,15 +77,12 @@ RUN echo "====== BUILD BINUTILS ======" \
  && mkdir ../binutils-build && cd ../binutils-build \
  && ../binutils-${BINUTILS_VERSION}/configure --target=i386-pc-solaris2.11 --prefix=${SOLARIS_PREFIX} --with-sysroot=${SOLARIS_SYSROOT} --enable-64-bit-bfd --enable-gold=no --disable-nls --disable-libtool-lock --enable-largefile=yes \
  && make -j4 && make -j4 -s check && make install \
- && cd /usr/src && rm -rf /usr/src/*
+ && cd /usr/src && rm -rf /tmp* /var/tmp/* /usr/src/*
 
-ARG GCC_VERSION=9.3.0
-ARG GMP_VERSION=6.2.0
-ARG MPC_VERSION=1.1.0
-ARG MPFR_VERSION=4.0.2
-ARG ISL_VERSION=0.22.1
-
-RUN echo "====== BUILD GCC ======" \
+RUN echo "====== INSTALL GCC ======" \
+ && export GCC_VERSION=9.3.0 \
+ && export GMP_VERSION=6.2.0 && export ISL_VERSION=0.22.1 \
+ && export MPC_VERSION=1.1.0 && export MPFR_VERSION=4.0.2 \
  && cd /usr/src \
  && curl -f "http://ftpmirror.gnu.org/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.xz" -L -o "gcc-${GCC_VERSION}.tar.xz" \
  && tar xJf "gcc-${GCC_VERSION}.tar.xz" && cd "gcc-${GCC_VERSION}" \
@@ -103,7 +98,8 @@ RUN echo "====== BUILD GCC ======" \
  && mkdir ../gcc-build && cd ../gcc-build \
  && ../gcc-${GCC_VERSION}/configure --target=i386-pc-solaris2.11 --prefix=${SOLARIS_PREFIX} --with-sysroot=${SOLARIS_SYSROOT} --enable-plugins --enable-initfini-array --enable-languages=c,c++,lto --disable-libitm enable_frame_pointer=yes --with-gnu-ld --with-gnu-as \
  && make -j4 all-gcc && make install-gcc \
- && make -j4 && make -j4 -s check-gcc && make install-strip
+ && make -j4 && make -j4 -s check-gcc && make install-strip \
+ && cd /usr/src && rm -rf /tmp* /var/tmp/* /usr/src/*
 
 RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir /usr/src/nxbuild \
