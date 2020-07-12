@@ -3,7 +3,7 @@ set(CMAKE_SYSTEM_PROCESSOR i586)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-pc-msdosdjgpp")
 
-list(APPEND CMAKE_PREFIX_PATH "$ENV{DJGPP_PREFIX}/${triplet}")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{DJGPP_PREFIX}" "$ENV{DJGPP_PREFIX}/${triplet}")
 
 find_program(CMAKE_C_COMPILER NAMES ${triplet}-gcc)
 find_program(CMAKE_CXX_COMPILER NAMES ${triplet}-g++)
