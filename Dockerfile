@@ -21,13 +21,15 @@ RUN echo "====== INSTALL ANDROID SDK ======" \
 
 RUN echo "====== INSTALL SDK TOOLS ======" \
  && mkdir /root/.android && touch /root/.android/repositories.cfg \
+ && mv ${ANDROID_NDK_ROOT} ${ANDROID_SDK_ROOT}/ndk-bundle2 \
  && sdkmanager --update \
  && yes | sdkmanager --licenses \
  && sdkmanager "build-tools;${ANDROID_SDK_TOOLS}" \
  && sdkmanager "ndk-bundle" \
  && sdkmanager "platforms;android-19" \
  && sdkmanager "platforms;android-24" \
- && rm -rf /tmp/* /var/tmp/* /usr/src/*
+ && cp -nrv ${ANDROID_SDK_ROOT}/ndk-bundle2/* ${ANDROID_NDK_ROOT}/ \
+ && rm -rf /tmp/* /var/tmp/* /usr/src/* ${ANDROID_SDK_ROOT}/ndk-bundle2
 
 RUN echo "====== INSTALL NATIVE_APP_GLUE ======" \
  && cp -nv ${ANDROID_NDK_ROOT}/sources/android/native_app_glue/android_native_app_glue.h ${ANDROID_NDK_SYSROOT}/usr/include/android/native_app_glue.h \
