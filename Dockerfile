@@ -38,7 +38,7 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${FREEBSD_PREFIX}/toolchain-aarch64.cmake -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF -DCOMPILER_RT_DEFAULT_TARGET_TRIPLE="aarch64-unknown-freebsd${FREEBSD_VERSION}" .. \
  && ninja \
  && cp -nv ./lib/freebsd/*.a /usr/lib/clang/${LLVM_MAJOR}/lib/freebsd/ \
- && cd /usr/src && rm -rf /tmp* /var/tmp/* /usr/src/*
+ && cd /usr/src && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir /usr/src/nxbuild \
@@ -54,7 +54,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir build-aarch64-bsd && cd build-aarch64-bsd \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/freebsd/toolchain-aarch64.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
- && cd /usr/src && rm -rf /tmp* /var/tmp/* /usr/src/*
+ && cd /usr/src && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 RUN echo "====== INSTALL OPENINDIANA ======" \
  && mkdir -p "${SOLARIS_SYSROOT}" && cd "${SOLARIS_SYSROOT}" \
@@ -77,7 +77,7 @@ RUN echo "====== INSTALL BINUTILS ======" \
  && mkdir ../binutils-build && cd ../binutils-build \
  && ../binutils-${BINUTILS_VERSION}/configure --target=i386-pc-solaris2.11 --prefix=${SOLARIS_PREFIX} --with-sysroot=${SOLARIS_SYSROOT} --enable-64-bit-bfd --enable-gold=no --disable-nls --disable-libtool-lock --enable-largefile=yes \
  && make -j4 && make -j4 -s check && make install \
- && cd /usr/src && rm -rf /tmp* /var/tmp/* /usr/src/*
+ && cd /usr/src && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 RUN echo "====== INSTALL GCC ======" \
  && export GCC_VERSION=9.3.0 \
@@ -99,7 +99,7 @@ RUN echo "====== INSTALL GCC ======" \
  && ../gcc-${GCC_VERSION}/configure --target=i386-pc-solaris2.11 --prefix=${SOLARIS_PREFIX} --with-sysroot=${SOLARIS_SYSROOT} --enable-plugins --enable-initfini-array --enable-languages=c,c++,lto --disable-libitm enable_frame_pointer=yes --with-gnu-ld --with-gnu-as \
  && make -j4 all-gcc && make install-gcc \
  && make -j4 && make -j4 -s check-gcc && make install-strip \
- && cd /usr/src && rm -rf /tmp* /var/tmp/* /usr/src/*
+ && cd /usr/src && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir /usr/src/nxbuild \
@@ -111,4 +111,4 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir build-i386-oi && cd build-i386-oi \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/solaris/toolchain-i386.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
- && cd /usr/src && rm -rf /tmp* /var/tmp/* /usr/src/*
+ && cd /usr/src && rm -rf /tmp/* /var/tmp/* /usr/src/*
