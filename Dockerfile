@@ -13,7 +13,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
    binutils \
    cmake curl \
    dia doxygen-latex \
-   gcc-c++ git git-lfs graphviz \
+   gcc-c++ git git-lfs glibc-devel graphviz \
    librsvg2-tools \
    ninja-build \
    python3-jinja2 python3-pygments \
