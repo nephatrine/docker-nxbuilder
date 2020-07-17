@@ -20,7 +20,7 @@ beyond that. It can also be used as a quick "cleanroom" to test builds in.
 You can spin up a quick temporary test container like this:
 
 ~~~
-docker run --rm -ti nephatrine/nxbuilder:latest /bin/bash
+docker run --rm -ti nephatrine/nxbuilder:latest /bin/sh
 ~~~
 
 ## Docker Tags
@@ -33,3 +33,5 @@ docker run --rm -ti nephatrine/nxbuilder:latest /bin/bash
 - **nephatrine/nxbuilder:mingw**: Build Windows/MinGW Packages
 - **nephatrine/nxbuilder:osx**: Build macOS/Darwin Packages
 - **nephatrine/nxbuilder:unix**: Build FreeBSD/OpenIndiana Packages
+- **nephatrine/nxbuilder:alpine**: Build Alpine Packages
+- **nephatrine/nxbuilder:centos**: Build CentOS Packages
