@@ -10,11 +10,11 @@ platform:
 steps:
 - name: build
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:latest .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:latest
-  - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:latest nephatrine/nxbuilder:latest
-  - HOME=/mnt/config/home docker push nephatrine/nxbuilder:latest
-  - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:latest
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:centos .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:centos
+  - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:centos nephatrine/nxbuilder:centos
+  - HOME=/mnt/config/home docker push nephatrine/nxbuilder:centos
+  - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:centos
 
 ---
 kind: pipeline
@@ -39,27 +39,3 @@ trigger:
   status:
   - success
   - failure
-
----
-kind: pipeline
-name: propogate
-
-steps:
-- name: trigger
-  image: plugins/downstream
-  settings:
-    server: https://ci.nephatrine.net
-    token:
-      from_secret: drone-auth
-    fork: false
-    repositories:
-      - nephatrine/docker-nxbuilder@linux
-      - nephatrine/docker-nxbuilder@mingw
-      - nephatrine/docker-nxbuilder@osx
-      - nephatrine/docker-nxbuilder@unix
-      - nephatrine/docker-nxbuilder@android
-      - nephatrine/docker-nxbuilder@beos
-      - nephatrine/docker-nxbuilder@djgpp
-
-depends_on:
-- default
