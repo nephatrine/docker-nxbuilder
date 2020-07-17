@@ -1,5 +1,0 @@
-[NephatrineNET]
-name=Nephatrine.NET - Local
-baseurl=https://files.nephatrine.net/Packages/Linux
-enabled=1
-gpgcheck=0

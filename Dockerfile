@@ -1,29 +1,23 @@
-FROM centos:latest
+FROM alpine:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ENV PATH=/opt/m.css/bin:$PATH
-COPY override /
 
 RUN echo "====== INSTALL PACKAGES ======" \
- && dnf -y -q install 'dnf-command(config-manager)' epel-release \
- && dnf config-manager --set-enabled PowerTools \
- && dnf update -y -q \
- && dnf -y -q install \
-   ImageMagick NXBuild \
-   binutils \
+ && apk --update upgrade \
+ && apk add \
+   alpine-sdk \
    cmake curl \
-   dia doxygen-latex \
-   gcc-c++ git git-lfs graphviz \
-   librsvg2-tools \
-   ninja-build \
-   python3-jinja2 python3-pygments \
-   redhat-lsb-core rpm-build \
+   dia doxygen \
+   git git-lfs graphviz \
+   imagemagick \
+   librsvg \
+   ninja \
+   py3-jinja2 py3-pygments \
    subversion \
    unzip \
    wget \
- && dnf autoremove -y -q \
- && dnf clean all \
- && rm -rf /tmp/* /var/tmp/*
+ && rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 
 RUN echo "====== INSTALL M.CSS ======" \
  && mkdir /opt/m.css && cd /opt/m.css \

@@ -10,11 +10,11 @@ platform:
 steps:
 - name: build
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:centos .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:centos
-  - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:centos nephatrine/nxbuilder:centos
-  - HOME=/mnt/config/home docker push nephatrine/nxbuilder:centos
-  - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:centos
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:alpine .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:alpine
+  - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:alpine nephatrine/nxbuilder:alpine
+  - HOME=/mnt/config/home docker push nephatrine/nxbuilder:alpine
+  - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:alpine
 
 ---
 kind: pipeline
