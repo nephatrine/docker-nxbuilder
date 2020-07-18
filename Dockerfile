@@ -11,7 +11,7 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && dnf -y -q install \
    ImageMagick NXBuild \
    binutils \
-   cmake curl \
+   cmake createrepo curl \
    dia doxygen-latex \
    gcc-c++ git git-lfs glibc-devel graphviz \
    librsvg2-tools \
