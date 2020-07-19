@@ -9,9 +9,9 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && dnf config-manager --set-enabled PowerTools \
  && dnf update -y -q \
  && dnf -y -q install \
-   ImageMagick NXBuild \
+   ImageMagick \
    binutils \
-   cmake createrepo curl \
+   cmake cmake-NXBuild createrepo curl \
    dia doxygen-latex \
    gcc-c++ git git-lfs glibc-devel graphviz \
    librsvg2-tools \
