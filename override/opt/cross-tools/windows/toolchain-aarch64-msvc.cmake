@@ -65,6 +65,7 @@ set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_SYSTEM_PROCESSOR aarch64)
 set(CMAKE_SYSTEM_VERSION ${UCRTVersion})
 set(CMAKE_VS_PLATFORM_NAME arm64)
+set(CMAKE_SIZEOF_VOID_P 8)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-windows-msvc")
 
