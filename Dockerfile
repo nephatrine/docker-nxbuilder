@@ -58,7 +58,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
 
 RUN echo "====== INSTALL OPENINDIANA ======" \
  && mkdir -p "${SOLARIS_SYSROOT}" && cd "${SOLARIS_SYSROOT}" \
- && wget https://files.nephatrine.net/Local/OpenIndiana-20200330.tgz -O OpenIndiana.tgz \
+ && wget https://files.nephatrine.net/Local/OpenIndiana-20200719.tgz -O OpenIndiana.tgz \
  && tar -xzf OpenIndiana.tgz && rm -f OpenIndiana.tgz \
  && cd /usr/src \
  && git clone https://github.com/OpenIndiana/oi-userland \
