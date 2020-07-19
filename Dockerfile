@@ -30,10 +30,11 @@ RUN echo "====== INSTALL PACKAGES ======" \
  && rm -rf /tmp/* /var/tmp/*
 
 RUN echo "====== INSTALL CMAKE ======" \
+ && echo "deb [trusted=yes] https://files.nephatrine.net/Packages/Linux ./" >> /etc/apt/sources.list.d/nxbuild.list \
  && wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor - > /etc/apt/trusted.gpg.d/kitware.gpg \
  && apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main' \
  && apt-get update -q \
- && apt-get -y -q -o Dpkg::Options::="--force-confnew" install cmake kitware-archive-keyring \
+ && apt-get -y -q -o Dpkg::Options::="--force-confnew" install cmake cmake-nxbuild kitware-archive-keyring \
  && apt-get clean \
  && rm -rf /tmp/* /var/tmp/* /etc/apt/trusted.gpg.d/kitware.gpg
 
@@ -46,11 +47,7 @@ RUN echo "====== INSTALL M.CSS ======" \
  && mv COPYING ../ \
  && cd .. && rm -rf m.css bin/test*
 
-RUN echo "====== INSTALL NXBUILD ======" \
+RUN echo "====== INSTALL NXBUILD SOURCE ======" \
  && mkdir -p /opt/nxb/src && cd /opt/nxb/src \
  && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
- && echo "deb [trusted=yes] https://files.nephatrine.net/Packages/Linux ./" >> /etc/apt/sources.list.d/nxbuild.list \
- && apt-get update -q \
- && apt-get -y -q -o Dpkg::Options::="--force-confnew" install nxbuild \
- && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
