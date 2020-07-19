@@ -1,6 +1,6 @@
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_SYSTEM_PROCESSOR i686)
-set(CMAKE_SYSTEM_VERSION 10)
+set(CMAKE_SIZEOF_VOID_P 4)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-w64-mingw32")
 
@@ -22,9 +22,7 @@ find_program(CMAKE_DLLTOOL NAMES ${triplet}-dlltool)
 find_program(CMAKE_ADDR2LINE NAMES ${triplet}-addr2line)
 
 set(CMAKE_C_COMPILER_TARGET ${triplet})
-set(CMAKE_C_LIBRARY_ARCHITECTURE ${triplet})
 set(CMAKE_CXX_COMPILER_TARGET ${triplet})
-set(CMAKE_CXX_LIBRARY_ARCHITECTURE ${triplet})
 
 find_program(CMAKE_CROSSCOMPILING_EMULATOR NAMES wine64 wine)
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH)
