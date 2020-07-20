@@ -6,7 +6,7 @@ COPY override /
 RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get update -q \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
-   binutils-riscv64-linux-gnu gcc-x86-64-linux-gnux32
+   binutils-riscv64-linux-gnu gcc-x86-64-linux-gnux32 \
    crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-i386 crossbuild-essential-s390x \
    dpkg-dev \
    g++-riscv64-linux-gnu g++-x86-64-linux-gnux32 gcc-riscv64-linux-gnu gcc-x86-64-linux-gnux32 \
