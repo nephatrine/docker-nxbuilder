@@ -1,5 +1,6 @@
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR s390x)
+set(CMAKE_SIZEOF_VOID_P 8)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-linux-gnu")
 

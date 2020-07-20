@@ -1,5 +1,6 @@
 set(CMAKE_SYSTEM_NAME Linux)
-set(CMAKE_SYSTEM_PROCESSOR arm)
+set(CMAKE_SYSTEM_PROCESSOR armv7hl)
+set(CMAKE_SIZEOF_VOID_P 4)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-linux-gnueabihf")
 
