@@ -6,9 +6,10 @@ COPY override /
 RUN echo "====== INSTALL PACKAGES ======" \
  && apt-get update -q \
  && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
+   binutils-riscv64-linux-gnu gcc-x86-64-linux-gnux32
    crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-i386 crossbuild-essential-s390x \
    dpkg-dev \
-   gcc-riscv64-linux-gnu g++-riscv64-linux-gnu \
+   g++-riscv64-linux-gnu g++-x86-64-linux-gnux32 gcc-riscv64-linux-gnu gcc-x86-64-linux-gnux32 \
  && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
 
@@ -37,6 +38,10 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && cd /usr/src/nxbuild \
  && mkdir build-i686 && cd build-i686 \
  && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/lib/gcc-cross/i686-linux-gnu/toolchain.cmake /opt/nxb/src/nxbuild \
+ && ninja && ninja install \
+ && cd /usr/src/nxbuild \
+ && mkdir build-x32 && cd build-x32 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/usr/lib/gcc-cross/x86_64-linux-gnux32/toolchain.cmake /opt/nxb/src/nxbuild \
  && ninja && ninja install \
  && cd /usr/src/nxbuild \
  && mkdir build-armhf && cd build-armhf \
