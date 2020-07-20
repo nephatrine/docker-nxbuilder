@@ -1,5 +1,6 @@
 set(CMAKE_SYSTEM_NAME Haiku)
 set(CMAKE_SYSTEM_PROCESSOR x86_64)
+set(CMAKE_SIZEOF_VOID_P 8)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-unknown-haiku")
 
