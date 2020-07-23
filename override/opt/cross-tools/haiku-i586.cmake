@@ -1,11 +1,11 @@
 set(CMAKE_SYSTEM_NAME Haiku)
-set(CMAKE_SYSTEM_PROCESSOR x86_64)
-set(CMAKE_SIZEOF_VOID_P 8)
+set(CMAKE_SYSTEM_PROCESSOR i586)
+set(CMAKE_SIZEOF_VOID_P 4)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-unknown-haiku")
 
-set(CMAKE_SYSROOT "$ENV{HAIKU_SYSROOT_AMD64}")
-list(APPEND CMAKE_PREFIX_PATH "$ENV{HAIKU_TOOLCHAIN_AMD64}" "$ENV{HAIKU_TOOLCHAIN_AMD64}/${triplet}")
+set(CMAKE_SYSROOT "$ENV{HAIKU_SYSROOT_IA32}")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{HAIKU_TOOLCHAIN_IA32}" "$ENV{HAIKU_TOOLCHAIN_IA32}/${triplet}")
 
 find_program(CMAKE_C_COMPILER NAMES ${triplet}-gcc)
 find_program(CMAKE_CXX_COMPILER NAMES ${triplet}-g++)
@@ -20,10 +20,14 @@ find_program(CMAKE_OBJCOPY NAMES ${triplet}-objcopy)
 find_program(CMAKE_READELF NAMES ${triplet}-readelf)
 find_program(CMAKE_ADDR2LINE NAMES ${triplet}-addr2line)
 
+set(CMAKE_LIBRARY_ARCHITECTURE "x86")
+set(CMAKE_C_LIBRARY_ARCHITECTURE ${CMAKE_LIBRARY_ARCHITECTURE})
+set(CMAKE_CXX_LIBRARY_ARCHITECTURE ${CMAKE_LIBRARY_ARCHITECTURE})
+
 set(CMAKE_C_COMPILER_TARGET ${triplet})
-set(CMAKE_C_FLAGS_INIT "-march=x86-64 -msse3 -mssse3 -msse4.1 -msse4.2 -mavx -maes -mpclmul -mtune=haswell")
+set(CMAKE_C_FLAGS_INIT "-march=i586 -mmmx -mfpmath=387 -mtune=pentium2")
 set(CMAKE_CXX_COMPILER_TARGET ${triplet})
-set(CMAKE_CXX_FLAGS_INIT "-march=x86-64 -msse3 -mssse3 -msse4.1 -msse4.2 -mavx -maes -mpclmul -mtune=haswell")
+set(CMAKE_CXX_FLAGS_INIT "-march=i586 -mmmx -mfpmath=387 -mtune=pentium2")
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
