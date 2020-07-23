@@ -1,53 +1,65 @@
 FROM ubuntu:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV DEBIAN_FRONTEND=noninteractive LLVM_MAJOR=10 PATH=/opt/m.css/bin:$PATH
-RUN mkdir /usr/local/lib/x86_64-linux-gnu
-
-RUN echo "====== INSTALL PACKAGES ======" \
+RUN echo "====== CONFIGURE REPOS ======" \
+ && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
+  apt-transport-https apt-utils \
+  gnupg \
+  software-properties-common \
+  wget 2>/dev/null \
+ && wget -qO - https://files.nephatrine.net/Packages/Nephatrine.gpg | apt-key add - 2>/dev/null \
+ && wget -qO /etc/apt/sources.list.d/NephNET.list https://files.nephatrine.net/Packages/NephDEB.list \
+ && wget -qO - https://apt.kitware.com/keys/kitware-archive-latest.asc | apt-key add - 2>/dev/null \
+ && apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main' \
  && apt-get update -q \
- && apt-get -y -qq install apt-utils \
- && apt-get -y -q -o Dpkg::Options::="--force-confnew" dist-upgrade \
- && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
-   apt-transport-https autoconf automake-1.15 autopoint \
-   bison build-essential \
-   ca-certificates clang clang-format clang-tidy clang-tools curl \
-   dia doxygen-latex \
-   flex \
-   gawk gettext git git-lfs global gnupg graphviz \
-   imagemagick \
-   libarchive-tools libc++-dev libc++abi-dev libclang-dev libicu-dev librsvg2-bin libssl-dev libtool libunwind-dev libxml2-dev lld llvm lsb-release \
-   mscgen \
-   nasm ninja-build \
-   python3-distutils python3-jinja2 python3-pygments python3-simplejson python3-six python3-yaml \
-   software-properties-common subversion \
-   texinfo \
-   unzip \
-   wget \
-   zlib1g-dev \
- && apt-get autoremove -y -q \
+ && apt-get -o Dpkg::Options::="--force-confnew" dist-upgrade -y \
+ && apt-get autoremove -y \
  && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
 
-RUN echo "====== INSTALL CMAKE ======" \
- && echo "deb [trusted=yes] https://files.nephatrine.net/Packages/Linux ./" >> /etc/apt/sources.list.d/nxbuild.list \
- && wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc | gpg --dearmor - > /etc/apt/trusted.gpg.d/kitware.gpg \
- && apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main' \
- && apt-get update -q \
- && apt-get -y -q -o Dpkg::Options::="--force-confnew" install cmake cmake-nxbuild kitware-archive-keyring \
+ENV LLVM_MAJOR=10
+RUN echo "====== INSTALL BUILD TOOLS ======" \
+ && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
+  build-essential \
+  clang clang-format clang-tidy clang-tools cmake \
+  git git-lfs \
+  kitware-archive-keyring \
+  libc++-dev libc++abi-dev libclang-dev lld llvm \
+  ninja-build \
+  subversion \
  && apt-get clean \
- && rm -rf /tmp/* /var/tmp/* /etc/apt/trusted.gpg.d/kitware.gpg
+ && ls /usr/lib/clang/$LLVM_MAJOR \
+ && rm -rf /tmp/* /var/tmp/*
 
-RUN echo "====== INSTALL M.CSS ======" \
+RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
+ && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
+  dia doxygen-latex \
+  global graphviz \
+  mscgen \
+  python3-jinja2 python3-pygments \
+ && apt-get autoremove -y -q \
+ && apt-get clean \
  && mkdir /opt/m.css && cd /opt/m.css \
  && git clone https://github.com/mosra/m.css && cd m.css \
  && mv documentation ../bin \
  && mv css ../css \
  && mv plugins ../plugins \
  && mv COPYING ../ \
- && cd .. && rm -rf m.css bin/test*
+ && cd .. && rm -rf m.css bin/test* \
+ && rm -rf /tmp/* /var/tmp/*
+ENV PATH=/opt/m.css/bin:$PATH
 
-RUN echo "====== INSTALL NXBUILD SOURCE ======" \
- && mkdir -p /opt/nxb/src && cd /opt/nxb/src \
+RUN echo "====== INSTALL NXBUILD ======" \
+ && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
+  cmake-nxbuild \
+  imagemagick \
+  librsvg2-bin lsb-release \
+ && apt-get clean \
+ && mkdir -p /usr/src && cd /usr/src \
  && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
  && rm -rf /tmp/* /var/tmp/*
+COPY override /
