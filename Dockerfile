@@ -26,7 +26,7 @@ RUN echo "====== INSTALL BUILD TOOLS ======" \
   clang clang-format clang-tidy clang-tools cmake \
   git git-lfs \
   kitware-archive-keyring \
-  libc++-dev libc++abi-dev libclang-dev lld llvm \
+  libc++-dev libc++abi-dev libunwind-dev lld llvm \
   ninja-build \
   subversion \
  && apt-get clean \
