@@ -26,6 +26,9 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64.cmake /usr/src/hello \
  && ninja && ninja test \
+ && mkdir /tmp/build-amd64-libc++ && cd /tmp/build-amd64-libc++ \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64-libc++.cmake /usr/src/hello \
+ && ninja && ninja test \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-ia32.cmake /usr/src/hello \
  && ninja && ninja test \
