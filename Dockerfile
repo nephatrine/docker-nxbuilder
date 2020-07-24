@@ -24,9 +24,11 @@ RUN echo "====== INSTALL BUILD TOOLS ======" \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
   build-essential \
   clang clang-format clang-tidy clang-tools cmake \
+  file \
   git git-lfs \
   kitware-archive-keyring \
   libc++-dev libc++abi-dev libunwind-dev lld llvm \
+  nano \
   ninja-build \
   subversion \
  && apt-get clean \
