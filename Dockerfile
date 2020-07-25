@@ -1,7 +1,7 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-RUN echo "====== INSTALL CROSS-BUILD TOOLS ======" \
+RUN echo "====== INSTALL GCC-CROSS ======" \
  && dpkg --add-architecture i386 && dpkg --add-architecture x32 \
  && dpkg --add-architecture arm64 && dpkg --add-architecture armhf \
  && dpkg --add-architecture ppc64el && dpkg --add-architecture s390x \
