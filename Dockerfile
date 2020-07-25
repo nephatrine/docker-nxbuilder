@@ -31,6 +31,11 @@ RUN echo "====== DOWNLOAD OSX SDK ======" \
  && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/osxcross
 ENV PATH=${DARWIN_TOOLCHAIN}/bin:$PATH
+
+RUN echo "====== CONFIGURE MACPORTS ======" \
+ && mkdir -p ${DARWIN_TOOLCHAIN}/macports/pkgs/opt/local && mkdir ${DARWIN_SYSROOT}/opt \
+ && ln -s ${DARWIN_TOOLCHAIN}/macports/pkgs/opt/local ${DARWIN_SYSROOT}/opt/local \
+ && echo 1 | osxcross-macports --select-mirror
 COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
