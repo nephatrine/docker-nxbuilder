@@ -1,7 +1,7 @@
 [Git](https://code.nephatrine.net/nephatrine/docker-nxbuilder) |
 [Docker](https://hub.docker.com/r/nephatrine/nxbuilder/)
 
-[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-nxbuilder/status.svg?ref=refs/heads/osx)](https://ci.nephatrine.net/nephatrine/docker-nxbuilder)
+[![Build Status](https://ci.nephatrine.net/api/badges/nephatrine/docker-nxbuilder/status.svg?ref=refs/heads/darwin)](https://ci.nephatrine.net/nephatrine/docker-nxbuilder)
 
 # NXBuilder
 
