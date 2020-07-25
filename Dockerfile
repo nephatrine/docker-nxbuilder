@@ -3,7 +3,7 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ENV DARWIN_SYSROOT=/opt/sysroot-darwin DARWIN_TOOLCHAIN=/opt/cross-tools/darwin MACOSX_DEPLOYMENT_TARGET=10.11
 
-RUN echo "====== DOWNLOAD OSX SDK ======" \
+RUN echo "====== INSTALL OSXCROSS ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
   libclang-dev libssl-dev libxml2-dev llvm-dev \
