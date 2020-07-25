@@ -5,6 +5,7 @@ ENV HAIKU_SYSROOT_AMD64=/opt/sysroot-haiku-amd64 HAIKU_TOOLCHAIN_AMD64=/opt/cros
  HAIKU_SYSROOT_IA32=/opt/sysroot-haiku-ia32 HAIKU_TOOLCHAIN_IA32=/opt/cross-tools/haiku-ia32
 
 RUN echo "====== INSTALL CROSS-GCC ======" \
+ && mkdir -p /opt/cross-tools \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
   bison \
