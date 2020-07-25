@@ -10,11 +10,11 @@ platform:
 steps:
 - name: build
   commands:
-  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:beos .
-  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:beos
-  - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:beos nephatrine/nxbuilder:beos
-  - HOME=/mnt/config/home docker push nephatrine/nxbuilder:beos
-  - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:beos
+  - docker build --pull -t pdr.nephatrine.net/nephatrine/nxbuilder:haiku .
+  - HOME=/mnt/config/home docker push pdr.nephatrine.net/nephatrine/nxbuilder:haiku
+  - docker tag pdr.nephatrine.net/nephatrine/nxbuilder:haiku nephatrine/nxbuilder:haiku
+  - HOME=/mnt/config/home docker push nephatrine/nxbuilder:haiku
+  - docker rmi pdr.nephatrine.net/nephatrine/nxbuilder:haiku
 
 ---
 kind: pipeline
