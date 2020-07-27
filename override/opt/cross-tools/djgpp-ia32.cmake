@@ -4,6 +4,7 @@ set(CMAKE_SIZEOF_VOID_P 4)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-pc-msdosdjgpp")
 
+set(CMAKE_SYSROOT "$ENV{DJGPP_SYSROOT}")
 list(APPEND CMAKE_PREFIX_PATH "$ENV{DJGPP_PREFIX}" "$ENV{DJGPP_PREFIX}/${triplet}")
 
 find_program(CMAKE_C_COMPILER NAMES ${triplet}-gcc)

@@ -1,7 +1,7 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV DJGPP_TOOLCHAIN=/opt/cross-tools/djgpp
+ENV DJGPP_SYSROOT=/opt/sysroot-djgpp DJGPP_TOOLCHAIN=/opt/cross-tools/djgpp
 
 RUN echo "====== INSTALL GCC-CROSS ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
@@ -85,15 +85,19 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
   flex \
   groff \
   texinfo \
-  unzip \
   zlib1g-dev \
  && apt-get autoremove -y \
  && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0 /usr/src/djgpp-cvs
-ENV DJDIR=${DJGPP_TOOLCHAIN}/i586-pc-msdosdjgpp PATH=${DJGPP_TOOLCHAIN}/bin:$PATH
+ENV DJDIR=${DJGPP_TOOLCHAIN}/i586-pc-msdosdjgpp PATH=${DJGPP_TOOLCHAIN}/bin:$PATH SDL_VIDEODRIVER=dummy
 COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
+ && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
+  dosbox \
+ && wget -qO /tmp/cwsdpmi.zip https://files.nephatrine.net/Local/cwsdpmi.zip \
+ && mkdir -p ${DJGPP_SYSROOT}/TMP && cd ${DJGPP_SYSROOT} && unzip /tmp/cwsdpmi.zip \
  && mv /usr/share/cmake/Modules/Platform/*.cmake /usr/share/cmake-*/Modules/Platform/ \
  && git -C /usr/src/nxbuild pull \
  && mkdir /tmp/nxbuild && cd /tmp/nxbuild \
@@ -102,4 +106,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/djgpp-ia32.cmake /usr/src/hello \
  && ninja && file hello-test.exe \
+ && cp hello-test.exe ${DJGPP_SYSROOT}/HELLO.EXE \
+ && cp hello.dxe ${DJGPP_SYSROOT}/HELLO.DXE \
+ && dosbox -conf /opt/cross-tools/dosbox.conf -c "C:\\HELLO.EXE >C:\\TMP\\CMDOUT" -c "exit" 2>/dev/null && cat ${DJGPP_SYSROOT}/TMP/CMDOUT \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
