@@ -1,7 +1,7 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV DJGPP_SYSROOT=/opt/sysroot-djgpp DJGPP_TOOLCHAIN=/opt/cross-tools/djgpp
+ENV DJGPP_TOOLCHAIN=/opt/cross-tools/djgpp
 
 RUN echo "====== INSTALL GCC-CROSS ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
