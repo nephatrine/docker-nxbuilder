@@ -13,7 +13,6 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
   unzip \
   zlib1g-dev \
  && update-alternatives --set automake /usr/bin/automake-1.15 \
- && echo "----------------------------" \
  && export DJGPP_PREFIX=${DJGPP_TOOLCHAIN} && export DJDIR=${DJGPP_TOOLCHAIN}/i586-pc-msdosdjgpp \
  && git -C /usr/src clone --depth=1 https://github.com/jwt27/djgpp-cvs.git && cd /usr/src/djgpp-cvs/src \
  && sed -i 's/Werror/Wno-error/g' makefile.cfg \
@@ -25,7 +24,6 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
  && cp -nrv ../include ${DJDIR}/sys-include \
  && cp -npv ../hostbin/stubify.exe ${DJGPP_TOOLCHAIN}/bin/i586-pc-msdosdjgpp-stubify && ln -s i586-pc-msdosdjgpp-stubify ${DJGPP_TOOLCHAIN}/bin/stubify \
  && cp -npv ../hostbin/stubedit.exe ${DJGPP_TOOLCHAIN}/bin/i586-pc-msdosdjgpp-stubedit && ln -s i586-pc-msdosdjgpp-stubedit ${DJGPP_TOOLCHAIN}/bin/stubedit \
- && echo "----------------------------" \
  && export BINTUILS_MAJOR=2 && export BINTUILS_MINOR=34 \
  && export GCC_MAJOR=9 && export GCC_MINOR=3 \
  && export GMP_VERSION=6.2.0 && export ISL_VERSION=0.22.1 \
@@ -48,14 +46,12 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
  && chmod +x ./gnu/binutils-${BINTUILS_MAJOR}.${BINTUILS_MINOR}/install-sh \
  && chmod +x ./gnu/binutils-${BINTUILS_MAJOR}.${BINTUILS_MINOR}/missing \
  && chmod +x ./gnu/binutils-${BINTUILS_MAJOR}.${BINTUILS_MINOR}/configure \
- && echo "----------------------------" \
  && mkdir /tmp/build-binutils && cd /tmp/build-binutils \
  && /usr/src/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0/gnu/binutils-${BINTUILS_MAJOR}.${BINTUILS_MINOR}/configure \
   --target=i586-pc-msdosdjgpp --prefix=${DJGPP_TOOLCHAIN} --disable-werror --disable-nls \
  && make -j4 configure-bfd && make -j4 -C bfd stmp-lcoff-h \
  && make -j4 && make -j4 -s check && make install \
  && export PATH=${DJGPP_TOOLCHAIN}/bin:$PATH \
- && echo "----------------------------" \
  && mkdir /tmp/build-gcc && cd /tmp/build-gcc \
  && /usr/src/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0/gnu/gcc-${GCC_MAJOR}.${GCC_MINOR}0/configure --disable-plugin --enable-lto --disable-nls --enable-libquadmath-support --enable-version-specific-runtime-libs \
   --enable-fat --enable-libstdcxx-filesystem-ts --target=i586-pc-msdosdjgpp --prefix=${DJGPP_TOOLCHAIN} --enable-languages=c,c++ \
@@ -66,7 +62,6 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
  && cd /tmp/build-gcc \
  && make -j4 \
  && make -j4 -s check-gcc && make install-strip \
- && echo "----------------------------" \
  && cd /usr/src/djgpp-cvs/src \
  && make -j4 -C utils native \
  && make -j4 -C dxe native \
@@ -83,7 +78,6 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
  && cp -npv ../hostbin/dxegen.exe ${DJGPP_TOOLCHAIN}/bin/i586-pc-msdosdjgpp-dxe3gen && ln -s i586-pc-msdosdjgpp-dxe3gen ${DJGPP_TOOLCHAIN}/bin/dxe3gen \
  && cp -npv dxe/dxe3res ${DJGPP_TOOLCHAIN}/bin/i586-pc-msdosdjgpp-dxe3res && ln -s i586-pc-msdosdjgpp-dxe3res ${DJGPP_TOOLCHAIN}/bin/dxe3res \
  && ln -s i586-pc-msdosdjgpp-dxe3gen ${DJGPP_TOOLCHAIN}/bin/dxegen \
- && echo "----------------------------" \
  && apt-get remove -y \
   autoconf automake-1.15 \
   bison \
