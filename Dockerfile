@@ -9,6 +9,7 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
   autoconf automake-1.15 \
   bison \
   flex \
+  groff \
   texinfo \
   unzip \
   zlib1g-dev \
@@ -82,6 +83,7 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
   autoconf automake-1.15 \
   bison \
   flex \
+  groff \
   texinfo \
   unzip \
   zlib1g-dev \
