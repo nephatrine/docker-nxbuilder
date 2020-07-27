@@ -101,5 +101,5 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && ninja && ninja install \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/djgpp-ia32.cmake /usr/src/hello \
- && ninja && file hello-test \
+ && ninja && file hello-test.exe \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
