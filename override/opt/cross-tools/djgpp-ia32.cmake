@@ -21,6 +21,6 @@ find_program(CMAKE_ADDR2LINE NAMES ${triplet}-addr2line)
 find_program(CMAKE_DXEGEN NAMES ${triplet}-dxe3gen ${triplet}-dxegen dxe3gen dxegen)
 
 set(CMAKE_C_COMPILER_TARGET ${triplet})
-set(CMAKE_C_LIBRARY_ARCHITECTURE ${triplet})
+set(CMAKE_C_FLAGS_INIT "-march=i586 -mmmx -mfpmath=387 -mtune=pentium2")
 set(CMAKE_CXX_COMPILER_TARGET ${triplet})
-set(CMAKE_CXX_LIBRARY_ARCHITECTURE ${triplet})
+set(CMAKE_CXX_FLAGS_INIT "-march=i586 -mmmx -mfpmath=387 -mtune=pentium2")
