@@ -1,7 +1,7 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV WINEARCH=win64 WINEDEBUG=fixme-all WINEPREFIX=/opt/wine-root
+ENV WINEARCH=win64 WINEDEBUG=fixme-all WINEPREFIX=/opt/wine-root WINE=/usr/bin/wine64-development WINESERVER=/usr/bin/wineserver-development
 
 RUN echo "====== INSTALL WINE ======" \
  && dpkg --add-architecture i386 \
@@ -9,13 +9,13 @@ RUN echo "====== INSTALL WINE ======" \
  && sed -i 's~deb http://security.ubuntu.com/ubuntu~deb [arch=amd64,i386] http://security.ubuntu.com/ubuntu~g' /etc/apt/sources.list \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  wine-development wine32-development \
+  wine32-development wine64-development winetricks \
  && export WINEDLLOVERRIDES="mscoree,mshtml=" \
- && DISPLAY= wine64 wineboot --init \
- && while pgrep wineserver >/dev/null; do sleep 5; done \
+ && DISPLAY= ${WINE} wineboot --init \
+ && while pgrep ${WINESERVER} >/dev/null; do sleep 5; done \
  && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
-
+RUN false
 RUN echo "====== INSTALL MINGW ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
@@ -79,16 +79,16 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc && ln -s /usr/lib/gcc/x86_64-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-amd64.cmake /usr/src/hello \
- && ninja && wine ./hello-test.exe \
+ && ninja && ${WINE} ./hello-test.exe \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/libgcc && ln -s /usr/lib/gcc/i686-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/libgcc \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-ia32.cmake /usr/src/hello \
- && ninja && wine ./hello-test.exe \
+ && ninja && ${WINE} ./hello-test.exe \
  && export PATH=${TOOLCHAIN_PREFIX}/bin:$PATH \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32 ${WINDOWS_SYSROOT}/x86_64-w64-mingw32 \
  && mkdir /tmp/build-amd64-libc++ && cd /tmp/build-amd64-libc++ \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-amd64-libc++.cmake /usr/src/hello \
- && ninja && wine ./hello-test.exe \
+ && ninja && ${WINE} ./hello-test.exe \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32 ${WINDOWS_SYSROOT}/aarch64-w64-mingw32 \
  && mkdir /tmp/build-arm64-libc++ && cd /tmp/build-arm64-libc++ \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-arm64-libc++.cmake /usr/src/hello \
@@ -96,5 +96,5 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32 ${WINDOWS_SYSROOT}/i686-w64-mingw32 \
  && mkdir /tmp/build-ia32-libc++ && cd /tmp/build-ia32-libc++ \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-ia32-libc++.cmake /usr/src/hello \
- && ninja && wine ./hello-test.exe \
+ && ninja && ${WINE} ./hello-test.exe \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*

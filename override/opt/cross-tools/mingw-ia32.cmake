@@ -30,7 +30,7 @@ set(CMAKE_C_FLAGS_INIT "-march=i686 -mmmx -msse -mtune=pentium4 -mfpmath=sse")
 set(CMAKE_CXX_COMPILER_TARGET ${triplet})
 set(CMAKE_CXX_FLAGS_INIT "-march=i686 -mmmx -msse -mtune=pentium4 -mfpmath=sse")
 
-find_program(CMAKE_CROSSCOMPILING_EMULATOR NAMES wine64 wine)
+find_program(CMAKE_CROSSCOMPILING_EMULATOR NAMES $ENV{WINE} wine)
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
