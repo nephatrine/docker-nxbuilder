@@ -9,7 +9,8 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
   autoconf automake-1.15 \
   bison \
   flex \
-  groff \
+  gawk groff \
+  libgmp3-dev libisl-dev libmpc-dev libmpfr-dev \
   texinfo \
   unzip \
   zlib1g-dev \
@@ -32,17 +33,9 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
  && wget -qO /tmp/bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s.zip http://delorie.com/pub/djgpp/current/v2gnu/bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s.zip \
  && wget -qO /tmp/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.bz2 http://delorie.com/pub/djgpp/rpms/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.bz2 \
  && wget -qO /tmp/gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.xz http://ftpmirror.gnu.org/gcc/gcc-${GCC_MAJOR}.${GCC_MINOR}.0/gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.xz \
- && wget -qO /tmp/gmp-${GMP_VERSION}.tar.xz http://ftpmirror.gnu.org/gmp/gmp-${GMP_VERSION}.tar.xz \
- && wget -qO /tmp/isl-${ISL_VERSION}.tar.xz http://isl.gforge.inria.fr/isl-${ISL_VERSION}.tar.xz \
- && wget -qO /tmp/mpc-${MPC_VERSION}.tar.gz http://ftpmirror.gnu.org/mpc/mpc-${MPC_VERSION}.tar.gz \
- && wget -qO /tmp/mpfr-${MPFR_VERSION}.tar.xz http://ftpmirror.gnu.org/mpfr/mpfr-${MPFR_VERSION}.tar.xz \
  && cd /usr/src \
  && tar -xf /tmp/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.bz2 && cd djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0 \
  && mv /tmp/gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.xz ./ && sh unpack-gcc.sh --no-djgpp-source gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.xz \
- && tar -xf /tmp/gmp-${GMP_VERSION}.tar.xz && mv gmp-${GMP_VERSION} ./gnu/gcc-${GCC_MAJOR}.${GCC_MINOR}0/gmp \
- && tar -xf /tmp/isl-${ISL_VERSION}.tar.xz && mv isl-${ISL_VERSION} ./gnu/gcc-${GCC_MAJOR}.${GCC_MINOR}0/isl \
- && tar -xf /tmp/mpc-${MPC_VERSION}.tar.gz && mv mpc-${MPC_VERSION} ./gnu/gcc-${GCC_MAJOR}.${GCC_MINOR}0/mpc \
- && tar -xf /tmp/mpfr-${MPFR_VERSION}.tar.xz && mv mpfr-${MPFR_VERSION} ./gnu/gcc-${GCC_MAJOR}.${GCC_MINOR}0/mpfr \
  && unzip -oq /tmp/bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s.zip \
  && chmod +x ./gnu/binutils-${BINTUILS_MAJOR}.${BINTUILS_MINOR}/install-sh \
  && chmod +x ./gnu/binutils-${BINTUILS_MAJOR}.${BINTUILS_MINOR}/missing \
@@ -83,7 +76,8 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
   autoconf automake-1.15 \
   bison \
   flex \
-  groff \
+  gawk groff \
+  libgmp3-dev libisl-dev libmpc-dev libmpfr-dev \
   texinfo \
   zlib1g-dev \
  && apt-get autoremove -y \
