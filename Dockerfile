@@ -9,7 +9,7 @@ RUN echo "====== INSTALL WINE ======" \
  && sed -i 's~deb http://security.ubuntu.com/ubuntu~deb [arch=amd64,i386] http://security.ubuntu.com/ubuntu~g' /etc/apt/sources.list \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  wine32-development wine64-development \
+  wine-development wine32-development \
  && export WINEDLLOVERRIDES="mscoree,mshtml=" \
  && DISPLAY= wine64 wineboot --init \
  && while pgrep wineserver >/dev/null; do sleep 5; done \
