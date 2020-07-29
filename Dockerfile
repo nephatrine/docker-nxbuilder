@@ -15,7 +15,7 @@ RUN echo "====== INSTALL WINE ======" \
  && while pgrep ${WINESERVER} >/dev/null; do sleep 5; done \
  && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
-RUN false
+
 RUN echo "====== INSTALL MINGW ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
