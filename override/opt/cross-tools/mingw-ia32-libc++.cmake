@@ -4,8 +4,8 @@ set(CMAKE_SIZEOF_VOID_P 4)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-w64-mingw32")
 
-set(CMAKE_SYSROOT "$ENV{WINEPREFIX}/drive_c")
-list(APPEND CMAKE_PREFIX_PATH "$ENV{TOOLCHAIN_PREFIX}")
+set(CMAKE_SYSROOT "$ENV{WINDOWS_SYSROOT}")
+list(APPEND CMAKE_PREFIX_PATH "$ENV{WINDOWS_TOOLCHAIN}" "/usr/lib/llvm-${LLVM_MAJOR}")
 
 find_program(CMAKE_C_COMPILER NAMES ${triplet}-clang)
 find_program(CMAKE_CXX_COMPILER NAMES ${triplet}-clang++)
@@ -21,10 +21,14 @@ find_program(CMAKE_OBJCOPY NAMES ${triplet}-objcopy)
 find_program(CMAKE_DLLTOOL NAMES ${triplet}-dlltool)
 find_program(CMAKE_ADDR2LINE NAMES ${triplet}-addr2line)
 
+set(CMAKE_LIBRARY_ARCHITECTURE "x86")
+set(CMAKE_C_LIBRARY_ARCHITECTURE ${CMAKE_LIBRARY_ARCHITECTURE})
+set(CMAKE_CXX_LIBRARY_ARCHITECTURE ${CMAKE_LIBRARY_ARCHITECTURE})
+
 set(CMAKE_C_COMPILER_TARGET ${triplet})
-set(CMAKE_C_FLAGS_INIT "-rtlib=compiler-rt")
+set(CMAKE_C_FLAGS_INIT "-march=i686 -mmmx -msse -mtune=pentium4 -mfpmath=sse -rtlib=compiler-rt")
 set(CMAKE_CXX_COMPILER_TARGET ${triplet})
-set(CMAKE_CXX_FLAGS_INIT "-rtlib=compiler-rt -stdlib=libc++")
+set(CMAKE_CXX_FLAGS_INIT "-march=i686 -mmmx -msse -mtune=pentium4 -mfpmath=sse -rtlib=compiler-rt -stdlib=libc++")
 
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld")
 set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld")
