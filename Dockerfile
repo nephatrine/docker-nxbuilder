@@ -8,7 +8,7 @@ RUN echo "====== INSTALL CROSS-GCC ======" \
  && mkdir -p /opt/cross-tools \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  autoconf \
+  autoconf automake \
   bison \
   flex \
   gawk gcc-multilib \
@@ -85,7 +85,7 @@ RUN echo "====== INSTALL CROSS-GCC ======" \
  && ln -s ${HAIKU_INSTALL_DIR}/system/settings/etc ${HAIKU_SYSROOT_IA32}/etc \
  && ln -s ${HAIKU_INSTALL_DIR}/system/var ${HAIKU_SYSROOT_IA32}/var \
  && apt-get remove -y \
-  autoconf \
+  autoconf automake \
   bison \
   flex \
   gawk gcc-multilib \
