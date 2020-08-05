@@ -14,6 +14,11 @@ RUN echo "====== CONFIGURE REPOS ======" \
  && apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main' \
  && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" dist-upgrade -y \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
+  curl \
+  file \
+  nano \
+  rsync \
  && apt-get autoremove -y \
  && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
@@ -24,11 +29,9 @@ RUN echo "====== INSTALL BUILD TOOLS ======" \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
   build-essential \
   clang clang-format clang-tidy clang-tools cmake \
-  file \
   git git-lfs \
   kitware-archive-keyring \
   libc++-dev libc++abi-dev libunwind-dev lld llvm \
-  nano \
   ninja-build \
   subversion \
  && apt-get clean \
