@@ -53,19 +53,20 @@ steps:
       from_secret: drone-auth
     fork: false
     repositories:
-      - nephatrine/docker-nxbuilder@linux
-      - nephatrine/docker-nxbuilder@mingw
-      - nephatrine/docker-nxbuilder@osx
-      - nephatrine/docker-nxbuilder@unix
       - nephatrine/docker-nxbuilder@android
-      - nephatrine/docker-nxbuilder@beos
+      - nephatrine/docker-nxbuilder@darwin
       - nephatrine/docker-nxbuilder@djgpp
+      - nephatrine/docker-nxbuilder@freebsd
+      - nephatrine/docker-nxbuilder@haiku
+      - nephatrine/docker-nxbuilder@mingw
+      - nephatrine/docker-nxbuilder@openindiana
+      - nephatrine/docker-nxbuilder@ubuntu
 
 depends_on:
 - default
 
 ---
 kind: signature
-hmac: c5e939c20c44788a6a39be1d77fa11b3da8796a6115561a85c8df78ed264c87a
+hmac: 6429eb278cdc2cc4879a97e68d9a302e2faba91e9d867b9f1bb57a9c9be05c87
 
 ...
