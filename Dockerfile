@@ -9,7 +9,7 @@ RUN echo "====== CONFIGURE REPOS ======" \
   software-properties-common \
   wget 2>/dev/null \
  && wget -O - https://files.nephatrine.net/Packages/Nephatrine.gpg | apt-key add - 2>/dev/null \
- && wget -O /etc/apt/sources.list.d/NephNET.list https://files.nephatrine.net/Packages/NephDEB.list \
+ && wget -O /etc/apt/sources.list.d/NephNET.list https://files.nephatrine.net/Packages/NephDEB-Ubuntu.list \
  && wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc | apt-key add - 2>/dev/null \
  && apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main' \
  && apt-get update \
