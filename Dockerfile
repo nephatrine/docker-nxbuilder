@@ -5,9 +5,9 @@ ENV UniversalCRTSdkDir="${WINEPREFIX}/drive_c/Program Files (x86)/Windows Kits/1
  VSINSTALLDIR="${WINEPREFIX}/drive_c/Program Files (x86)/Microsoft Visual Studio/2019/Community/"
 
 RUN echo "====== INSTALL MSVC-WINE ======" \
- && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
+ && export DEBIAN_FRONTEND=noninteractive && apt-get update \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
- && apt-get -y -q -o Dpkg::Options::="--force-confnew" install \
+ && apt-get -y -o Dpkg::Options::="--force-confnew" install \
   msitools \
   python3-simplejson \
  && git -C /usr/src clone --depth=1 https://github.com/mstorsjo/msvc-wine.git \
@@ -22,17 +22,19 @@ RUN echo "====== INSTALL MSVC-WINE ======" \
  && apt-get autoremove -y \
  && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/msvc-wine
-ENV UCRTVersion=10.0.18362.0 VCToolsVersion=14.26.28801 VCRedistVersion=14.26.28720
+ENV UCRTVersion=10.0.18362.0 VCToolsVersion=14.27.29110 VCRedistVersion=14.27.29016
 ENV VCINSTALLDIR="${VSINSTALLDIR}VC/" WindowsSDKLibVersion=${UCRTVersion}/ WindowsSDKVersion=${UCRTVersion}/ WindowsSdkDir="${UniversalCRTSdkDir}"
 ENV VCToolsInstallDir="${VCINSTALLDIR}Tools/MSVC/${VCToolsVersion}/" VCToolsRedistDir="${VCINSTALLDIR}Redist/MSVC/${VCRedistVersion}/" \
  WindowsSdkBinPath="${WindowsSdkDir}bin/" WindowsSdkVerBinPath="${WindowsSdkDir}bin/${WindowsSDKVersion}"
 COPY override /
 
 RUN echo "====== BUILD COMPILER-RT ======" \
- && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
+ && export DEBIAN_FRONTEND=noninteractive && apt-get update \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
   libclang-dev llvm-dev \
- && ls "${WindowsSdkVerBinPath}" && ls "${VCToolsRedistDir}" && ls "${VCToolsInstallDir}" \
+ && ls "${WindowsSdkDir}bin" && ls "${WindowsSdkVerBinPath}" \
+ && ls "${VCINSTALLDIR}Redist/MSVC" && ls "${VCToolsRedistDir}" \
+ && ls "${VCINSTALLDIR}Tools/MSVC" && ls "${VCToolsInstallDir}" \
  && find "${WindowsSdkVerBinPath}x64/ucrt" -name '*.dll' -type f | xargs -I{} cp -nvs {} ${WINEPREFIX}/drive_c/windows/system32/ \
  && find "${WindowsSdkVerBinPath}x86/ucrt" -name '*.dll' -type f | xargs -I{} cp -nvs {} ${WINEPREFIX}/drive_c/windows/syswow64/ \
  && find "${VCToolsRedistDir}x64" -name '*.dll' -type f | xargs -I{} cp -nvs {} ${WINEPREFIX}/drive_c/windows/system32/ \
