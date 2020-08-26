@@ -49,7 +49,6 @@ RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
 ENV PATH=/opt/m.css/bin:$PATH
 
 RUN echo "====== INSTALL NXBUILD ======" \
- && wget -O /etc/yum.repos.d/NephNET.repo https://files.nephatrine.net/Packages/NephRPM.repo \
  && dnf -y install \
   ImageMagick \
   cmake-NXBuild \
