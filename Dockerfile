@@ -27,15 +27,17 @@ RUN echo "====== INSTALL BUILD TOOLS ======" \
   gcc gcc-c++ git git-lfs glibc-devel glibc-devel.i686 \
   libstdc++-devel libstdc++-devel.i686 \
   ninja-build \
-  rpm-build rpm-sign \
+  redhat-lsb-core rpm-build rpm-sign \
   subversion \
  && dnf clean all \
  && rm -rf /tmp/* /var/tmp/*
 
 RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
  && dnf -y install \
+  ImageMagick \
   dia doxygen-latex \
   graphviz \
+  librsvg2-tools \
   python3-jinja2 python3-pygments \
  && dnf clean all \
  && mkdir /opt/m.css && cd /opt/m.css \
@@ -48,26 +50,13 @@ RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
  && rm -rf /tmp/* /var/tmp/*
 ENV PATH=/opt/m.css/bin:$PATH
 
-RUN echo "====== INSTALL NXBUILD ======" \
- && dnf -y install \
-  ImageMagick \
-  cmake-NXBuild \
-  librsvg2-tools \
-  redhat-lsb-core \
- && dnf clean all \
- && git -C /usr/src clone https://code.nephatrine.net/nephatrine/nxbuild.git \
- && rm -rf /tmp/* /var/tmp/*
 COPY override /
-
 RUN echo "====== TEST TOOLCHAINS ======" \
- && git -C /usr/src/nxbuild pull \
- && mkdir /tmp/nxbuild && cd /tmp/nxbuild \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64.cmake /usr/src/nxbuild \
- && ninja && ninja install \
+ && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64.cmake /usr/src/hello \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64.cmake /usr/src/hello-test \
  && ninja && ninja test \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-ia32.cmake /usr/src/hello \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-ia32.cmake /usr/src/hello-test \
  && ninja && ninja test \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
