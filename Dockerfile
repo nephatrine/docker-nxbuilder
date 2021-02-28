@@ -27,6 +27,8 @@ RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
  && apk --update add \
   dia doxygen \
   graphviz \
+  imagemagick \
+  librsvg \
   py3-jinja2 py3-pygments \
  && mkdir /opt/m.css && cd /opt/m.css \
  && git clone https://github.com/mosra/m.css && cd m.css \
@@ -38,21 +40,11 @@ RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
  && rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 ENV PATH=/opt/m.css/bin:$PATH
 
-RUN echo "====== INSTALL NXBUILD ======" \
- && mkdir /usr/src \
- && apk --update add \
-  imagemagick \
-  librsvg \
- && git -C /usr/src clone https://code.nephatrine.net/nephatrine/nxbuild.git \
- && rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
 COPY override /
-
 RUN echo "====== TEST TOOLCHAINS ======" \
- && git -C /usr/src/nxbuild pull \
- && mkdir /tmp/nxbuild && cd /tmp/nxbuild \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64.cmake /usr/src/nxbuild \
- && ninja && ninja install \
+ && mkdir /usr/src \
+ && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64.cmake /usr/src/hello \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64.cmake /usr/src/hello-test \
  && ninja && ninja test \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
