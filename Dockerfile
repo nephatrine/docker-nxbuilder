@@ -8,7 +8,7 @@ RUN echo "====== CONFIGURE REPOS ======" \
   epel-release \
   gnupg \
   wget \
- && dnf config-manager --set-enabled PowerTools \
+ && dnf -y config-manager --set-enabled powertools \
  && wget -O /etc/yum.repos.d/NephNET.repo https://files.nephatrine.net/Packages/NephRPM-CentOS.repo \
  && dnf upgrade  -y \
  && dnf -y install \
