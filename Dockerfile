@@ -81,17 +81,10 @@ ENV PATH=${HAIKU_TOOLCHAIN_AMD64}/bin:${HAIKU_TOOLCHAIN_IA32}/bin:$PATH
 COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
- && git -C /usr/src/nxbuild pull \
- && mkdir /tmp/nxbuild-amd64 && cd /tmp/nxbuild-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/haiku-amd64.cmake /usr/src/nxbuild \
- && ninja && ninja install \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/haiku-amd64.cmake /usr/src/hello \
- && ninja && file hello-test \
- && mkdir /tmp/nxbuild-ia32 && cd /tmp/nxbuild-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/haiku-ia32.cmake /usr/src/nxbuild \
- && ninja && ninja install \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/haiku-amd64.cmake /usr/src/hello-test \
+ && ninja && file HelloTest \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/haiku-ia32.cmake /usr/src/hello \
- && ninja && file hello-test \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/haiku-ia32.cmake /usr/src/hello-test \
+ && ninja && file HelloTest \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
