@@ -38,9 +38,10 @@ RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
  && mv COPYING ../ \
  && cd .. && rm -rf m.css bin/test* \
  && rm -rf /tmp/* /var/tmp/* /var/cache/apk/*
-ENV PATH=/opt/m.css/bin:$PATH
 
+ENV PATH=/opt/m.css/bin:$PATH
 COPY override /
+
 RUN echo "====== TEST TOOLCHAINS ======" \
  && mkdir /usr/src \
  && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
