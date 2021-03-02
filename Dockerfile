@@ -1,7 +1,7 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV WINEARCH=win64 WINEDEBUG=fixme-all WINEPREFIX=/opt/wine-root WINE=/usr/bin/wine64-development WINESERVER=/usr/bin/wineserver-development
+ENV WINEARCH=win64 WINEDEBUG=fixme-all WINEPREFIX=/opt/wine-prefix WINE=/usr/bin/wine64-development WINESERVER=/usr/bin/wineserver-development
 
 RUN echo "====== INSTALL WINE ======" \
  && dpkg --add-architecture i386 \
@@ -25,7 +25,7 @@ RUN echo "====== INSTALL MINGW ======" \
   wixl \
  && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
-ENV WINDOWS_SYSROOT=${WINEPREFIX}/drive_c WINDOWS_TOOLCHAIN=/opt/cross-tools/windows
+ENV WINDOWS_SYSROOT=${WINEPREFIX}/drive_c WINDOWS_TOOLCHAIN=/opt/llvm-mingw
 COPY override /
 
 RUN echo "====== BUILD LLVM-MINGW ======" \
@@ -35,18 +35,20 @@ RUN echo "====== BUILD LLVM-MINGW ======" \
   libclang-dev llvm-dev \
   python3-distutils \
  && export TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64" \
- && git -C /usr/src clone --depth=1 https://github.com/mstorsjo/llvm-mingw.git && cd /usr/src/llvm-mingw \
- && patch -u ./wrappers/clang-target-wrapper.sh /usr/src/clang-target-wrapper.patch \
+ && git -C /usr/src clone -b llvm-${LLVM_MAJOR}.0 --single-branch --depth=1 https://github.com/mstorsjo/llvm-mingw.git \
+ && cd /usr/src/llvm-mingw && patch -u ./wrappers/clang-target-wrapper.sh /usr/src/clang-target-wrapper.patch \
  && CHECKOUT_ONLY=1 LLVM_VERSION=release/${LLVM_MAJOR}.x ./build-llvm.sh ${WINDOWS_TOOLCHAIN} \
- && ./install-wrappers.sh ${WINDOWS_TOOLCHAIN} && export PATH=${WINDOWS_TOOLCHAIN}/bin:$PATH \
+ && ./install-wrappers.sh ${WINDOWS_TOOLCHAIN} \
+ && export PATH=${WINDOWS_TOOLCHAIN}/bin:$PATH \
  && cp -nrvs /usr/lib/llvm-${LLVM_MAJOR}/bin/* ${WINDOWS_TOOLCHAIN}/bin/ \
- && ./build-mingw-w64.sh ${WINDOWS_TOOLCHAIN} --with-default-msvcrt=ucrt \
+ && ./build-mingw-w64.sh ${WINDOWS_TOOLCHAIN} \
  && ./build-compiler-rt.sh ${WINDOWS_TOOLCHAIN} \
  && cp -nrvs ${WINDOWS_TOOLCHAIN}/lib/clang/* /usr/lib/llvm-${LLVM_MAJOR}/lib/clang/ \
  && ./build-mingw-w64-libraries.sh ${WINDOWS_TOOLCHAIN} \
  && ./build-libcxx.sh ${WINDOWS_TOOLCHAIN} \
  && ./build-compiler-rt.sh ${WINDOWS_TOOLCHAIN} --build-sanitizers \
  && cp -nrvs ${WINDOWS_TOOLCHAIN}/lib/clang/* /usr/lib/llvm-${LLVM_MAJOR}/lib/clang/ \
+ && sed -i 's~https://github.com/gcc-mirror/gcc/tags/releases/gcc-7.3.0/libssp~svn://gcc.gnu.org/svn/gcc/tags/gcc_7_3_0_release/libssp~g' build-libssp.sh \
  && ./build-libssp.sh ${WINDOWS_TOOLCHAIN} \
  && apt-get remove -y \
   gawk \
