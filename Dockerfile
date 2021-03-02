@@ -76,33 +76,29 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && sed -i 's/\\bin/\\@CPACK_NSIS_PACKAGE_PATH@/g' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
  && sed -i '6 i\ \ !define MUI_BGCOLOR "@CPACK_PACKAGE_COLOR_EXTRA_NH@"' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
  && sed -i '6 i\ \ !define MUI_TEXTCOLOR "@CPACK_PACKAGE_COLOR_FORE_NH@"' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
- && git -C /usr/src/nxbuild pull \
- && mkdir /tmp/nxbuild && cd /tmp/nxbuild \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-amd64.cmake /usr/src/nxbuild \
- && ninja && ninja install \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc && ln -s /usr/lib/gcc/x86_64-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-amd64.cmake /usr/src/hello \
- && ninja && ${WINE} ./hello-test.exe \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-amd64.cmake /usr/src/hello-test \
+ && ninja && ${WINE} ./HelloTest.exe \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/libgcc && ln -s /usr/lib/gcc/i686-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/libgcc \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-ia32.cmake /usr/src/hello \
- && ninja && ${WINE} ./hello-test.exe \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-ia32.cmake /usr/src/hello-test \
+ && ninja && ${WINE} ./HelloTest.exe \
  && export PATH=${WINDOWS_TOOLCHAIN}/bin:$PATH \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32 ${WINDOWS_SYSROOT}/x86_64-w64-mingw32 \
  && mkdir /tmp/build-amd64-libc++ && cd /tmp/build-amd64-libc++ \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-amd64-libc++.cmake /usr/src/hello \
- && ninja && ${WINE} ./hello-test.exe \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-amd64-libc++.cmake /usr/src/hello-test \
+ && ninja && ${WINE} ./HelloTest.exe \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32 ${WINDOWS_SYSROOT}/aarch64-w64-mingw32 \
  && mkdir /tmp/build-arm64-libc++ && cd /tmp/build-arm64-libc++ \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-arm64-libc++.cmake /usr/src/hello \
- && ninja && file hello-test.exe \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-arm64-libc++.cmake /usr/src/hello-test \
+ && ninja && file HelloTest.exe \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/armv7-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/armv7-w64-mingw32 ${WINDOWS_SYSROOT}/armv7-w64-mingw32 \
  && mkdir /tmp/build-armv7-libc++ && cd /tmp/build-armv7-libc++ \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-armv7-libc++.cmake /usr/src/hello \
- && ninja && file hello-test.exe \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-armv7-libc++.cmake /usr/src/hello-test \
+ && ninja && file HelloTest.exe \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32 ${WINDOWS_SYSROOT}/i686-w64-mingw32 \
  && mkdir /tmp/build-ia32-libc++ && cd /tmp/build-ia32-libc++ \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-ia32-libc++.cmake /usr/src/hello \
- && ninja && ${WINE} ./hello-test.exe \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-ia32-libc++.cmake /usr/src/hello-test \
+ && ninja && ${WINE} ./HelloTest.exe \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
