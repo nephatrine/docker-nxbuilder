@@ -24,6 +24,7 @@ RUN echo "====== CONFIGURE REPOS ======" \
  && rm -rf /tmp/* /var/tmp/*
 
 ENV LLVM_MAJOR=10
+
 RUN echo "====== INSTALL BUILD TOOLS ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
@@ -31,7 +32,7 @@ RUN echo "====== INSTALL BUILD TOOLS ======" \
   clang clang-format clang-tidy clang-tools cmake \
   git git-lfs \
   kitware-archive-keyring \
-  libc++-dev libc++abi-dev libunwind-dev lld llvm \
+  libc++-dev libc++abi-dev libunwind-dev lld llvm lsb-release \
   ninja-build \
   subversion \
  && apt-get clean \
@@ -43,6 +44,8 @@ RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
   dia doxygen-latex \
   global graphviz \
+  imagemagick \
+  librsvg2-bin \
   mscgen \
   python3-jinja2 python3-pygments \
  && apt-get autoremove -y \
@@ -55,16 +58,6 @@ RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
  && mv COPYING ../ \
  && cd .. && rm -rf m.css bin/test* \
  && rm -rf /tmp/* /var/tmp/*
-ENV PATH=/opt/m.css/bin:$PATH
 
-RUN echo "====== INSTALL NXBUILD ======" \
- && export DEBIAN_FRONTEND=noninteractive && apt-get update \
- && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  cmake-nxbuild \
-  imagemagick \
-  librsvg2-bin lsb-release \
- && apt-get clean \
- && mkdir -p /usr/src && cd /usr/src \
- && git clone https://code.nephatrine.net/nephatrine/nxbuild.git \
- && rm -rf /tmp/* /var/tmp/*
+ENV PATH=/opt/m.css/bin:$PATH
 COPY override /
