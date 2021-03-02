@@ -1,7 +1,8 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV DJGPP_SYSROOT=/opt/sysroot-djgpp DJGPP_TOOLCHAIN=/opt/cross-tools/djgpp
+ENV DJGPP_TOOLCHAIN=/opt/djgpp
+ENV DJGPP_SYSROOT=${DJGPP_TOOLCHAIN}/sysroot
 
 RUN echo "====== INSTALL GCC-CROSS ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
@@ -23,32 +24,29 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
  && make -C djasm native \
  && make -C stub native \
  && mkdir -p ${DJGPP_TOOLCHAIN}/bin ${DJDIR} \
+ && cp -nrv ../lib ${DJDIR}/lib \
  && cp -nrv ../include ${DJDIR}/sys-include \
  && cp -npv ../hostbin/stubify.exe ${DJGPP_TOOLCHAIN}/bin/i586-pc-msdosdjgpp-stubify && ln -s i586-pc-msdosdjgpp-stubify ${DJGPP_TOOLCHAIN}/bin/stubify \
  && cp -npv ../hostbin/stubedit.exe ${DJGPP_TOOLCHAIN}/bin/i586-pc-msdosdjgpp-stubedit && ln -s i586-pc-msdosdjgpp-stubedit ${DJGPP_TOOLCHAIN}/bin/stubedit \
- && export BINTUILS_MAJOR=2 && export BINTUILS_MINOR=34 \
- && export GCC_MAJOR=9 && export GCC_MINOR=3 \
- && export GMP_VERSION=6.2.0 && export ISL_VERSION=0.22.1 \
- && export MPC_VERSION=1.1.0 && export MPFR_VERSION=4.0.2 \
- && wget -qO /tmp/bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s.zip http://delorie.com/pub/djgpp/current/v2gnu/bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s.zip \
- && wget -qO /tmp/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.bz2 http://delorie.com/pub/djgpp/rpms/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.bz2 \
- && wget -qO /tmp/gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.xz http://ftpmirror.gnu.org/gcc/gcc-${GCC_MAJOR}.${GCC_MINOR}.0/gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.xz \
+ && export BINTUILS_DJGPP_VERSION=2351 && export BINTUILS_GNU_VERISON=2.35.1 \
+ && export GCC_DJGPP_VERSION=10.20 && export GCC_GNU_VERSION=10.2.0 \
+ && wget -qO /tmp/bnu${BINTUILS_DJGPP_VERSION}s.zip http://delorie.com/pub/djgpp/current/v2gnu/bnu${BINTUILS_DJGPP_VERSION}s.zip \
+ && wget -qO /tmp/djcross-gcc-${GCC_GNU_VERSION}.tar.bz2 http://delorie.com/pub/djgpp/rpms/djcross-gcc-${GCC_GNU_VERSION}/djcross-gcc-${GCC_GNU_VERSION}.tar.bz2 \
+ && wget -qO /tmp/gcc-${GCC_GNU_VERSION}.tar.xz http://ftpmirror.gnu.org/gcc/gcc-${GCC_GNU_VERSION}/gcc-${GCC_GNU_VERSION}.tar.xz \
  && cd /usr/src \
- && tar -xf /tmp/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.bz2 && cd djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0 \
- && mv /tmp/gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.xz ./ && sh unpack-gcc.sh --no-djgpp-source gcc-${GCC_MAJOR}.${GCC_MINOR}.0.tar.xz \
- && unzip -oq /tmp/bnu${BINTUILS_MAJOR}${BINTUILS_MINOR}s.zip \
- && chmod +x ./gnu/binutils-${BINTUILS_MAJOR}.${BINTUILS_MINOR}/install-sh \
- && chmod +x ./gnu/binutils-${BINTUILS_MAJOR}.${BINTUILS_MINOR}/missing \
- && chmod +x ./gnu/binutils-${BINTUILS_MAJOR}.${BINTUILS_MINOR}/configure \
+ && tar -xf /tmp/djcross-gcc-${GCC_GNU_VERSION}.tar.bz2 && cd djcross-gcc-${GCC_GNU_VERSION} \
+ && mv /tmp/gcc-${GCC_GNU_VERSION}.tar.xz ./ && sh unpack-gcc.sh --no-djgpp-source gcc-${GCC_GNU_VERSION}.tar.xz \
+ && unzip -oq /tmp/bnu${BINTUILS_DJGPP_VERSION}s.zip \
+ && chmod +x ./gnu/binutils-${BINTUILS_GNU_VERISON}/install-sh \
+ && chmod +x ./gnu/binutils-${BINTUILS_GNU_VERISON}/missing \
+ && chmod +x ./gnu/binutils-${BINTUILS_GNU_VERISON}/configure \
  && mkdir /tmp/build-binutils && cd /tmp/build-binutils \
- && /usr/src/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0/gnu/binutils-${BINTUILS_MAJOR}.${BINTUILS_MINOR}/configure \
-  --target=i586-pc-msdosdjgpp --prefix=${DJGPP_TOOLCHAIN} --disable-werror --disable-nls \
+ && /usr/src/djcross-gcc-${GCC_GNU_VERSION}/gnu/binutils-${BINTUILS_GNU_VERISON}/configure --target=i586-pc-msdosdjgpp --prefix=${DJGPP_TOOLCHAIN} --disable-werror --disable-nls \
  && make -j4 configure-bfd && make -j4 -C bfd stmp-lcoff-h \
  && make -j4 && make -j4 -s check && make install \
  && export PATH=${DJGPP_TOOLCHAIN}/bin:$PATH \
  && mkdir /tmp/build-gcc && cd /tmp/build-gcc \
- && /usr/src/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0/gnu/gcc-${GCC_MAJOR}.${GCC_MINOR}0/configure --disable-plugin --enable-lto --disable-nls --enable-libquadmath-support --enable-version-specific-runtime-libs \
-  --enable-fat --enable-libstdcxx-filesystem-ts --target=i586-pc-msdosdjgpp --prefix=${DJGPP_TOOLCHAIN} --enable-languages=c,c++ \
+ && /usr/src/djcross-gcc-${GCC_GNU_VERSION}/gnu/gcc-${GCC_DJGPP_VERSION}/configure --target=i586-pc-msdosdjgpp --prefix=${DJGPP_TOOLCHAIN} --disable-plugin --enable-lto --disable-nls --enable-libquadmath-support --enable-version-specific-runtime-libs --enable-fat --enable-libstdcxx-filesystem-ts --enable-languages=c,c++ \
  && make -j4 all-gcc && make install-gcc \
  && cd /usr/src/djgpp-cvs/src \
  && make config && make -j4 -C mkdoc && make -j4 -C libc \
@@ -82,7 +80,7 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
   zlib1g-dev \
  && apt-get autoremove -y \
  && apt-get clean \
- && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/djcross-gcc-${GCC_MAJOR}.${GCC_MINOR}.0 /usr/src/djgpp-cvs
+ && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/djcross-gcc-${GCC_GNU_VERSION} /usr/src/djgpp-cvs
 ENV DJDIR=${DJGPP_TOOLCHAIN}/i586-pc-msdosdjgpp PATH=${DJGPP_TOOLCHAIN}/bin:$PATH SDL_VIDEODRIVER=dummy
 COPY override /
 
