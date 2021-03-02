@@ -91,14 +91,9 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && wget -qO /tmp/cwsdpmi.zip https://files.nephatrine.net/Local/cwsdpmi.zip \
  && mkdir -p ${DJGPP_SYSROOT}/TMP && cd ${DJGPP_SYSROOT} && unzip /tmp/cwsdpmi.zip \
  && mv /usr/share/cmake/Modules/Platform/*.cmake /usr/share/cmake-*/Modules/Platform/ \
- && git -C /usr/src/nxbuild pull \
- && mkdir /tmp/nxbuild && cd /tmp/nxbuild \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/djgpp-ia32.cmake /usr/src/nxbuild \
- && ninja && ninja install \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/djgpp-ia32.cmake /usr/src/hello \
- && ninja && file hello-test.exe \
- && cp hello-test.exe ${DJGPP_SYSROOT}/HELLO.EXE \
- && cp hello.dxe ${DJGPP_SYSROOT}/HELLO.DXE \
- && dosbox -conf /opt/cross-tools/dosbox.conf -c "C:\\HELLO.EXE >C:\\TMP\\CMDOUT" -c "exit" 2>/dev/null && cat ${DJGPP_SYSROOT}/TMP/CMDOUT \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/djgpp-ia32.cmake /usr/src/hello-test \
+ && ninja && file hello.exe \
+ && cp hello.exe hello.dxe ${DJGPP_SYSROOT}/TMP/ \
+ && dosbox -conf /opt/cross-tools/dosbox.conf -c "C:\\TMP\\hello.exe >C:\\TMP\\CMDOUT" -c "exit" 2>/dev/null && cat ${DJGPP_SYSROOT}/TMP/CMDOUT \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
