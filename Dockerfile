@@ -60,4 +60,3 @@ RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
  && rm -rf /tmp/* /var/tmp/*
 
 ENV PATH=/opt/m.css/bin:$PATH
-COPY override /
