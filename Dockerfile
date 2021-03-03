@@ -77,10 +77,12 @@ RUN echo "====== INSTALL CROSS-GCC ======" \
  && apt-get autoremove -y \
  && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/buildtools /usr/src/haiku
+
 ENV PATH=${HAIKU_TOOLCHAIN_AMD64}/bin:${HAIKU_TOOLCHAIN_IA32}/bin:$PATH
 COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
+ && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/haiku-amd64.cmake /usr/src/hello-test \
  && ninja && file HelloTest \
