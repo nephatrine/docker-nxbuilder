@@ -3,6 +3,7 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ENV UniversalCRTSdkDir="${WINEPREFIX}/drive_c/Program Files (x86)/Windows Kits/10/" \
  VSINSTALLDIR="${WINEPREFIX}/drive_c/Program Files (x86)/Microsoft Visual Studio/2019/Community/"
+ENV VCINSTALLDIR="${VSINSTALLDIR}VC/" WindowsSdkDir="${UniversalCRTSdkDir}" WindowsSdkBinPath="${UniversalCRTSdkDir}bin/"
 
 RUN echo "====== INSTALL MSVC-WINE ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update \
@@ -21,20 +22,23 @@ RUN echo "====== INSTALL MSVC-WINE ======" \
   python3-simplejson \
  && apt-get autoremove -y \
  && apt-get clean \
- && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/msvc-wine
-ENV UCRTVersion=10.0.18362.0 VCToolsVersion=14.27.29110 VCRedistVersion=14.27.29016
-ENV VCINSTALLDIR="${VSINSTALLDIR}VC/" WindowsSDKLibVersion=${UCRTVersion}/ WindowsSDKVersion=${UCRTVersion}/ WindowsSdkDir="${UniversalCRTSdkDir}"
+ && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/msvc-wine \
+ && ls "${WindowsSdkDir}bin/" \
+ && ls "${VCINSTALLDIR}Tools/MSVC/" \
+ && ls "${VCINSTALLDIR}Redist/MSVC/"
+
+ENV UCRTVersion=10.0.19041.0 VCToolsVersion=14.28.29910 VCRedistVersion=14.28.29910
 ENV VCToolsInstallDir="${VCINSTALLDIR}Tools/MSVC/${VCToolsVersion}/" VCToolsRedistDir="${VCINSTALLDIR}Redist/MSVC/${VCRedistVersion}/" \
- WindowsSdkBinPath="${WindowsSdkDir}bin/" WindowsSdkVerBinPath="${WindowsSdkDir}bin/${WindowsSDKVersion}"
+ WindowsSDKLibVersion=${UCRTVersion}/ WindowsSdkVerBinPath="${WindowsSdkDir}bin/${UCRTVersion}/" WindowsSDKVersion=${UCRTVersion}/
 COPY override /
 
 RUN echo "====== BUILD COMPILER-RT ======" \
- && export DEBIAN_FRONTEND=noninteractive && apt-get update \
- && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  libclang-dev llvm-dev \
  && ls "${WindowsSdkDir}bin" && ls "${WindowsSdkVerBinPath}" \
  && ls "${VCINSTALLDIR}Redist/MSVC" && ls "${VCToolsRedistDir}" \
  && ls "${VCINSTALLDIR}Tools/MSVC" && ls "${VCToolsInstallDir}" \
+ && export DEBIAN_FRONTEND=noninteractive && apt-get update \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
+  libclang-dev llvm-dev \
  && find "${WindowsSdkVerBinPath}x64/ucrt" -name '*.dll' -type f | xargs -I{} cp -nvs {} ${WINEPREFIX}/drive_c/windows/system32/ \
  && find "${WindowsSdkVerBinPath}x86/ucrt" -name '*.dll' -type f | xargs -I{} cp -nvs {} ${WINEPREFIX}/drive_c/windows/syswow64/ \
  && find "${VCToolsRedistDir}x64" -name '*.dll' -type f | xargs -I{} cp -nvs {} ${WINEPREFIX}/drive_c/windows/system32/ \
@@ -62,17 +66,13 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/llvm-project
 
 RUN echo "====== TEST TOOLCHAINS ======" \
- && git -C /usr/src/nxbuild pull \
- && mkdir /tmp/nxbuild && cd /tmp/nxbuild \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-amd64.cmake /usr/src/nxbuild \
- && ninja && ninja install \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-amd64.cmake /usr/src/hello \
- && ninja && ${WINE} ./hello-test.exe \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-amd64.cmake /usr/src/hello-test \
+ && ninja && ${WINE} ./HelloTest.exe \
  && mkdir /tmp/build-arm64 && cd /tmp/build-arm64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-arm64.cmake /usr/src/hello \
- && ninja && file hello-test.exe \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-arm64.cmake /usr/src/hello-test \
+ && ninja && file HelloTest.exe \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-ia32.cmake /usr/src/hello \
- && ninja && ${WINE} ./hello-test.exe \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-ia32.cmake /usr/src/hello-test \
+ && ninja && ${WINE} ./HelloTest.exe \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
