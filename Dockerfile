@@ -25,6 +25,7 @@ RUN echo "====== INSTALL MINGW ======" \
   wixl \
  && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
+
 ENV WINDOWS_SYSROOT=${WINEPREFIX}/drive_c WINDOWS_TOOLCHAIN=/opt/llvm-mingw
 COPY override /
 
@@ -76,6 +77,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && sed -i 's/\\bin/\\@CPACK_NSIS_PACKAGE_PATH@/g' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
  && sed -i '6 i\ \ !define MUI_BGCOLOR "@CPACK_PACKAGE_COLOR_EXTRA_NH@"' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
  && sed -i '6 i\ \ !define MUI_TEXTCOLOR "@CPACK_PACKAGE_COLOR_FORE_NH@"' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
+ && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc && ln -s /usr/lib/gcc/x86_64-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-amd64.cmake /usr/src/hello-test \
