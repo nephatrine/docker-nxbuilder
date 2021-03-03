@@ -2,7 +2,7 @@ FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ENV FREEBSD_DEPLOYMENT_TARGET=12.1 \
- FREEBSD_SYSROOT_AMD64=/opt/sysroot-freebsd-amd64 FREEBSD_SYSROOT_ARM64=/opt/sysroot-freebsd-arm64 FREEBSD_SYSROOT_IA32=/opt/sysroot-freebsd-ia32
+ FREEBSD_SYSROOT_AMD64=/opt/freebsd-amd64/sysroot FREEBSD_SYSROOT_ARM64=/opt/freebsd-aarch64/sysroot FREEBSD_SYSROOT_IA32=/opt/freebsd-i386/sysroot
 
 RUN echo "====== INSTALL FREEBSD ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
@@ -58,6 +58,7 @@ RUN echo "====== INSTALL FREEBSD ======" \
  && find . -xtype l | xargs ls -l | grep ' /lib/' | awk -v sysroot=${FREEBSD_SYSROOT_IA32} '{print "ln -sf " sysroot $11 " " $9}' | /bin/sh \
  && find . -xtype l | xargs ls -l | grep ' /usr/' | awk -v sysroot=${FREEBSD_SYSROOT_IA32} '{print "ln -sf " sysroot $11 " " $9}' | /bin/sh \
  && rm -rf /tmp/* /var/tmp/*
+
 COPY override /
 
 RUN echo "====== BUILD COMPILER-RT ======" \
@@ -86,23 +87,14 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/llvm-project
 
 RUN echo "====== TEST TOOLCHAINS ======" \
- && git -C /usr/src/nxbuild pull \
- && mkdir /tmp/nxbuild-amd64 && cd /tmp/nxbuild-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/freebsd-amd64.cmake /usr/src/nxbuild \
- && ninja && ninja install \
+ && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/freebsd-amd64.cmake /usr/src/hello \
- && ninja && file hello-test \
- && mkdir /tmp/nxbuild-arm64 && cd /tmp/nxbuild-arm64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/freebsd-arm64.cmake /usr/src/nxbuild \
- && ninja && ninja install \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/freebsd-amd64.cmake /usr/src/hello-test \
+ && ninja && file HelloTest \
  && mkdir /tmp/build-arm64 && cd /tmp/build-arm64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/freebsd-arm64.cmake /usr/src/hello \
- && ninja && file hello-test \
- && mkdir /tmp/nxbuild-ia32 && cd /tmp/nxbuild-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/freebsd-ia32.cmake /usr/src/nxbuild \
- && ninja && ninja install \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/freebsd-arm64.cmake /usr/src/hello-test \
+ && ninja && file HelloTest \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/freebsd-ia32.cmake /usr/src/hello \
- && ninja && file hello-test \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/freebsd-ia32.cmake /usr/src/hello-test \
+ && ninja && file HelloTest \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
