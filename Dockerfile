@@ -35,7 +35,7 @@ RUN echo "====== BUILD LLVM-MINGW ======" \
   gawk \
   libclang-dev llvm-dev \
   python3-distutils \
- && export TOOLCHAIN_ARCHS="i686 x86_64 armv7 aarch64" \
+ && export TOOLCHAIN_ARCHS="i686 x86_64 aarch64" \
  && git -C /usr/src clone -b llvm-${LLVM_MAJOR}.0 --single-branch --depth=1 https://github.com/mstorsjo/llvm-mingw.git \
  && cd /usr/src/llvm-mingw && patch -u ./wrappers/clang-target-wrapper.sh /usr/src/clang-target-wrapper.patch \
  && CHECKOUT_ONLY=1 LLVM_VERSION=release/${LLVM_MAJOR}.x ./build-llvm.sh ${WINDOWS_TOOLCHAIN} \
@@ -94,10 +94,6 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32 ${WINDOWS_SYSROOT}/aarch64-w64-mingw32 \
  && mkdir /tmp/build-arm64-libc++ && cd /tmp/build-arm64-libc++ \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-arm64-libc++.cmake /usr/src/hello-test \
- && ninja && file HelloTest.exe \
- && export WINEPATH=${WINDOWS_TOOLCHAIN}/armv7-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/armv7-w64-mingw32 ${WINDOWS_SYSROOT}/armv7-w64-mingw32 \
- && mkdir /tmp/build-armv7-libc++ && cd /tmp/build-armv7-libc++ \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-armv7-libc++.cmake /usr/src/hello-test \
  && ninja && file HelloTest.exe \
  && export WINEPATH=${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32 ${WINDOWS_SYSROOT}/i686-w64-mingw32 \
  && mkdir /tmp/build-ia32-libc++ && cd /tmp/build-ia32-libc++ \
