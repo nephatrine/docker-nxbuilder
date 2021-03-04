@@ -81,6 +81,7 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
  && apt-get autoremove -y \
  && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/djcross-gcc-${GCC_GNU_VERSION} /usr/src/djgpp-cvs
+
 ENV DJDIR=${DJGPP_TOOLCHAIN}/i586-pc-msdosdjgpp PATH=${DJGPP_TOOLCHAIN}/bin:$PATH SDL_VIDEODRIVER=dummy
 COPY override /
 
@@ -91,6 +92,7 @@ RUN echo "====== TEST TOOLCHAINS ======" \
  && wget -qO /tmp/cwsdpmi.zip https://files.nephatrine.net/Local/cwsdpmi.zip \
  && mkdir -p ${DJGPP_SYSROOT}/TMP && cd ${DJGPP_SYSROOT} && unzip /tmp/cwsdpmi.zip \
  && mv /usr/share/cmake/Modules/Platform/*.cmake /usr/share/cmake-*/Modules/Platform/ \
+ && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
  && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/djgpp-ia32.cmake /usr/src/hello-test \
  && ninja && file hello.exe \
