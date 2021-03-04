@@ -1,7 +1,7 @@
 FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
-ENV FREEBSD_DEPLOYMENT_TARGET=12.1 \
+ENV FREEBSD_DEPLOYMENT_TARGET=12.2 \
  FREEBSD_SYSROOT_AMD64=/opt/freebsd-amd64/sysroot FREEBSD_SYSROOT_ARM64=/opt/freebsd-aarch64/sysroot FREEBSD_SYSROOT_IA32=/opt/freebsd-i386/sysroot
 
 RUN echo "====== INSTALL FREEBSD ======" \
