@@ -5,13 +5,14 @@ ENV HAIKU_TOOLCHAIN_AMD64=/opt/haiku/cross-tools-x86_64 \
  HAIKU_TOOLCHAIN_GCC2=/opt/haiku/cross-tools-x86_gcc2 \
  HAIKU_TOOLCHAIN_IA32=/opt/haiku/cross-tools-x86
 
-ENV HAIKU_SYSROOT_AMD64=$HAIKU_TOOLCHAIN_AMD64/sysroot \
- HAIKU_SYSROOT_GCC2=$HAIKU_TOOLCHAIN_GCC2/sysroot \
- HAIKU_SYSROOT_IA32=$HAIKU_TOOLCHAIN_IA32/sysroot
+ENV HAIKU_SYSROOT_AMD64=${HAIKU_TOOLCHAIN_AMD64}/sysroot \
+ HAIKU_SYSROOT_GCC2=${HAIKU_TOOLCHAIN_GCC2}/sysroot \
+ HAIKU_SYSROOT_IA32=${HAIKU_TOOLCHAIN_IA32}/sysroot
 
 RUN echo "====== INSTALL CROSS-GCC ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
+  autoconf automake \
   bison \
   flex \
   gawk gcc-multilib \
@@ -69,6 +70,7 @@ RUN echo "====== INSTALL CROSS-GCC ======" \
  && rm -rf Jamfile attributes build build_packages download objects tmp \
  && ln -s ${HAIKU_SYSROOT_GCC2} ${HAIKU_SYSROOT_IA32} \
  && apt-get remove -y \
+  autoconf automake \
   bison \
   flex \
   gawk gcc-multilib \
@@ -76,17 +78,17 @@ RUN echo "====== INSTALL CROSS-GCC ======" \
   zlib1g-dev \
  && apt-get autoremove -y \
  && apt-get clean \
- && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/buildtools /usr/src/haiku
+ && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 ENV PATH=${HAIKU_TOOLCHAIN_AMD64}/bin:${HAIKU_TOOLCHAIN_IA32}/bin:$PATH
 COPY override /
 
-RUN echo "====== TEST TOOLCHAINS ======" \
+RUN echo "====== TEST TOOLCHAIN ======" \
  && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
- && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/haiku-amd64.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-x86_64 && cd /tmp/build-x86_64 \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/haiku/toolchain.x86_64.cmake /usr/src/hello-test \
  && ninja && file HelloTest \
- && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/haiku-ia32.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-x86 && cd /tmp/build-x86 \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/haiku/toolchain.x86.cmake /usr/src/hello-test \
  && ninja && file HelloTest \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
