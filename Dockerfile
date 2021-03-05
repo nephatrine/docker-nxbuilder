@@ -9,7 +9,7 @@ RUN echo "====== INSTALL JAVA ======" \
  && rm -rf /tmp/* /var/tmp/*
 
 ENV ANDROID_SDK_ROOT=/opt/android-sdk JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
- ANDROID_BUILD_TOOLS=30.0.3 ANDROID_PLATFORM_MIN=24 ANDROID_PLATFORM_TGT=28
+ ANDROID_BUILD_TOOLS=30.0.3 ANDROID_PLATFORM=24 ANDROID_PLATFORM_EXTRA=28
 
 RUN echo "====== INSTALL ANDROID SDK ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
@@ -27,47 +27,50 @@ RUN echo "====== INSTALL ANDROID SDK ======" \
  && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "cmdline-tools;latest" \
  && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "build-tools;${ANDROID_BUILD_TOOLS}" \
  && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "ndk-bundle" \
- && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_PLATFORM_MIN}" \
- && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_PLATFORM_TGT}" \
+ && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_PLATFORM}" \
+ && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_PLATFORM_EXTRA}" \
  && keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug" \
  && apt-get remove -y \
   unzip \
  && apt-get autoremove -y \
  && apt-get clean \
- && rm -rf /tmp/* /var/tmp/*
+ && rm -rf /tmp/* /var/tmp/* ${ANDROID_SDK_ROOT}/cmdline-tools/temp
+
+#keytool -importkeystore -srckeystore debug.keystore -destkeystore debug.keystore -deststoretype pkcs12".
 
 ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk-bundle DEBUG_KEYSTORE=${ANDROID_SDK_ROOT}/debug.keystore \
- PATH=${ANDROID_SDK_ROOT}/build-tools/${ANDROID_BUILD_TOOLS}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:$PATH \
- ANDROID_NDK_SYSROOT=${ANDROID_SDK_ROOT}/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot
+ PATH=${ANDROID_SDK_ROOT}/build-tools/${ANDROID_BUILD_TOOLS}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:$PATH
+ENV ANDROID_NDK_SYSROOT=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/sysroot
 COPY override /
 
-RUN echo "====== TEST TOOLCHAINS ======" \
- && mv /usr/src/native_app_glue/CMakeLists.txt ${ANDROID_NDK_ROOT}/sources/android/native_app_glue/ \
+RUN echo "====== BUILD NATIVE APP GLUE ======" \
  && cp -nv ${ANDROID_NDK_ROOT}/sources/android/native_app_glue/android_native_app_glue.h ${ANDROID_NDK_SYSROOT}/usr/include/android/native_app_glue.h \
- && rm -rf /usr/src/native_all_glue \
- && mkdir /tmp/nag-amd64 && cd /tmp/nag-amd64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/android-amd64.cmake ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
+ && mkdir /tmp/build-x86_64 && cd /tmp/build-x86_64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.x86_64.cmake ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
  && ninja && cp -nv ./libnative_app_glue.a ${ANDROID_NDK_SYSROOT}/usr/lib/x86_64-linux-android/ \
- && mkdir /tmp/nag-arm64 && cd /tmp/nag-arm64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/android-arm64.cmake ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
+ && mkdir /tmp/build-arm64-v8a && cd /tmp/build-arm64-v8a \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.arm64-v8a.cmake ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
  && ninja && cp -nv ./libnative_app_glue.a ${ANDROID_NDK_SYSROOT}/usr/lib/aarch64-linux-android/ \
- && mkdir /tmp/nag-armv7 && cd /tmp/nag-armv7 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/android-armv7.cmake ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
+ && mkdir /tmp/build-armeabi-v7a && cd /tmp/build-armeabi-v7a \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.armeabi-v7a.cmake ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
  && ninja && cp -nv ./libnative_app_glue.a ${ANDROID_NDK_SYSROOT}/usr/lib/arm-linux-androideabi/ \
- && mkdir /tmp/nag-ia32 && cd /tmp/nag-ia32 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/android-ia32.cmake ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
+ && mkdir /tmp/build-x86 && cd /tmp/build-x86 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.x86.cmake ${ANDROID_NDK_ROOT}/sources/android/native_app_glue \
  && ninja && cp -nv ./libnative_app_glue.a ${ANDROID_NDK_SYSROOT}/usr/lib/i686-linux-android/ \
+ && cd /tmp && rm -rf /tmp/* /var/tmp/*
+
+RUN echo "====== TEST TOOLCHAIN ======" \
  && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
- && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/android-amd64.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-x86_64 && cd /tmp/build-x86_64 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.x86_64.cmake /usr/src/hello-test \
  && ninja && file HelloTest \
- && mkdir /tmp/build-arm64 && cd /tmp/build-arm64 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/android-arm64.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-arm64-v8a && cd /tmp/build-arm64-v8a \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.arm64-v8a.cmake /usr/src/hello-test \
  && ninja && file HelloTest \
- && mkdir /tmp/build-armv7 && cd /tmp/build-armv7 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/android-armv7.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-armeabi-v7a && cd /tmp/build-armeabi-v7a \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.armeabi-v7a.cmake /usr/src/hello-test \
  && ninja && file HelloTest \
- && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/android-ia32.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-x86 && cd /tmp/build-x86 \
+ && cmake -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/toolchain.x86.cmake /usr/src/hello-test \
  && ninja && file HelloTest \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
