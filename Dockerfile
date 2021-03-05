@@ -18,21 +18,21 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
 
 COPY override /
 
-RUN echo "====== TEST TOOLCHAINS ======" \
+RUN echo "====== TEST TOOLCHAIN ======" \
  && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64.cmake /usr/src/hello-test \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/usr/src/toolchain.amd64.cmake /usr/src/hello-test \
  && ninja && ninja test \
- && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-ia32.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-i386 && cd /tmp/build-i386 \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/usr/src/toolchain.i386.cmake /usr/src/hello-test \
  && ninja && ninja test \
  && mkdir /tmp/build-arm64 && cd /tmp/build-arm64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-arm64.cmake /usr/src/hello-test \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/usr/src/toolchain.arm64.cmake /usr/src/hello-test \
  && ninja && file HelloTest \
- && mkdir /tmp/build-armv7 && cd /tmp/build-armv7 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-armv7.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-armhf && cd /tmp/build-armhf \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/usr/src/toolchain.armhf.cmake /usr/src/hello-test \
  && ninja && file HelloTest \
  && mkdir /tmp/build-riscv64 && cd /tmp/build-riscv64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-riscv64.cmake /usr/src/hello-test \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/usr/src/toolchain.riscv64.cmake /usr/src/hello-test \
  && ninja && file HelloTest \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
