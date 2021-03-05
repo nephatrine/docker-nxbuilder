@@ -3,7 +3,6 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ENV UniversalCRTSdkDir="${WINEPREFIX}/drive_c/Program Files (x86)/Windows Kits/10/" \
  VSINSTALLDIR="${WINEPREFIX}/drive_c/Program Files (x86)/Microsoft Visual Studio/2019/Community/"
-ENV VCINSTALLDIR="${VSINSTALLDIR}VC/" WindowsSdkDir="${UniversalCRTSdkDir}" WindowsSdkBinPath="${UniversalCRTSdkDir}bin/"
 
 RUN echo "====== INSTALL MSVC-WINE ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update \
@@ -22,12 +21,10 @@ RUN echo "====== INSTALL MSVC-WINE ======" \
   python3-simplejson \
  && apt-get autoremove -y \
  && apt-get clean \
- && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/msvc-wine \
- && ls "${WindowsSdkDir}bin/" \
- && ls "${VCINSTALLDIR}Tools/MSVC/" \
- && ls "${VCINSTALLDIR}Redist/MSVC/"
+ && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
-ENV UCRTVersion=10.0.19041.0 VCToolsVersion=14.28.29910 VCRedistVersion=14.28.29910
+ENV UCRTVersion=10.0.19041.0 VCToolsVersion=14.28.29910 VCRedistVersion=14.28.29910 \
+ VCINSTALLDIR="${VSINSTALLDIR}VC/" WindowsSdkDir="${UniversalCRTSdkDir}" WindowsSdkBinPath="${UniversalCRTSdkDir}bin/"
 ENV VCToolsInstallDir="${VCINSTALLDIR}Tools/MSVC/${VCToolsVersion}/" VCToolsRedistDir="${VCINSTALLDIR}Redist/MSVC/${VCRedistVersion}/" \
  WindowsSDKLibVersion=${UCRTVersion}/ WindowsSdkVerBinPath="${WindowsSdkDir}bin/${UCRTVersion}/" WindowsSDKVersion=${UCRTVersion}/
 COPY override /
@@ -47,32 +44,33 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && find "${VCToolsRedistDir}debug_nonredist/x86" -name '*.dll' -type f | xargs -I{} cp -nvs {} ${WINEPREFIX}/drive_c/windows/syswow64/ \
  && git -C /usr/src clone --depth=1 --branch "release/${LLVM_MAJOR}.x" https://github.com/llvm/llvm-project.git \
  && cp -nrv /usr/src/llvm-project/compiler-rt/include/sanitizer /usr/lib/clang/${LLVM_MAJOR}/include/ \
- && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-amd64.cmake \
+ && mkdir /tmp/build-x64 && cd /tmp/build-x64 \
+ && cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.x64.cmake \
   -DCOMPILER_RT_DEFAULT_TARGET_TRIPLE="x86_64-pc-windows-msvc" /usr/src/llvm-project/compiler-rt \
  && ninja && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/${LLVM_MAJOR}/lib/windows/ \
  && mkdir /tmp/build-arm64 && cd /tmp/build-arm64 \
- && cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-arm64.cmake \
+ && cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.arm64.cmake \
   -DCOMPILER_RT_BUILD_SANITIZERS=OFF -DCOMPILER_RT_BUILD_XRAY=OFF -DCOMPILER_RT_DEFAULT_TARGET_TRIPLE="aarch64-pc-windows-msvc" /usr/src/llvm-project/compiler-rt \
  && ninja && cp -nv ./lib/windows/*.lib /usr/lib/clang/${LLVM_MAJOR}/lib/windows/ \
- && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-ia32.cmake \
+ && mkdir /tmp/build-x86 && cd /tmp/build-x86 \
+ && cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.x86.cmake \
   -DCOMPILER_RT_DEFAULT_TARGET_TRIPLE="i686-pc-windows-msvc" /usr/src/llvm-project/compiler-rt \
  && ninja && cp -nv ./lib/windows/*.lib ./lib/windows/*.dll /usr/lib/clang/${LLVM_MAJOR}/lib/windows/ \
  && apt-get remove -y \
   libclang-dev llvm-dev \
  && apt-get autoremove -y \
  && apt-get clean \
- && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/llvm-project
+ && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
-RUN echo "====== TEST TOOLCHAINS ======" \
- && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-amd64.cmake /usr/src/hello-test \
+RUN echo "====== TEST TOOLCHAIN ======" \
+ && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
+ && mkdir /tmp/build-x64 && cd /tmp/build-x64 \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.x64.cmake /usr/src/hello-test \
  && ninja && ${WINE} ./HelloTest.exe \
  && mkdir /tmp/build-arm64 && cd /tmp/build-arm64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-arm64.cmake /usr/src/hello-test \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.arm64.cmake /usr/src/hello-test \
  && ninja && file HelloTest.exe \
- && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/windows-ia32.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-x86 && cd /tmp/build-x86 \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.x86.cmake /usr/src/hello-test \
  && ninja && ${WINE} ./HelloTest.exe \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*

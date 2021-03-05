@@ -62,10 +62,10 @@ function(process_library_path winsdk_src)
 endfunction()
 
 set(CMAKE_SYSTEM_NAME Windows)
-set(CMAKE_SYSTEM_PROCESSOR i686)
+set(CMAKE_SYSTEM_PROCESSOR x86_64)
 set(CMAKE_SYSTEM_VERSION ${UCRTVersion})
-set(CMAKE_VS_PLATFORM_NAME x86)
-set(CMAKE_SIZEOF_VOID_P 4)
+set(CMAKE_VS_PLATFORM_NAME x64)
+set(CMAKE_SIZEOF_VOID_P 8)
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-pc-windows-msvc")
 
@@ -87,9 +87,9 @@ set(MSVC_C_ARCHITECTURE_ID "${CMAKE_VS_PLATFORM_NAME}")
 set(MSVC_CXX_ARCHITECTURE_ID "${CMAKE_VS_PLATFORM_NAME}")
 
 set(CMAKE_C_COMPILER_TARGET ${triplet})
-set(CMAKE_C_FLAGS_INIT "--target=${CMAKE_C_COMPILER_TARGET} -fms-compatibility /arch:SSE")
+set(CMAKE_C_FLAGS_INIT "--target=${CMAKE_C_COMPILER_TARGET} -fms-compatibility /arch:AVX")
 set(CMAKE_CXX_COMPILER_TARGET ${triplet})
-set(CMAKE_CXX_FLAGS_INIT "--target=${CMAKE_CXX_COMPILER_TARGET} -fms-compatibility /arch:SSE")
+set(CMAKE_CXX_FLAGS_INIT "--target=${CMAKE_CXX_COMPILER_TARGET} -fms-compatibility /arch:AVX")
 
 set(CMAKE_INCLUDE_SYSTEM_FLAG_C "-imsvc")
 set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "-imsvc")
@@ -98,7 +98,7 @@ set(CMAKE_EXE_LINKER_FLAGS_INIT "/manifest:no /machine:${CMAKE_VS_PLATFORM_NAME}
 set(CMAKE_MODULE_LINKER_FLAGS_INIT "/manifest:no /machine:${CMAKE_VS_PLATFORM_NAME}")
 set(CMAKE_SHARED_LINKER_FLAGS_INIT "/manifest:no /machine:${CMAKE_VS_PLATFORM_NAME}")
 
-set(CMAKE_USER_MAKE_RULES_OVERRIDE "/opt/cross-tools/MSVCCompileRules.cmake")
+set(CMAKE_USER_MAKE_RULES_OVERRIDE "$ENV{WINDOWS_TOOLCHAIN}/MSVCCompileRules.cmake")
 
 include_directories(
     SYSTEM "$ENV{VCToolsInstallDir}include" "$ENV{WindowsSdkDir}Include/$ENV{WindowsSDKVersion}ucrt"
