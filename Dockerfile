@@ -43,9 +43,8 @@ ENV PATH=/opt/m.css/bin:$PATH
 COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
- && mkdir /usr/src \
  && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
- && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64.cmake /usr/src/hello-test \
+ && mkdir /tmp/build && cd /tmp/build \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/usr/src/toolchain.cmake /usr/src/hello-test \
  && ninja && ninja test \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
