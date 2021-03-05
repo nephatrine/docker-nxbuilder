@@ -2,7 +2,6 @@ FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ENV DJGPP_TOOLCHAIN=/opt/djgpp
-ENV DJGPP_SYSROOT=${DJGPP_TOOLCHAIN}/sysroot
 
 RUN echo "====== INSTALL GCC-CROSS ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
@@ -82,20 +81,25 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
  && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/djcross-gcc-${GCC_GNU_VERSION} /usr/src/djgpp-cvs
 
-ENV DJDIR=${DJGPP_TOOLCHAIN}/i586-pc-msdosdjgpp PATH=${DJGPP_TOOLCHAIN}/bin:$PATH SDL_VIDEODRIVER=dummy
-COPY override /
+ENV DJDIR=${DJGPP_TOOLCHAIN}/i586-pc-msdosdjgpp PATH=${DJGPP_TOOLCHAIN}/bin:$PATH \
+ DJGPP_SYSROOT=${DJGPP_TOOLCHAIN}/sysroot SDL_VIDEODRIVER=dummy
 
-RUN echo "====== TEST TOOLCHAINS ======" \
+RUN echo "====== CONFIGURE DOSBOX ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
   dosbox \
  && wget -qO /tmp/cwsdpmi.zip https://files.nephatrine.net/Local/cwsdpmi.zip \
  && mkdir -p ${DJGPP_SYSROOT}/TMP && cd ${DJGPP_SYSROOT} && unzip /tmp/cwsdpmi.zip \
+ && cd /tmp && rm -rf /tmp/* /var/tmp/*
+
+COPY override /
+
+RUN echo "====== TEST TOOLCHAIN ======" \
  && mv /usr/share/cmake/Modules/Platform/*.cmake /usr/share/cmake-*/Modules/Platform/ \
  && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
  && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/djgpp-ia32.cmake /usr/src/hello-test \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=${DJGPP_TOOLCHAIN}/toolchain.cmake /usr/src/hello-test \
  && ninja && file hello.exe \
  && cp hello.exe hello.dxe ${DJGPP_SYSROOT}/TMP/ \
- && dosbox -conf /opt/cross-tools/dosbox.conf -c "C:\\TMP\\hello.exe >C:\\TMP\\CMDOUT" -c "exit" 2>/dev/null && cat ${DJGPP_SYSROOT}/TMP/CMDOUT \
+ && dosbox -conf ${DJGPP_TOOLCHAIN}/dosbox.conf -c "C:\\TMP\\hello.exe >C:\\TMP\\CMDOUT" -c "exit" 2>/dev/null && cat ${DJGPP_SYSROOT}/TMP/CMDOUT \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
