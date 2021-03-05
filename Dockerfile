@@ -24,10 +24,13 @@ RUN echo "====== INSTALL MINGW ======" \
   osslsigncode \
   wixl \
  && apt-get clean \
+ && sed -i 's/\\bin/\\@CPACK_NSIS_PACKAGE_PATH@/g' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
+ && sed -i '6 i\ \ !define MUI_BGCOLOR "@CPACK_PACKAGE_COLOR_EXTRA_NH@"' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
+ && sed -i '6 i\ \ !define MUI_TEXTCOLOR "@CPACK_PACKAGE_COLOR_FORE_NH@"' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
  && rm -rf /tmp/* /var/tmp/*
 
 ENV WINDOWS_SYSROOT=${WINEPREFIX}/drive_c WINDOWS_TOOLCHAIN=/opt/llvm-mingw
-COPY override /
+COPY patches /
 
 RUN echo "====== BUILD LLVM-MINGW ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
@@ -51,13 +54,18 @@ RUN echo "====== BUILD LLVM-MINGW ======" \
  && cp -nrvs ${WINDOWS_TOOLCHAIN}/lib/clang/* /usr/lib/llvm-${LLVM_MAJOR}/lib/clang/ \
  && sed -i 's~https://github.com/gcc-mirror/gcc/tags/releases/gcc-7.3.0/libssp~svn://gcc.gnu.org/svn/gcc/tags/gcc_7_3_0_release/libssp~g' build-libssp.sh \
  && ./build-libssp.sh ${WINDOWS_TOOLCHAIN} \
+ && ln -s /usr/lib/gcc/x86_64-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc \
+ && ln -s /usr/lib/gcc/i686-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/libgcc \
+ && ln -s ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32 ${WINDOWS_SYSROOT}/x86_64-w64-mingw32 \
+ && ln -s ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32 ${WINDOWS_SYSROOT}/i686-w64-mingw32 \
+ && ln -s ${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32 ${WINDOWS_SYSROOT}/aarch64-w64-mingw32 \
  && apt-get remove -y \
   gawk \
   libclang-dev llvm-dev \
   python3-distutils \
  && apt-get autoremove -y \
  && apt-get clean \
- && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/llvm-mingw /usr/src/clang-target-wrapper.patch
+ && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 RUN echo "====== BUILD MAKEMSIX ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
@@ -73,30 +81,29 @@ RUN echo "====== BUILD MAKEMSIX ======" \
  && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/msix-packaging
 
-RUN echo "====== TEST TOOLCHAINS ======" \
- && sed -i 's/\\bin/\\@CPACK_NSIS_PACKAGE_PATH@/g' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
- && sed -i '6 i\ \ !define MUI_BGCOLOR "@CPACK_PACKAGE_COLOR_EXTRA_NH@"' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
- && sed -i '6 i\ \ !define MUI_TEXTCOLOR "@CPACK_PACKAGE_COLOR_FORE_NH@"' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
+COPY override /
+
+RUN echo "====== TEST TOOLCHAIN ======" \
  && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
- && export WINEPATH=${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc && ln -s /usr/lib/gcc/x86_64-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc \
- && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-amd64.cmake /usr/src/hello-test \
+ && export WINEPATH=${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc \
+ && mkdir /tmp/build-x86_64-stdcxx && cd /tmp/build-x86_64-stdcxx \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.x86_64-stdcxx.cmake /usr/src/hello-test \
  && ninja && ${WINE} ./HelloTest.exe \
- && export WINEPATH=${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/libgcc && ln -s /usr/lib/gcc/i686-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/libgcc \
- && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-ia32.cmake /usr/src/hello-test \
+ && export WINEPATH=${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/libgcc \
+ && mkdir /tmp/build-i686-stdcxx && cd /tmp/build-i686-stdcxx \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.i686-stdcxx.cmake /usr/src/hello-test \
  && ninja && ${WINE} ./HelloTest.exe \
  && export PATH=${WINDOWS_TOOLCHAIN}/bin:$PATH \
- && export WINEPATH=${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32 ${WINDOWS_SYSROOT}/x86_64-w64-mingw32 \
- && mkdir /tmp/build-amd64-libc++ && cd /tmp/build-amd64-libc++ \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-amd64-libc++.cmake /usr/src/hello-test \
+ && export WINEPATH=${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/bin \
+ && mkdir /tmp/build-x86_64-libcxx && cd /tmp/build-x86_64-libcxx \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.x86_64-libcxx.cmake /usr/src/hello-test \
  && ninja && ${WINE} ./HelloTest.exe \
- && export WINEPATH=${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32 ${WINDOWS_SYSROOT}/aarch64-w64-mingw32 \
- && mkdir /tmp/build-arm64-libc++ && cd /tmp/build-arm64-libc++ \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-arm64-libc++.cmake /usr/src/hello-test \
+ && export WINEPATH=${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32/bin \
+ && mkdir /tmp/build-aarch64-libcxx && cd /tmp/build-aarch64-libcxx \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.aarch64-libcxx.cmake /usr/src/hello-test \
  && ninja && file HelloTest.exe \
- && export WINEPATH=${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/bin && ln -s ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32 ${WINDOWS_SYSROOT}/i686-w64-mingw32 \
- && mkdir /tmp/build-ia32-libc++ && cd /tmp/build-ia32-libc++ \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/mingw-ia32-libc++.cmake /usr/src/hello-test \
+ && export WINEPATH=${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/bin \
+ && mkdir /tmp/build-i686-libcxx && cd /tmp/build-i686-libcxx \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=${WINDOWS_TOOLCHAIN}/toolchain.i686-libcxx.cmake /usr/src/hello-test \
  && ninja && ${WINE} ./HelloTest.exe \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
