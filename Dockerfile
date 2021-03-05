@@ -79,7 +79,7 @@ RUN echo "====== INSTALL GCC-CROSS ======" \
   zlib1g-dev \
  && apt-get autoremove -y \
  && apt-get clean \
- && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/djcross-gcc-${GCC_GNU_VERSION} /usr/src/djgpp-cvs
+ && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 ENV DJDIR=${DJGPP_TOOLCHAIN}/i586-pc-msdosdjgpp PATH=${DJGPP_TOOLCHAIN}/bin:$PATH \
  DJGPP_SYSROOT=${DJGPP_TOOLCHAIN}/sysroot SDL_VIDEODRIVER=dummy
