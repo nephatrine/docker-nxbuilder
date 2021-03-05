@@ -54,10 +54,10 @@ COPY override /
 
 RUN echo "====== TEST TOOLCHAINS ======" \
  && git -C /usr/src clone https://code.nephatrine.net/nephatrine/hello-test.git \
- && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-amd64.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-x86_64 && cd /tmp/build-x86_64 \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/usr/src/toolchain.x86_64.cmake /usr/src/hello-test \
  && ninja && ninja test \
- && mkdir /tmp/build-ia32 && cd /tmp/build-ia32 \
- && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/opt/cross-tools/linux-ia32.cmake /usr/src/hello-test \
+ && mkdir /tmp/build-i686 && cd /tmp/build-i686 \
+ && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=/usr/src/toolchain.i686.cmake /usr/src/hello-test \
  && ninja && ninja test \
  && cd /tmp && rm -rf /tmp/* /var/tmp/*
