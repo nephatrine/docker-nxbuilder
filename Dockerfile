@@ -23,7 +23,7 @@ RUN echo "====== INSTALL MSVC-WINE ======" \
  && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
-ENV UCRTVersion=10.0.19041.0 VCToolsVersion=14.29.30036 VCRedistVersion=14.29.30036 \
+ENV UCRTVersion=10.0.19041.0 VCToolsVersion=14.29.30037 VCRedistVersion=14.29.30036 \
  VCINSTALLDIR="${VSINSTALLDIR}VC/" WindowsSdkDir="${UniversalCRTSdkDir}" WindowsSdkBinPath="${UniversalCRTSdkDir}bin/"
 ENV VCToolsInstallDir="${VCINSTALLDIR}Tools/MSVC/${VCToolsVersion}/" VCToolsRedistDir="${VCINSTALLDIR}Redist/MSVC/${VCRedistVersion}/" \
  WindowsSDKLibVersion=${UCRTVersion}/ WindowsSdkVerBinPath="${WindowsSdkDir}bin/${UCRTVersion}/" WindowsSDKVersion=${UCRTVersion}/
