@@ -19,24 +19,23 @@ RUN echo "====== CONFIGURE REPOS ======" \
   file \
   nano \
   rsync \
- && apt-get autoremove -y \
- && apt-get clean \
+ && apt-get autoremove -y && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
 
-ENV LLVM_MAJOR=10
+ENV LLVM_MAJOR=11
 
 RUN echo "====== INSTALL BUILD TOOLS ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
   build-essential \
-  clang clang-format clang-tidy clang-tools cmake \
+  clang-${LLVM_MAJOR} clang-format-${LLVM_MAJOR} clang-tidy-${LLVM_MAJOR} clang-tools-${LLVM_MAJOR} cmake \
   git git-lfs \
   kitware-archive-keyring \
-  libc++-dev libc++abi-dev libunwind-dev lld llvm lsb-release \
+  lld-${LLVM_MAJOR} lsb-release \
   ninja-build \
   subversion \
- && apt-get clean \
  && ls /usr/lib/clang/$LLVM_MAJOR \
+ && apt-get autoremove -y && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
 
 RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
@@ -48,15 +47,13 @@ RUN echo "====== INSTALL DOXYGEN TOOLS ======" \
   librsvg2-bin \
   mscgen \
   python3-jinja2 python3-pygments \
- && apt-get autoremove -y \
- && apt-get clean \
- && mkdir /opt/m.css && cd /opt/m.css \
- && git clone https://github.com/mosra/m.css && cd m.css \
- && mv documentation ../bin \
- && mv css ../css \
- && mv plugins ../plugins \
- && mv COPYING ../ \
- && cd .. && rm -rf m.css bin/test* \
- && rm -rf /tmp/* /var/tmp/*
+ && mkdir /opt/m.css \
+ && git -C /opt/m.css clone --single-branch --depth=1 https://github.com/mosra/m.css \
+ && mv /opt/m.css/m.css/documentation /opt/m.css/bin \
+ && mv /opt/m.css/m.css/css /opt/m.css/css \
+ && mv /opt/m.css/m.css/plugins /opt/m.css/plugins \
+ && mv /opt/m.css/m.css/COPYING /opt/m.css/ \
+ && apt-get autoremove -y && apt-get clean \
+ && rm -rf /tmp/* /var/tmp/* /opt/m.css/m.css /opt/m.css/bin/test*
 
 ENV PATH=/opt/m.css/bin:$PATH
