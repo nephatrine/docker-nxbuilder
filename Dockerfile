@@ -17,6 +17,7 @@ RUN echo "====== CONFIGURE REPOS ======" \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
   curl \
   file \
+  less \
   nano \
   rsync \
  && apt-get autoremove -y && apt-get clean \
@@ -27,6 +28,7 @@ ENV LLVM_MAJOR=11
 RUN echo "====== INSTALL BUILD TOOLS ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
+  autoconf automake \
   build-essential \
   clang-${LLVM_MAJOR} clang-format-${LLVM_MAJOR} clang-tidy-${LLVM_MAJOR} clang-tools-${LLVM_MAJOR} cmake \
   git git-lfs \
