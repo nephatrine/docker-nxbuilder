@@ -34,9 +34,29 @@ RUN echo "====== INSTALL BUILD TOOLS ======" \
   libc++1-${LLVM_MAJOR} libc++abi1-${LLVM_MAJOR} lld-${LLVM_MAJOR} llvm-${LLVM_MAJOR} lsb-release \
   ninja-build \
   subversion \
+ && update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/clang-${LLVM_MAJOR} 100 \
+  --slave /usr/bin/llvm-addr2line llvm-addr2line /usr/bin/llvm-addr2line-${LLVM_MAJOR} \
+  --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-${LLVM_MAJOR} \
+  --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-${LLVM_MAJOR} \
+  --slave /usr/bin/llvm-mt llvm-mt /usr/bin/llvm-mt-${LLVM_MAJOR} \
+  --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-${LLVM_MAJOR} \
+  --slave /usr/bin/llvm-objcopy llvm-objcopy /usr/bin/llvm-objcopy-${LLVM_MAJOR} \
+  --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-${LLVM_MAJOR} \
+  --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-${LLVM_MAJOR} \
+  --slave /usr/bin/llvm-rc llvm-rc /usr/bin/llvm-rc-${LLVM_MAJOR} \
+  --slave /usr/bin/llvm-readelf llvm-readelf /usr/bin/llvm-readelf-${LLVM_MAJOR} \
+  --slave /usr/bin/llvm-strip llvm-strip /usr/bin/llvm-strip-${LLVM_MAJOR} \
  && update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${LLVM_MAJOR} 100 \
- && update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-${LLVM_MAJOR} 100 \
- && update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-${LLVM_MAJOR} 100 \
+  --slave /usr/bin/clang++ clang++ /usr/bin/clang++-${LLVM_MAJOR} \
+  --slave /usr/bin/clang-cl clang-cl /usr/bin/clang-cl-${LLVM_MAJOR} \
+  --slave /usr/bin/clang-cpp clang-cpp /usr/bin/clang-cpp-${LLVM_MAJOR} \
+  --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-${LLVM_MAJOR} \
+  --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-${LLVM_MAJOR} \
+ && update-alternatives --install /usr/bin/lld lld /usr/bin/lld-${LLVM_MAJOR} 100 \
+  --slave /usr/bin/ld.lld ld.lld /usr/bin/ld.lld-${LLVM_MAJOR} \
+  --slave /usr/bin/ld64.lld ld64.lld /usr/bin/ld64.lld-${LLVM_MAJOR} \
+  --slave /usr/bin/lld-link lld-link /usr/bin/lld-link-${LLVM_MAJOR} \
+  --slave /usr/bin/wasm-ld wasm-ld /usr/bin/wasm-ld-${LLVM_MAJOR} \
  && ls /usr/lib/clang/$LLVM_MAJOR \
  && apt-get autoremove -y && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
