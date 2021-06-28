@@ -31,9 +31,12 @@ RUN echo "====== INSTALL BUILD TOOLS ======" \
   clang-${LLVM_MAJOR} clang-format-${LLVM_MAJOR} clang-tidy-${LLVM_MAJOR} clang-tools-${LLVM_MAJOR} cmake \
   git git-lfs \
   kitware-archive-keyring \
-  lld-${LLVM_MAJOR} lsb-release \
+  libc++1-${LLVM_MAJOR} libc++abi1-${LLVM_MAJOR} lld-${LLVM_MAJOR} llvm-${LLVM_MAJOR} lsb-release \
   ninja-build \
   subversion \
+ && update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${LLVM_MAJOR} 100 \
+ && update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-${LLVM_MAJOR} 100 \
+ && update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-${LLVM_MAJOR} 100 \
  && ls /usr/lib/clang/$LLVM_MAJOR \
  && apt-get autoremove -y && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
