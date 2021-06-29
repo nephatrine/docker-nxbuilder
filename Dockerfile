@@ -36,7 +36,7 @@ RUN echo "====== INSTALL BUILD TOOLS ======" \
   libc++1-${LLVM_MAJOR} libc++abi1-${LLVM_MAJOR} lld-${LLVM_MAJOR} llvm-${LLVM_MAJOR} lsb-release \
   ninja-build \
   subversion \
- && update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/clang-${LLVM_MAJOR} 100 \
+ && update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-${LLVM_MAJOR} 100 \
   --slave /usr/bin/llvm-addr2line llvm-addr2line /usr/bin/llvm-addr2line-${LLVM_MAJOR} \
   --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-${LLVM_MAJOR} \
   --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-${LLVM_MAJOR} \
