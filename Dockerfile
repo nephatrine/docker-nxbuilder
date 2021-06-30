@@ -7,31 +7,23 @@ ENV DARWIN_SYSROOT_OLD=${DARWIN_TOOLCHAIN}/SDK/MacOSX${DARWIN_SDK_OLD}.sdk DARWI
 RUN echo "====== INSTALL OSXCROSS ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  libclang-dev libssl-dev libxml2-dev llvm-dev \
-  uuid-dev \
+  libssl-dev libxml2-dev llvm-${LLVM_MAJOR}-dev \
   zlib1g-dev \
- && git -C /usr/src clone --depth=1 https://github.com/tpoechtrager/osxcross.git \
+ && git -C /usr/src clone --single-branch --depth=1 https://github.com/tpoechtrager/osxcross.git \
  && wget -qO /usr/src/osxcross/tarballs/MacOSX${DARWIN_SDK_OLD}.sdk.tar.xz https://files.nephatrine.net/Local/MacOSX${DARWIN_SDK_OLD}.sdk.tar.xz \
  && wget -qO /usr/src/osxcross/tarballs/MacOSX${DARWIN_SDK_NEW}.sdk.tar.xz https://files.nephatrine.net/Local/MacOSX${DARWIN_SDK_NEW}.sdk.tar.xz \
  && export TARGET_DIR=${DARWIN_TOOLCHAIN} \
- && export SDK_VERSION=${DARWIN_SDK_OLD} \
- && export SDK_DIR=${DARWIN_SYSROOT_OLD} \
- && OSX_VERSION_MIN=${DARWIN_SDK_OLD} UNATTENDED=1 /usr/src/osxcross/build.sh \
- && export SDK_VERSION=${DARWIN_SDK_NEW} \
- && export SDK_DIR=${DARWIN_SYSROOT_NEW} \
- && OSX_VERSION_MIN=${DARWIN_SDK_OLD} UNATTENDED=1 /usr/src/osxcross/build.sh \
- && export PATH=${TARGET_DIR}/bin:$PATH \
- && /usr/src/osxcross/build_compiler_rt.sh \
+ && SDK_VERSION=${DARWIN_SDK_OLD} SDK_DIR=${DARWIN_SYSROOT_OLD} OSX_VERSION_MIN=${DARWIN_SDK_OLD} UNATTENDED=1 /usr/src/osxcross/build.sh \
+ && SDK_VERSION=${DARWIN_SDK_NEW} SDK_DIR=${DARWIN_SYSROOT_NEW} OSX_VERSION_MIN=${DARWIN_SDK_OLD} UNATTENDED=1 /usr/src/osxcross/build.sh \
+ && SDK_VERSION=${DARWIN_SDK_NEW} SDK_DIR=${DARWIN_SYSROOT_NEW} PATH=${TARGET_DIR}/bin:$PATH /usr/src/osxcross/build_compiler_rt.sh \
  && mkdir /usr/lib/clang/${LLVM_MAJOR}/lib/darwin \
  && cp -nv /usr/src/osxcross/build/compiler-rt/compiler-rt/build/lib/darwin/*.a /usr/lib/clang/${LLVM_MAJOR}/lib/darwin/ \
  && cp -nv /usr/src/osxcross/build/compiler-rt/compiler-rt/build/lib/darwin/*.dylib /usr/lib/clang/${LLVM_MAJOR}/lib/darwin/ \
  && cp -nrv /usr/src/osxcross/build/compiler-rt/compiler-rt/include/sanitizer /usr/lib/clang/${LLVM_MAJOR}/include/ \
  && apt-get remove -y \
-  libclang-dev libssl-dev libxml2-dev llvm-dev \
-  uuid-dev \
+  libssl-dev libxml2-dev llvm-${LLVM_MAJOR}-dev \
   zlib1g-dev \
- && apt-get autoremove -y \
- && apt-get clean \
+ && apt-get autoremove -y && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/osxcross
 
 ENV PATH=${DARWIN_TOOLCHAIN}/bin:$PATH
