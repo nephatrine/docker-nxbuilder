@@ -24,7 +24,7 @@ find_program(CMAKE_ADDR2LINE NAMES "llvm-addr2line-$ENV{LLVM_MAJOR}" llvm-addr2l
 set(CMAKE_C_COMPILER_TARGET ${triplet})
 set(CMAKE_C_FLAGS_INIT "-march=i686 -mmmx -msse -mtune=pentium4 -mfpmath=sse")
 set(CMAKE_CXX_COMPILER_TARGET ${triplet})
-set(CMAKE_C_FLAGS_INIT "-march=i686 -mmmx -msse -mtune=pentium4 -mfpmath=sse -stdlib=libc++")
+set(CMAKE_CXX_FLAGS_INIT "-march=i686 -mmmx -msse -mtune=pentium4 -mfpmath=sse -stdlib=libc++")
 
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld -rtlib=compiler-rt")
 set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld -rtlib=compiler-rt")
