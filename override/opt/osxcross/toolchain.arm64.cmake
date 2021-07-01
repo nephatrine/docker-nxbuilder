@@ -1,13 +1,14 @@
 set(CMAKE_SYSTEM_NAME Darwin)
-set(CMAKE_SYSTEM_PROCESSOR i386)
+set(CMAKE_SYSTEM_PROCESSOR arm64)
 set(CMAKE_OSX_ARCHITECTURES ${CMAKE_SYSTEM_PROCESSOR})
-set(CMAKE_SIZEOF_VOID_P 4)
+set(CMAKE_SIZEOF_VOID_P 8)
 
 string(REPLACE "." ";" OSX_SDK_VERSION "$ENV{DARWIN_SDK}")
 list(GET OSX_SDK_VERSION 0 OSX_SDK_MAJOR)
 list(GET OSX_SDK_VERSION 1 CMAKE_SYSTEM_VERSION)
 
-math(EXPR CMAKE_SYSTEM_VERSION "${CMAKE_SYSTEM_VERSION} + 4")
+math(EXPR CMAKE_SYSTEM_VERSION "${CMAKE_SYSTEM_VERSION} + 1")
+set(CMAKE_SYSTEM_VERSION "20.${CMAKE_SYSTEM_VERSION}")
 
 set(triplet "${CMAKE_SYSTEM_PROCESSOR}-apple-darwin${CMAKE_SYSTEM_VERSION}")
 
@@ -30,9 +31,9 @@ set(CMAKE_C_LIBRARY_ARCHITECTURE ${CMAKE_LIBRARY_ARCHITECTURE})
 set(CMAKE_CXX_LIBRARY_ARCHITECTURE ${CMAKE_LIBRARY_ARCHITECTURE})
 
 set(CMAKE_C_COMPILER_TARGET ${triplet})
-set(CMAKE_C_FLAGS_INIT "-march=i686 -mmmx -msse -mtune=pentium4 -mfpmath=sse -rtlib=compiler-rt")
+set(CMAKE_C_FLAGS_INIT "-march=armv8-a+fp+simd -mtune=apple-a12 -rtlib=compiler-rt")
 set(CMAKE_CXX_COMPILER_TARGET ${triplet})
-set(CMAKE_CXX_FLAGS_INIT "-march=i686 -mmmx -msse -mtune=pentium4 -mfpmath=sse -rtlib=compiler-rt -stdlib=libc++")
+set(CMAKE_CXX_FLAGS_INIT "-march=armv8-a+fp+simd -mtune=apple-a12 -rtlib=compiler-rt -stdlib=libc++")
 
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-rtlib=compiler-rt")
 set(CMAKE_MODULE_LINKER_FLAGS_INIT "-rtlib=compiler-rt")
