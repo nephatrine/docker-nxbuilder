@@ -6,12 +6,9 @@ ENV FREEBSD_VERSION=12.2 \
 
 RUN echo "====== INSTALL FREEBSD ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
- && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  libarchive-tools \
- && apt-get clean \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends libarchive-tools \
+ && apt-get autoremove -y && apt-get clean \
  && wget -qO /tmp/freebsd-amd64.txz https://download.freebsd.org/ftp/releases/amd64/amd64/${FREEBSD_VERSION}-RELEASE/base.txz \
- && wget -qO /tmp/freebsd-arm64.txz https://download.freebsd.org/ftp/releases/arm64/aarch64/${FREEBSD_VERSION}-RELEASE/base.txz \
- && wget -qO /tmp/freebsd-i386.txz https://download.freebsd.org/ftp/releases/i386/i386/${FREEBSD_VERSION}-RELEASE/base.txz \
  && mkdir -p ${FREEBSD_SYSROOT_AMD64} && cd ${FREEBSD_SYSROOT_AMD64} \
  && bsdtar -xf /tmp/freebsd-amd64.txz \
  && rm -rf ${FREEBSD_SYSROOT_AMD64}/bin/* \
@@ -27,6 +24,7 @@ RUN echo "====== INSTALL FREEBSD ======" \
  && rm -rf ${FREEBSD_SYSROOT_AMD64}/var/* \
  && find . -xtype l | xargs ls -l | grep ' /lib/' | awk -v sysroot=${FREEBSD_SYSROOT_AMD64} '{print "ln -sf " sysroot $11 " " $9}' | /bin/sh \
  && find . -xtype l | xargs ls -l | grep ' /usr/' | awk -v sysroot=${FREEBSD_SYSROOT_AMD64} '{print "ln -sf " sysroot $11 " " $9}' | /bin/sh \
+ && wget -qO /tmp/freebsd-arm64.txz https://download.freebsd.org/ftp/releases/arm64/aarch64/${FREEBSD_VERSION}-RELEASE/base.txz \
  && mkdir -p ${FREEBSD_SYSROOT_ARM64} && cd ${FREEBSD_SYSROOT_ARM64} \
  && bsdtar -xf /tmp/freebsd-arm64.txz \
  && rm -rf ${FREEBSD_SYSROOT_ARM64}/bin/* \
@@ -42,6 +40,7 @@ RUN echo "====== INSTALL FREEBSD ======" \
  && rm -rf ${FREEBSD_SYSROOT_ARM64}/var/* \
  && find . -xtype l | xargs ls -l | grep ' /lib/' | awk -v sysroot=${FREEBSD_SYSROOT_ARM64} '{print "ln -sf " sysroot $11 " " $9}' | /bin/sh \
  && find . -xtype l | xargs ls -l | grep ' /usr/' | awk -v sysroot=${FREEBSD_SYSROOT_ARM64} '{print "ln -sf " sysroot $11 " " $9}' | /bin/sh \
+ && wget -qO /tmp/freebsd-i386.txz https://download.freebsd.org/ftp/releases/i386/i386/${FREEBSD_VERSION}-RELEASE/base.txz \
  && mkdir -p ${FREEBSD_SYSROOT_IA32} && cd ${FREEBSD_SYSROOT_IA32} \
  && bsdtar -xf /tmp/freebsd-i386.txz \
  && rm -rf ${FREEBSD_SYSROOT_IA32}/bin/* \
@@ -63,9 +62,8 @@ COPY override /
 
 RUN echo "====== BUILD COMPILER-RT ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
- && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  libclang-dev llvm-dev \
- && git -C /usr/src clone --depth=1 --branch "release/${LLVM_MAJOR}.x" https://github.com/llvm/llvm-project.git \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends llvm-${LLVM_MAJOR}-dev \
+ && git -C /usr/src clone --single-branch --depth=1 --branch "release/${LLVM_MAJOR}.x" https://github.com/llvm/llvm-project.git \
  && cp -nrv /usr/src/llvm-project/compiler-rt/include/sanitizer /usr/lib/clang/${LLVM_MAJOR}/include/ \
  && mkdir /usr/lib/clang/${LLVM_MAJOR}/lib/freebsd \
  && mkdir /tmp/build-amd64 && cd /tmp/build-amd64 \
@@ -80,10 +78,8 @@ RUN echo "====== BUILD COMPILER-RT ======" \
  && cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=/opt/freebsd/toolchain.i386.cmake \
   -DCOMPILER_RT_DEFAULT_TARGET_TRIPLE="i386-unknown-freebsd${FREEBSD_VERSION}" /usr/src/llvm-project/compiler-rt \
  && ninja && cp -nv ./lib/freebsd/*.a ./lib/freebsd/*.so /usr/lib/clang/${LLVM_MAJOR}/lib/freebsd/ \
- && apt-get remove -y \
-  libclang-dev llvm-dev \
- && apt-get autoremove -y \
- && apt-get clean \
+ && apt-get remove -y llvm-${LLVM_MAJOR}-dev \
+ && apt-get autoremove -y && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 RUN echo "====== TEST TOOLCHAIN ======" \
