@@ -3,19 +3,17 @@ LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 RUN echo "====== INSTALL JAVA ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
- && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  openjdk-8-jdk-headless \
- && apt-get clean \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends openjdk-8-jdk-headless \
+ && apt-get autoremove -y && apt-get clean \
  && rm -rf /tmp/* /var/tmp/*
 
 ENV ANDROID_SDK_ROOT=/opt/android-sdk JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
- ANDROID_BUILD_TOOLS=30.0.3 ANDROID_PLATFORM=24 ANDROID_PLATFORM_EXTRA=28
+ ANDROID_BUILD_TOOLS=30.0.3 ANDROID_PLATFORM_MIN=23 ANDROID_PLATFORM=25 ANDROID_PLATFORM_MAX=29
 
 RUN echo "====== INSTALL ANDROID SDK ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
- && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  unzip \
- && export ANDROID_SDK_VERSION=6858069 \
+ && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends unzip \
+ && export ANDROID_SDK_VERSION=7302050 \
  && wget -qO /tmp/android-sdk-${ANDROID_SDK_VERSION}.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_VERSION}_latest.zip \
  && mkdir ${ANDROID_SDK_ROOT} && cd ${ANDROID_SDK_ROOT} \
  && unzip /tmp/android-sdk-${ANDROID_SDK_VERSION}.zip \
@@ -28,15 +26,12 @@ RUN echo "====== INSTALL ANDROID SDK ======" \
  && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "build-tools;${ANDROID_BUILD_TOOLS}" \
  && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "ndk-bundle" \
  && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_PLATFORM}" \
- && sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_PLATFORM_EXTRA}" \
+ && if [ $ANDROID_PLATFORM_MIN -ne $ANDROID_PLATFORM ]; then sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_PLATFORM_MIN}"; fi \
+ && if [ $ANDROID_PLATFORM_MAX -ne $ANDROID_PLATFORM ]; then sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platforms;android-${ANDROID_PLATFORM_MAX}"; fi \
  && keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug" \
- && apt-get remove -y \
-  unzip \
- && apt-get autoremove -y \
- && apt-get clean \
+ && apt-get remove -y unzip \
+ && apt-get autoremove -y && apt-get clean \
  && rm -rf /tmp/* /var/tmp/* ${ANDROID_SDK_ROOT}/cmdline-tools/temp
-
-#keytool -importkeystore -srckeystore debug.keystore -destkeystore debug.keystore -deststoretype pkcs12".
 
 ENV ANDROID_NDK_ROOT=${ANDROID_SDK_ROOT}/ndk-bundle DEBUG_KEYSTORE=${ANDROID_SDK_ROOT}/debug.keystore \
  PATH=${ANDROID_SDK_ROOT}/build-tools/${ANDROID_BUILD_TOOLS}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:$PATH
