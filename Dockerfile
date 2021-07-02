@@ -23,29 +23,36 @@ RUN echo "====== INSTALL MINGW ======" \
   nsis \
   osslsigncode \
   wixl \
- && apt-get clean \
+ && apt-get autoremove -y && apt-get clean \
  && sed -i 's/\\bin/\\@CPACK_NSIS_PACKAGE_PATH@/g' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
  && sed -i '6 i\ \ !define MUI_BGCOLOR "@CPACK_PACKAGE_COLOR_EXTRA_NH@"' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
  && sed -i '6 i\ \ !define MUI_TEXTCOLOR "@CPACK_PACKAGE_COLOR_FORE_NH@"' /usr/share/cmake-*/Modules/Internal/CPack/NSIS.template.in \
  && rm -rf /tmp/* /var/tmp/*
 
 ENV WINDOWS_SYSROOT=${WINEPREFIX}/drive_c WINDOWS_TOOLCHAIN=/opt/llvm-mingw
+
+RUN echo "====== BUILD UASM ======" \
+ && git -C /usr/src clone --single-branch --depth=1 -b fix-crosscompile https://github.com/mstorsjo/UASM.git \
+ && cd /usr/src/UASM && make -f gccLinux64.mak -j4 \
+ && mkdir -p ${WINDOWS_TOOLCHAIN}/bin && cp GccUnixR/uasm ${WINDOWS_TOOLCHAIN}/bin/ \
+ && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
+
 COPY patches /
 
 RUN echo "====== BUILD LLVM-MINGW ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  gawk \
-  libclang-dev llvm-dev \
+  llvm-${LLVM_MAJOR}-dev \
   python3-distutils \
  && export TOOLCHAIN_ARCHS="i686 x86_64 aarch64" \
- && git -C /usr/src clone -b llvm-${LLVM_MAJOR}.0 --single-branch --depth=1 https://github.com/mstorsjo/llvm-mingw.git \
+ && git -C /usr/src clone --single-branch --depth=1 -b llvm-${LLVM_MAJOR}.0 https://github.com/mstorsjo/llvm-mingw.git \
  && cd /usr/src/llvm-mingw && patch -u ./wrappers/clang-target-wrapper.sh /usr/src/clang-target-wrapper.patch \
  && CHECKOUT_ONLY=1 LLVM_VERSION=release/${LLVM_MAJOR}.x ./build-llvm.sh ${WINDOWS_TOOLCHAIN} \
  && ./install-wrappers.sh ${WINDOWS_TOOLCHAIN} \
  && export PATH=${WINDOWS_TOOLCHAIN}/bin:$PATH \
  && cp -nrvs /usr/lib/llvm-${LLVM_MAJOR}/bin/* ${WINDOWS_TOOLCHAIN}/bin/ \
- && ./build-mingw-w64.sh ${WINDOWS_TOOLCHAIN} \
+ && ./build-mingw-w64.sh ${WINDOWS_TOOLCHAIN} --with-default-msvcrt=ucrt \
+ && ./build-mingw-w64-tools.sh ${WINDOWS_TOOLCHAIN} \
  && ./build-compiler-rt.sh ${WINDOWS_TOOLCHAIN} \
  && cp -nrvs ${WINDOWS_TOOLCHAIN}/lib/clang/* /usr/lib/llvm-${LLVM_MAJOR}/lib/clang/ \
  && ./build-mingw-w64-libraries.sh ${WINDOWS_TOOLCHAIN} \
@@ -54,32 +61,30 @@ RUN echo "====== BUILD LLVM-MINGW ======" \
  && cp -nrvs ${WINDOWS_TOOLCHAIN}/lib/clang/* /usr/lib/llvm-${LLVM_MAJOR}/lib/clang/ \
  && sed -i 's~https://github.com/gcc-mirror/gcc/tags/releases/gcc-7.3.0/libssp~svn://gcc.gnu.org/svn/gcc/tags/gcc_7_3_0_release/libssp~g' build-libssp.sh \
  && ./build-libssp.sh ${WINDOWS_TOOLCHAIN} \
+ && ./build-openmp.sh ${WINDOWS_TOOLCHAIN} \
  && ln -s /usr/lib/gcc/x86_64-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32/libgcc \
  && ln -s /usr/lib/gcc/i686-w64-mingw32/*-win32 ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32/libgcc \
  && ln -s ${WINDOWS_TOOLCHAIN}/x86_64-w64-mingw32 ${WINDOWS_SYSROOT}/x86_64-w64-mingw32 \
  && ln -s ${WINDOWS_TOOLCHAIN}/i686-w64-mingw32 ${WINDOWS_SYSROOT}/i686-w64-mingw32 \
  && ln -s ${WINDOWS_TOOLCHAIN}/aarch64-w64-mingw32 ${WINDOWS_SYSROOT}/aarch64-w64-mingw32 \
  && apt-get remove -y \
-  gawk \
-  libclang-dev llvm-dev \
+  llvm-${LLVM_MAJOR}-dev \
   python3-distutils \
- && apt-get autoremove -y \
- && apt-get clean \
+ && apt-get autoremove -y && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 RUN echo "====== BUILD MAKEMSIX ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
   libicu-dev \
- && git -C /usr/src clone --depth=1 --branch "johnmcpms/signing" https://github.com/microsoft/msix-packaging.git \
+ && git -C /usr/src clone --single-branch --depth=1 -b "johnmcpms/signing" https://github.com/microsoft/msix-packaging.git \
  && cd /usr/src/msix-packaging && ./makelinux.sh --pack --validation-parser \
  && mkdir /usr/local/lib/x86_64-linux-gnu && cp -nv .vs/lib/*.so /usr/local/lib/x86_64-linux-gnu/ && ldconfig \
  && cp -nv .vs/bin/makemsix /usr/local/bin/ \
  && apt-get remove -y \
   libicu-dev \
- && apt-get autoremove -y \
- && apt-get clean \
- && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/msix-packaging
+ && apt-get autoremove -y && apt-get clean \
+ && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
 COPY override /
 
