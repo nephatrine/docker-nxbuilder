@@ -59,7 +59,6 @@ steps:
       - nephatrine/docker-nxbuilder@freebsd
       - nephatrine/docker-nxbuilder@haiku
       - nephatrine/docker-nxbuilder@mingw
-      - nephatrine/docker-nxbuilder@openindiana
       - nephatrine/docker-nxbuilder@ubuntu
 
 depends_on:
@@ -67,6 +66,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 6429eb278cdc2cc4879a97e68d9a302e2faba91e9d867b9f1bb57a9c9be05c87
+hmac: 33f7720707872b72d1c406eae1ed54c4c777431dfdf52b637bb0edc11be54794
 
 ...
