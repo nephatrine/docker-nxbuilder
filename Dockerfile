@@ -14,10 +14,6 @@ RUN echo "====== INSTALL MSVC-WINE ======" \
  && mkdir /tmp/msvc-staging && python3 /usr/src/msvc-wine/vsdownload.py --accept-license --dest /tmp/msvc-staging \
   Microsoft.Component.VC.Runtime.UCRTSDK \
   Microsoft.VisualCpp.ASAN.X86 \
-  Microsoft.VisualCpp.CLI.ARM64 \
-  Microsoft.VisualCpp.CLI.Source \
-  Microsoft.VisualCpp.CLI.X64 \
-  Microsoft.VisualCpp.CLI.X86 \
   Microsoft.VisualCpp.CRT.Headers \
   Microsoft.VisualCpp.CRT.Redist.ARM64 \
   Microsoft.VisualCpp.CRT.Redist.Resources \
@@ -26,7 +22,6 @@ RUN echo "====== INSTALL MSVC-WINE ======" \
   Microsoft.VisualCpp.CRT.Redist.arm64.OneCore.Desktop \
   Microsoft.VisualCpp.CRT.Redist.x64.OneCore.Desktop \
   Microsoft.VisualCpp.CRT.Redist.x86.OneCore.Desktop \
-  Microsoft.VisualCpp.CRT.Source \
   Microsoft.VisualCpp.CRT.arm64.Desktop \
   Microsoft.VisualCpp.CRT.arm64.OneCore.Desktop \
   Microsoft.VisualCpp.CRT.arm64.Store \
@@ -42,8 +37,6 @@ RUN echo "====== INSTALL MSVC-WINE ======" \
   Microsoft.VisualCpp.PGO.X86 \
   Microsoft.VisualStudio.Component.Windows10SDK \
   Microsoft.VisualStudio.Component.Windows10SDK.19041 \
-  Microsoft.VisualStudio.VC.Llvm.Base \
-  Microsoft.VisualStudio.VC.Llvm.Clang \
  && mkdir -p "${UniversalCRTSdkDir}" && mv /tmp/msvc-staging/kits/10/* "${UniversalCRTSdkDir}" && rm -rf /tmp/msvc-staging/kits \
  && find "${UniversalCRTSdkDir}" -name 'arm' -type d -exec rm -rf {} + && find "${UniversalCRTSdkDir}" -name '*.exe' -type f -delete \
  && mkdir -p "${VSINSTALLDIR}" && mv /tmp/msvc-staging/* "${VSINSTALLDIR}" \
