@@ -2,20 +2,18 @@ FROM nephatrine/nxbuilder:latest
 LABEL maintainer="Daniel Wolf <nephatrine@gmail.com>"
 
 ENV HAIKU_TOOLCHAIN_AMD64=/opt/haiku/cross-tools-x86_64 \
- HAIKU_TOOLCHAIN_GCC2=/opt/haiku/cross-tools-x86_gcc2 \
- HAIKU_TOOLCHAIN_IA32=/opt/haiku/cross-tools-x86
+ HAIKU_TOOLCHAIN_X86_GCC2=/opt/haiku/cross-tools-x86_gcc2 \
+ HAIKU_TOOLCHAIN_X86=/opt/haiku/cross-tools-x86
 
 ENV HAIKU_SYSROOT_AMD64=${HAIKU_TOOLCHAIN_AMD64}/sysroot \
- HAIKU_SYSROOT_GCC2=${HAIKU_TOOLCHAIN_GCC2}/sysroot \
- HAIKU_SYSROOT_IA32=${HAIKU_TOOLCHAIN_IA32}/sysroot
+ HAIKU_SYSROOT_X86=${HAIKU_TOOLCHAIN_X86_GCC2}/sysroot
 
 RUN echo "====== INSTALL CROSS-GCC ======" \
  && export DEBIAN_FRONTEND=noninteractive && apt-get update -q \
  && apt-get -o Dpkg::Options::="--force-confnew" install -y --no-install-recommends \
-  autoconf automake \
   bison \
   flex \
-  gawk gcc-multilib \
+  gcc-multilib \
   nasm \
   zlib1g-dev \
  && git -C /usr/src clone --depth=1 https://review.haiku-os.org/buildtools.git \
@@ -50,37 +48,34 @@ RUN echo "====== INSTALL CROSS-GCC ======" \
  && jam -q @install \
  && jam -q haiku.hpkg haiku_devel.hpkg haiku_source.hpkg '<build>package' \
  && jam -q haiku_x86.hpkg haiku_x86_devel.hpkg \
- && mkdir -p ${HAIKU_SYSROOT_GCC2}/boot/system \
- && find ./objects/haiku/x86_gcc2/packaging/packages/ -name '*.hpkg' -type f | xargs -n1 package extract -C ${HAIKU_SYSROOT_GCC2}/boot/system \
- && find ./download/ -name '*.hpkg' -type f | xargs -n1 package extract -C ${HAIKU_SYSROOT_GCC2}/boot/system \
- && find ${HAIKU_SYSROOT_GCC2}/ -xtype l | xargs ls -l | grep ' /system/' | awk -v sysroot=${HAIKU_SYSROOT_GCC2}/boot/ '{print "ln -sf " sysroot $11 " " $9}' | /bin/sh \
- && find ${HAIKU_SYSROOT_GCC2}/ -xtype l | xargs ls -l | grep ' /boot/' | awk -v sysroot=${HAIKU_SYSROOT_GCC2}/ '{print "ln -sf " sysroot $11 " " $9}' | /bin/sh \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/add-ons/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/apps/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/bin/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/boot/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/cache/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/data/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/demos/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/develop/documentation/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/documentation/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/packages/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/preferences/* \
- && rm -rf ${HAIKU_SYSROOT_GCC2}/boot/system/servers/* \
+ && mkdir -p ${HAIKU_SYSROOT_X86}/boot/system \
+ && find ./objects/haiku/x86_gcc2/packaging/packages/ -name '*.hpkg' -type f | xargs -n1 package extract -C ${HAIKU_SYSROOT_X86}/boot/system \
+ && find ./download/ -name '*.hpkg' -type f | xargs -n1 package extract -C ${HAIKU_SYSROOT_X86}/boot/system \
+ && find ${HAIKU_SYSROOT_X86}/ -xtype l | xargs ls -l | grep ' /system/' | awk -v sysroot=${HAIKU_SYSROOT_X86}/boot/ '{print "ln -sf " sysroot $11 " " $9}' | /bin/sh \
+ && find ${HAIKU_SYSROOT_X86}/ -xtype l | xargs ls -l | grep ' /boot/' | awk -v sysroot=${HAIKU_SYSROOT_X86}/ '{print "ln -sf " sysroot $11 " " $9}' | /bin/sh \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/add-ons/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/apps/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/bin/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/boot/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/cache/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/data/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/demos/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/develop/documentation/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/documentation/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/packages/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/preferences/* \
+ && rm -rf ${HAIKU_SYSROOT_X86}/boot/system/servers/* \
  && rm -rf Jamfile attributes build build_packages download objects tmp \
- && ln -s ${HAIKU_SYSROOT_GCC2} ${HAIKU_SYSROOT_IA32} \
  && apt-get remove -y \
-  autoconf automake \
   bison \
   flex \
-  gawk gcc-multilib \
+  gcc-multilib \
   nasm \
   zlib1g-dev \
- && apt-get autoremove -y \
- && apt-get clean \
+ && apt-get autoremove -y && apt-get clean \
  && cd /tmp && rm -rf /tmp/* /var/tmp/* /usr/src/*
 
-ENV PATH=${HAIKU_TOOLCHAIN_AMD64}/bin:${HAIKU_TOOLCHAIN_IA32}/bin:$PATH
+ENV PATH=${HAIKU_TOOLCHAIN_AMD64}/bin:${HAIKU_TOOLCHAIN_X86}/bin:$PATH
 COPY override /
 
 RUN echo "====== TEST TOOLCHAIN ======" \
